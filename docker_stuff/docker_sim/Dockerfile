@@ -236,14 +236,14 @@ RUN echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN /bin/bash -c 'source ~/.bashrc'
 WORKDIR /home/user1/catkin_ws/src
 RUN git clone https://github.com/rst-tu-dortmund/costmap_prohibition_layer
-RUN git clone https://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@github.com/robotology-dependencies/r1-navigation
+RUN git clone https://github.com/datspace/ros-navigation
 RUN git clone https://github.com/DatSpace/ros-speckle-filter
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin_make install -DCMAKE_BUILD_TYPE=Release'
 ENV YARP_CLOCK=/clock
 WORKDIR /home/user1
 RUN cd && git clone https://github.com/dpirch/libfvad && cd libfvad && autoreconf -i && ./configure && make && sudo make install
 RUN cd && git clone https://github.com/elandini84/yarp-web-teleop.git
-RUN git clone https://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@github.com/robotology-playground/tour-guide-robot -b master
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b master
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
 # R1 NETWORK CONFIG
