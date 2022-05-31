@@ -1,0 +1,1 @@
+# This skill check if the robot is at the correct position of the current poi by asking the tour manager

@@ -1,0 +1,1 @@
+# This action should send a periodic signal to navigation to stop base control movement

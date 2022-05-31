@@ -1,0 +1,149 @@
+<application>
+   <name>Navigation_ROS_R1SN001</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+    
+	
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters></parameters>
+      <workdir>/usr/local/src/robot/robots-configuration/R1SN001/</workdir>
+      <node>r1-base</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from realsense2_remote.ini</parameters>
+      <node>r1-torso</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from pointCloudCreator.ini</parameters>
+      <node>localhost</node>
+   </module>
+	
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from  lidar_ros_compressed.ini</parameters>
+      <node>localhost</node>
+   </module>
+   
+   <module>
+      <name>./set_navigation_position_sn001.sh</name>
+      <parameters></parameters>
+      <workdir>/usr/local/src/robot/tour-guide-robot/app/navigation/scripts/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>./yarp-rpc-ros-wrapper</name>
+      <parameters></parameters>
+      <workdir>/usr/local/src/robot/yarp-rpc-ros-wrapper/build</workdir>
+      <node>r1-base</node>
+   </module>
+   
+   <module>
+      <name>roslaunch</name>
+      <parameters>robotStatePublisher.launch</parameters>
+      <workdir>/usr/local/src/robot/robots-configuration/R1SN001nws/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>baseControl</name>
+      <parameters>--context baseControl --from baseCtrl_cer.ini --skip_robot_interface_check</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>joystickCtrl</name>
+      <parameters>--context navigation --from joystick_cer_linux_high_speed_xbox.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
+      <node>r1-base</node>
+   </module>
+   
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device transformServer --ROS "(enable_ros_publisher 1)" "(enable_ros_subscriber 1)"</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device map2DServer --mapCollectionContext maps --ROS::enable_ros_publisher 1 --ROS::enable_ros_subscriber 0</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>amcl/amcl.launch</parameters>
+      <workdir>/usr/local/src/robot/tour-guide-robot/app/navigation/launch</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device localization2DServer --subdevice rosLocalizer --context navigation --from localizationServer.ini --INITIAL_POS::initial_map ericsson2</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>speckle_filter.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch/laser_filter</workdir>
+      <node>localhost</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>2d_nav/move_base.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch</workdir>
+      <node>localhost</node>
+   </module>
+
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device navigation2DServer --subdevice rosNavigator</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>navigationGUI</name>
+      <parameters>--context navigationGUI --from navigationGUI_base.ini --LASER::remote_laser /cer/laser:o --LASER::laser_client Rangefinder2DClient --NAVIGATIONGUI_GENERAL::draw_and_publish_period 1.0  --UPDATE_DATA::period_laser_data 0.5</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarpview</name>
+      <parameters> --name /navView:i --out /mapClick:o</parameters>
+      <node>localhost</node>
+   </module>
+
+   <module>
+      <name>rviz</name>
+      <parameters>-d r1_visualizer.rviz</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/conf/</workdir>
+      <node>localhost</node>
+   </module>
+
+   <!-- connections -->
+   <connection>
+      <from>/joystickCtrl:o</from>
+      <to>/baseControl/joystick1:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+
+   <connection>
+      <from>/navigationGui/map:o</from>
+      <to>/navView:i</to>
+      <protocol>mjpeg</protocol>
+   </connection>
+
+   <connection>
+      <from>/mapClick:o</from>
+      <to>/navigationGui/yarpviewTarget:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+</application>

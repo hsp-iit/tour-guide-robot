@@ -1,0 +1,162 @@
+<application>
+   <name>Navigation_ROS_R1SN003_GAM</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters></parameters>
+      <workdir>/usr/local/src/robot/robots-configuration/R1SN003/</workdir>
+      <node>r1-base</node>
+      <environment>YARP_LOG_PROCESS_LABEL=ROBOT_INTERFACE</environment>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from realsense2_remote.ini</parameters>
+      <environment>YARP_LOG_PROCESS_LABEL=REAL_SENSE_REMOTE</environment>
+      <node>r1-torso</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from pointCloudCreator.ini</parameters>
+      <node>console2</node>
+      <environment>YARP_LOG_PROCESS_LABEL=POINT_CLOUD_CREATOR</environment>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from  lidar_ros_compressed.ini</parameters>
+      <node>console2</node>
+      <environment>YARP_LOG_PROCESS_LABEL=LASER</environment>
+   </module>
+
+   <module>
+      <name>./set_navigation_position.sh</name>
+      <parameters></parameters>
+      <workdir>/usr/local/src/robot/tour-guide-robot/app/navigation/scripts/</workdir>
+      <node>r1-base</node>
+
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>robotStatePublisher.launch</parameters>
+      <workdir>/usr/local/src/robot/robots-configuration/R1SN003/</workdir>
+      <node>r1-base</node>
+      <environment>YARP_LOG_PROCESS_LABEL=STATE_PUBLISHER</environment>
+   </module>
+
+   <module>
+      <name>baseControl2</name>
+      <parameters>--context baseControl2 --from baseCtrl_cer.ini --skip_robot_interface_check</parameters>
+      <node>r1-base</node>
+      <environment>YARP_LOG_PROCESS_LABEL=BASE_CONTROL</environment>
+   </module>
+
+   <module>
+      <name>joystickCtrl</name>
+      <parameters>--context navigation --from joystick_cer_linux_high_speed_stratus.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
+      <node>r1-base</node>
+      <environment>YARP_LOG_PROCESS_LABEL=JOYSTICK</environment>
+   </module>
+
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device frameTransformServer --filexml_option fts_full_ros.xml</parameters>
+      <node>console2</node>
+      <environment>YARP_LOG_PROCESS_LABEL=FRAME_TRANSFORM_SERVER</environment>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from map2DServer.ini</parameters>
+      <node>console2</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>amcl/amcl.launch</parameters>
+      <workdir>/usr/local/src/robot/tour-guide-robot/app/navigation/launch</workdir>
+      <node>r1-base</node>
+      <environment>YARP_LOG_PROCESS_LABEL=AMCL</environment>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from localization2Dros.ini --init_map gam_20m_edited --yarp_loc_server_name /localization2D_nws_yarp</parameters>
+      <node>console2</node>
+      <environment>YARP_LOG_PROCESS_LABEL=LOCALIZATION2DROS</environment>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>speckle_filter.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch/laser_filter</workdir>
+      <environment>YARP_LOG_PROCESS_LABEL=LASER_FILTER</environment>
+      <node>console2</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>2d_nav/move_base.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch/</workdir>
+      <environment>YARP_LOG_PROCESS_LABEL=MOVE_BASE</environment>
+      <node>server2</node>
+   </module>
+
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device navigation2D_nws_yarp --subdevice rosNavigator</parameters>
+      <environment>YARP_LOG_PROCESS_LABEL=NAVIGATION2DSERVER</environment>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>headObstaclesScanner</name>
+      <parameters>--GENERAL::robot cer --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>navigationGUI</name>
+      <parameters>--context navigationGUI --from navigationGUI_base_nws-nwc.ini --LASER::remote_laser /cer/laser:o --LASER::laser_client Rangefinder2DClient --NAVIGATIONGUI_GENERAL::draw_and_publish_period 1.0 --UPDATE_DATA::period_laser_data 0.5</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarpview</name>
+      <parameters> --name /navView:i --out /mapClick:o --x 512 --y 264 --w 1024 --h 512</parameters>
+      <node>console3</node>
+   </module>
+
+   <module>
+      <name>rviz</name>
+      <parameters>-d r1_visualizer.rviz</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/conf/</workdir>
+      <node>console3</node>
+   </module>
+
+   <!-- connections -->
+   <connection>
+      <from>/joystickCtrl:o</from>
+      <to>/baseControl/input/joystick:i</to>
+      <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
+   </connection>
+
+   <connection>
+      <from>/navigationGui/map:o</from>
+      <to>/navView:i</to>
+      <protocol>mjpeg</protocol>
+   </connection>
+
+   <connection>
+      <from>/mapClick:o</from>
+      <to>/navigationGui/yarpviewTarget:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+</application>

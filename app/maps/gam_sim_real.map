@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     gam_sim_real
+YarpMapData gam_sim_real.ppm
+RosMapData  gam_sim_real.yaml

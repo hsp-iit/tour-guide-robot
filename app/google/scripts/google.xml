@@ -1,0 +1,62 @@
+<application>
+  <name>google</name>
+  <dependencies>
+  </dependencies>
+
+
+  <module>
+    <name>googleSpeech</name>
+    <parameters>--name googleSpeech --uniqueSound --language_code it-IT </parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>googleDialog</name>
+    <parameters>--name googleDialog --language it-IT --agent projects/team-code-dev/locations/global/agents/aeff5988-6142-4bbe-abac-cd641ff6141e </parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>googleSynthesis</name>
+    <parameters>--name googleSynthesis --language it-IT --voice it-IT-Wavenet-A --playbackmode sendToPort_uncompressed</parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>googleLogger</name>
+    <parameters></parameters>
+    <node>console1</node>
+  </module>
+
+  <connection>
+    <from>/googleSpeech/result:o</from>
+    <to>/googleLogger/userInput:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/googleDialog/result:o</from>
+    <to>/googleLogger/googleDialog:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/googleLogger/TourManager/thrift:c</from>
+    <to>/TourManager/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/googleSpeech/result:o</from>
+    <to>/googleDialog/text:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from> /googleSynthesis/sound:o</from>
+    <to>/audioPlayerWrapper/audio:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+
+</application>

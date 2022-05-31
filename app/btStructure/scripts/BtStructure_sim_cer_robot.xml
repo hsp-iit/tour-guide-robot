@@ -1,0 +1,106 @@
+<application>
+  <name>btStructure_SIM_CER_ROBOT</name>
+
+  <dependencies></dependencies>
+
+   <module>
+    <name>yarpdev</name>
+    <parameters>--device batteryWrapper --subdevice fakeBattery --name /battery --charge 50</parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>bt_server</name>
+    <parameters>--context btStructure --from trees/GoAndExecPoi.xml</parameters>
+    <environment>YARP_LOG_PROCESS_LABEL=btServer</environment>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>bt_atPoI_condition</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module>
+
+  <!-- <module>
+    <name>bt_failureNetworkNotReceived</name>
+    <parameters></parameters>
+    <node>console1</node>
+  </module> -->
+
+  <module>
+    <name>bt_goalAvailable</name>
+    <parameters>--context btStructure --from bt_SIM.ini --TRANSFORM_CLIENT::target_frame odom</parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>bt_goToPoI_action</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>bt_motorsNotInFault</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>bt_returnToChargePoint</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module>
+
+  <!-- <module>
+    <name>bt_robotNotLost</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module> -->
+
+  <module>
+    <name>bt_waitGoalAvailability</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>bt_batteryCharged</name>
+    <parameters>--context btStructure --from bt_SIM.ini</parameters>
+    <node>console1</node>
+  </module>
+
+  <!--Thrift related connections ################################### START -->
+
+  <connection>
+    <from>/GoToPoI_Act/TourManager/thrift:c</from>
+    <to>/TourManager/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/AtPoI_Cond/TourManager/thrift:c</from>
+    <to>/TourManager/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <!-- <connection>
+    <from>/failureNotReceived/TourManager/thrift:c</from>
+    <to>/TourManager/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection> -->
+
+  <connection>
+    <from>/motorsNotInFault/TourManager/thrift:c</from>
+    <to>/TourManager/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <!-- <connection>
+    <from>/robotNotLost/TourManager/thrift:c</from>
+    <to>/TourManager/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection> -->
+
+  <!--Thrift related connections ################################### END -->
+</application>

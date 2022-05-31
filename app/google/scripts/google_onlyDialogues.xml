@@ -1,0 +1,64 @@
+<application>
+  <name>google_onlyDialogues</name>
+  <dependencies>
+  </dependencies>
+
+
+  <module>
+    <name>googleSpeech</name>
+    <parameters>--name googleSpeech --uniqueSound --language_code it-IT </parameters>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>googleDialog</name>
+    <parameters>--name googleDialog --language it-IT --agent projects/team-code-dev/locations/global/agents/9b83aac1-258f-45d5-8c3b-d28806d7a685 </parameters>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>googleSynthesis</name>
+    <parameters>--name googleSynthesis --language it-IT --voice it-IT-Wavenet-D --playbackmode sendToPort_uncompressed</parameters>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>googleLogger</name>
+    <parameters></parameters>
+    <node>console</node>
+  </module>
+
+  <connection>
+    <from>/googleSpeech/result:o</from>
+    <to>/googleDialog/text:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from> /googleSynthesis/sound:o</from>
+    <to>/audioPlayerWrapper/audio:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+    <connection>
+    <from> /ExecPoi/dialog/rpc</from>
+    <to>/googleDialog/rpc</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+
+  <connection>
+    <from> /ExecPoi/speech/rpc</from>
+    <to>/googleSpeech/rpc</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+
+  <connection>
+    <from> /ExecPoi/synthesis/rpc</from>
+    <to>/googleSynthesis/rpc</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+
+</application>

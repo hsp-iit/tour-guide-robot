@@ -1,0 +1,42 @@
+<application>
+  <name>5g_Tours_R1_SIM</name>
+
+  <application>
+    <name>Navigation_ROS_R1_SIM_DISTRIBUTED</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>headSynchronizer_sim</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>vad_sim</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>google_sim</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>r1FunnyThings_sim</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>btStructure_SIM_CER_ROBOT</name>
+    <prefix></prefix>
+  </application>
+  
+  <application>
+    <name>tourManagerApp_sim</name>
+    <prefix></prefix>
+  </application>
+  
+  <dependencies>
+  </dependencies>
+
+</application>

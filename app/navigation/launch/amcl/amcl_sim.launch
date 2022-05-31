@@ -1,0 +1,51 @@
+<launch>
+ <param name ="/use_sim_time" value="true"/>
+  <node required="true" pkg="amcl" type="amcl" name="amcl" args="scan:=double_lidar">
+    <param name="initial_pose_x" value="0" />
+    <param name="initial_pose_y" value="0" />
+    <param name="initial_pose_a" value="0" />
+    <param name="base_frame_id" value="mobile_base_body_link"/>
+    <param name="odom_frame_id" value="odom"/>
+    <param name="min_particles" value="500"/>
+    <param name="max_particles" value="10000"/>
+    <param name="kld_err" value="0.02"/>
+    <param name="kld_z" value="0.98"/>
+
+    <!-- YARP mapServer support -->
+    <param name="use_map_topic" value="true"/>
+
+    <!-- odometry block -->
+    <param name="odom_model_type" value="diff-corrected"/>
+    <!-- rotational std dev, rad -->
+    <param name="odom_alpha1" value="0.005"/>
+    <param name="odom_alpha2" value="0.005"/>
+    <!-- translation std dev, m -->
+    <param name="odom_alpha3" value="0.01"/>
+    <param name="odom_alpha4" value="0.005"/>
+
+    <!-- laser block -->
+    <param name="laser_max_beams" value="100"/>
+    <param name="laser_max_range" value="-1"/>
+    <param name="laser_min_range" value="-1"/>
+    <param name="laser_z_hit" value="0.95"/>
+    <param name="laser_z_short" value="0.1"/>
+    <param name="laser_z_max" value="0.05"/>
+    <param name="laser_z_rand" value="0.05"/>
+    <param name="laser_sigma_hit" value="0.2"/>
+    <param name="laser_lambda_short" value="0.1"/>
+    <param name="laser_model_type" value="likelihood_field"/>
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+
+    <!-- update block -->
+    <param name="update_min_d" value="0.1"/>
+    <param name="update_min_a" value="0.1"/>
+    <param name="resample_interval" value="1"/>
+    <param name="gui_publish_rate" value="-1.0"/>
+
+    <!-- Increase tolerance because the computer can get quite busy -->
+    <param name="transform_tolerance" value="0.2"/>
+    <param name="recovery_alpha_slow" value="0.001"/>
+    <param name="recovery_alpha_fast" value="0.1"/>
+  </node>
+
+</launch>

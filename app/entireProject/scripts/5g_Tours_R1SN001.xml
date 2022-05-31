@@ -1,0 +1,54 @@
+<application>
+  <name>5g_Tours_R1SN001</name>
+
+  <application>
+    <name>functional_Layer</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>Navigation_ROS_R1SN001</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>PoiManagerSqurico_demo2</name>
+    <prefix></prefix>
+  </application>
+
+
+  <application>
+    <name>btStructure_cer</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>google</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>r1FunnyThings_r1</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>r1FunnyThings_r1</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>vad</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>crowdDetector_R1_module</name>
+    <prefix></prefix>
+  </application>
+
+
+  <dependencies>
+  </dependencies>
+
+</application>

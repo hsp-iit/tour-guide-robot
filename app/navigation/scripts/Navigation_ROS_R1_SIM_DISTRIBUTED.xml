@@ -1,0 +1,122 @@
+<application>
+   <name>Navigation_ROS_R1_SIM_DISTRIBUTED</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>robotStatePublisher.launch</parameters>
+      <workdir>/home/user1/robotology/robots-configuration/R1SN003/</workdir>
+      <node>console4</node>
+   </module>
+
+   <module>
+      <name>baseControl2</name>
+      <parameters>--context baseControl2_SIM --from cer_baseControl2.ini --skip_robot_interface_check</parameters>
+      <node>console4</node>
+   </module>
+
+   <module>
+      <name>./set_navigation_position_sim.sh</name>
+      <parameters></parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/scripts/</workdir>
+      <node>console4</node>
+   </module>
+   
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device frameTransformServer --filexml_option fts_full_ros.xml</parameters>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from map2DServer.ini</parameters>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from pointCloudCreator_sim.ini</parameters>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from lidar_ros_compressed_sim.ini</parameters>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>roslaunch</name>
+      <parameters>amcl/amcl_sim.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch/</workdir>
+      <node>console4</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation --from localization2Dros.ini --init_map gam_sim_real --yarp_loc_server_name /localization2D_nws_yarp</parameters>
+      <node>console2</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>speckle_filter_sim.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch/laser_filter</workdir>
+      <node>console2</node>
+   </module>
+
+   <module>
+      <name>roslaunch</name>
+      <parameters>2d_nav/move_base_sim.launch</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/launch/</workdir>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device navigation2D_nws_yarp --subdevice rosNavigator</parameters>
+      <node>console2</node>
+   </module>
+   
+   <module>
+      <name>headObstaclesScanner</name>
+      <parameters>--GENERAL::robot SIM_CER_ROBOT --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+      <node>console4</node>
+   </module>
+
+   <module>
+      <name>navigationGUI</name>
+      <parameters>--context navigationGUI --from navigationGUI_base_nws-nwc.ini --LASER::remote_laser /laser_local:o --LASER::laser_client Rangefinder2DClient --NAVIGATIONGUI_GENERAL::draw_and_publish_period 1.0 --UPDATE_DATA::period_laser_data 0.5</parameters>
+      <node>console2</node>
+   </module>
+
+   <module>
+      <name>yarpview</name>
+      <parameters> --name /navView:i --out /mapClick:o --x 512 --y 264 --w 1024 --h 512</parameters>
+      <node>console3</node>
+   </module>
+
+   <module>
+      <name>rviz</name>
+      <parameters>-d r1_visualizer.rviz</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation/conf/</workdir>
+      <node>console2</node>
+   </module>
+
+   <!-- connections -->
+   <connection>
+      <from>/navigationGui/map:o</from>
+      <to>/navView:i</to>
+      <protocol>mjpeg</protocol>
+   </connection>
+
+   <connection>
+      <from>/mapClick:o</from>
+      <to>/navigationGui/yarpviewTarget:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+</application>

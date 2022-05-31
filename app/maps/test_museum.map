@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     test_museum
+YarpMapData test_museum_9px_50cm.ppm
+RosMapData  test_museum.yaml

@@ -1,0 +1,6 @@
+image: Test_museum_square_12px_500mm.pgm
+resolution: 0.0458167
+origin: [-11.7291, -11.7291, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="BehaviorTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="BehaviorTree">
+        <ReactiveSequence>
+            <!--<Condition ID="YARPCondition" name="failureNotReceived"/>-->
+            <Condition ID="YARPCondition" name="motorsNotInFault"/>
+            <Condition ID="YARPCondition" name="batteryCharged"/>
+            <!--<Condition ID="YARPCondition" name="robotNotTouched"/>
+            <Condition ID="YARPCondition" name="robotNotLost"/>-->
+            <Fallback>
+                <Condition ID="YARPCondition" name="AtPoI_Cond"/>
+                <ReactiveSequence name="waitAndGo">
+                    <ReactiveFallback>
+                        <Condition ID="YARPCondition" name="goalAvailable"/>
+                        <Action ID="YARPAction" name="waitGoalAvailability"/>
+                    </ReactiveFallback>
+                    <Action ID="YARPAction" name="GoToPoI_Act"/>
+                </ReactiveSequence>
+            </Fallback>
+        </ReactiveSequence>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <Action ID="YARPAction">
+            <input_port name="carrier" type="std::string"/>
+            <input_port name="port_name" type="std::string"/>
+        </Action>
+        <Condition ID="YARPCondition">
+            <input_port name="carrier" type="std::string"/>
+            <input_port name="port_name" type="std::string"/>
+        </Condition>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>
+

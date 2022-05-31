@@ -1,0 +1,85 @@
+<application>
+  <name>headSynchronizer_sim</name>
+
+  <dependencies>
+  </dependencies>
+
+  <module>
+    <name>headSynchronizer</name>
+    <parameters></parameters>
+    <node>console1</node>
+  </module>
+
+  <connection>
+    <from>/HeadSynchronizer/microphone:o</from>
+    <to>/audioRecorderWrapper/rpc</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/HeadSynchronizer/face:o</from>
+    <to>/faceExpressionImage/rpc </to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioPlayerWrapper/status:o</from>
+    <to>/faceExpressionImage/mouthAudioData:i </to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/HeadSynchronizer/result:o</from>
+    <to>/googleSynthesis/text:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/vad/micCB/HeadSynchronizer/thrift:c</from>
+    <to>/HeadSynchronizer/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+  
+  <connection>
+    <from>/vad/HeadSynchronizer/thrift:c</from>
+    <to>/HeadSynchronizer/thrift:s</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioRecorderWrapper/status:o</from>
+    <to>/HeadSynchronizer/microphoneStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/googleDialog/state:o</from>
+    <to>/HeadSynchronizer/googleStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/googleSpeech/state:o</from>
+    <to>/HeadSynchronizer/googleStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/googleSynthesis/state:o</from>
+    <to>/HeadSynchronizer/googleStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioPlayerWrapper/status:o</from>
+    <to>/HeadSynchronizer/playerStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/HeadSynchronizer/player:o</from>
+    <to>/audioPlayerWrapper/rpc:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+</application>

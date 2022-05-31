@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+ Copyright (C) 2020 Fondazione Istituto Italiano di Tecnologia (IIT)
+ All Rights Reserved.
+-->
+<root main_tree_to_execute="BehaviorTree">
+  <BehaviorTree ID="BehaviorTree">
+
+    <ReactiveSequence>
+      <Fallback>
+        <Condition ID="YARPCondition" name="failureNotReceived"/>
+        <Action ID="YARPAction" name="recoveryIfFailureNetwork"/>
+      </Fallback>
+        <Sequence name= "execPoiThenNextPoi">
+          <ReactiveFallback>
+            <!--This condition uses a counter/timer.
+          if the counter is greater then a MAX value the start function return success.
+          After this it stops counting until the start function is recalled.
+          If we want to reset the counter we need to send a RESET signal to -->
+            <Condition ID="YARPCondition" name="poiExpired"/>
+            <!-- This action periodically sends a start signal. To stop this action it requires to halt it. -->
+            <Action ID="YARPAction" name="ExecPoi"/>
+          </ReactiveFallback>
+          <!--This action send a signal to google in order to force the transaction to the next state  -->
+          <Fallback>
+            <Condition ID="YARPCondition" name="updatePoiReceived"/>
+            <Action ID="YARPAction" name="nextState"/>
+          </Fallback>
+        </Sequence>
+      <!--</ReactiveSequence >-->
+    </ReactiveSequence>
+  </BehaviorTree>
+</root>

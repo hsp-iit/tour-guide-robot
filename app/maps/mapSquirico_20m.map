@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     mapSquirico_20m
+YarpMapData mapSquirico_20m.ppm
+RosMapData  mapSquirico_20m.yaml

@@ -1,0 +1,1 @@
+# This action asks the goal to PoiManager and it sends to the navigation 

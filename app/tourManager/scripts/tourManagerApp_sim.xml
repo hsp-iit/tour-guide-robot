@@ -1,0 +1,11 @@
+<application>
+    <name>tourManagerApp_sim</name>
+
+    <dependencies>
+    </dependencies>
+    <module>
+        <name>tourManager</name>
+        <parameters>--context tourManager --from conf.ini --tourName TOUR_SIM_GAM</parameters>
+        <node>console1</node>
+    </module>
+</application>

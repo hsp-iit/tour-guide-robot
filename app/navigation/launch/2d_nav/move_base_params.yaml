@@ -1,0 +1,61 @@
+# Move base node parameters. For full documentation of the parameters in this file, please see
+#
+#  http://www.ros.org/wiki/move_base
+#
+shutdown_costmaps: false
+
+controller_frequency: 5.0 # The rate in Hz at which to run the control loop and send velocity commands to the base. Affects the max velocity generation.
+controller_patience: 3.0 # How long the controller will wait in seconds without receiving a valid control before space-clearing operations are performed. 
+
+
+planner_frequency: 1.0 # The rate in Hz at which to run the global planning loop. If the frequency is set to 0.0, the global planner will only run when a new goal is received or the local planner reports that its path is blocked.
+planner_patience: 5.0 # How long the planner will wait in seconds in an attempt to find a valid plan before space-clearing operations are performed. 
+
+oscillation_timeout: 5.0
+oscillation_distance: 0.2
+
+# local planner - default is trajectory rollout
+base_local_planner: "dwa_local_planner/DWAPlannerROS"
+
+base_global_planner: "navfn/NavfnROS" #alternatives: global_planner/GlobalPlanner, carrot_planner/CarrotPlanner
+
+
+#We plan to integrate recovery behaviors for turtlebot but currently those belong to gopher and still have to be adapted.
+# recovery behaviors; we avoid spinning, but we need a fall-back replanning
+recovery_behavior_enabled: true
+
+recovery_behaviors:
+  #- name: 'footprint_recovery'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'head_recovery'
+    #type: 'head_recovery/HeadRecovery'
+  #- name: 'footprint_recovery2'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'global_only_reset'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'clearing_rotation'
+    #type: 'rotate_recovery/RotateRecovery'
+  - name: 'global_both_reset_aggressive'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+
+
+head_recovery:
+  yarp_ports: ["/cer/head/rpc:i","/cer/torso/rpc:i"]
+footprint_recovery:
+  reset_distance: 0.5
+  invert_area_to_clear: true
+  layer_names: ["obstacle_layer_3d", "obstacle_layer_2d"]
+  affected_maps: both
+footprint_recovery2:
+  reset_distance: 1.0
+  invert_area_to_clear: true
+  layer_names: ["obstacle_layer_3d", "obstacle_layer_2d"]
+  affected_maps: both
+global_only_reset:
+  reset_distance: 0.5
+  layer_names: ["obstacle_layer_3d", "obstacle_layer_2d"]
+  affected_maps: global
+global_both_reset_aggressive:
+  reset_distance: 0.5
+  layer_names: ["obstacle_layer_3d", "obstacle_layer_2d"]
+  affected_maps: both

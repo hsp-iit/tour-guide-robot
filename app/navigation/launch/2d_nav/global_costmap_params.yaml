@@ -1,0 +1,13 @@
+global_costmap:
+  global_frame: /map
+  robot_base_frame: /mobile_base_body_link
+  update_frequency: 2
+  publish_frequency: 0.5
+  transform_tolerance: 0.3
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer_3d, type: "costmap_2d::VoxelLayer"}
+    - {name: obstacle_layer_2d, type: "costmap_2d::ObstacleLayer"}
+    - {name: prohibition_areas, type: "costmap_prohibition_layer_namespace::CostmapProhibitionLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+

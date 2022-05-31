@@ -1,0 +1,543 @@
+{
+  "m_partNames": [
+    "left_arm",
+    "left_hand",
+    "right_arm",
+    "right_hand",
+    "torso"
+  ],
+  "m_dances": {
+    "navigationPosition": {
+      "m_movements": [
+        {
+          "m_partName": "left_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            -9,
+            9,
+            -10,
+            50,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            -9,
+            9,
+            -10,
+            50,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "m_partName": "torso",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            0.012
+          ]
+        }
+      ]
+    },
+    "pointToLeft": {
+      "m_movements": [
+        {
+          "m_partName": "left_arm",
+          "m_time": 3.5,
+          "m_offset": 0,
+          "m_joints": [
+            32.5,
+            75.2,
+            22.9,
+            8.8,
+            56,
+            0.01,
+            0,
+            5
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 3.5,
+          "m_offset": 0,
+          "m_joints": [
+            9,
+            25,
+            -10,
+            31.5,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "pointToRight": {
+      "m_movements": [
+        {
+          "m_partName": "right_arm",
+          "m_time": 3.5,
+          "m_offset": 0,
+          "m_joints": [
+            32.5,
+            75.2,
+            22.9,
+            8.8,
+            56,
+            0.01,
+            0,
+            5
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 3.5,
+          "m_offset": 0,
+          "m_joints": [
+            9,
+            25,
+            -10,
+            31.5,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },     
+    "pointToLeftBothArms": {
+      "m_movements": [
+        {
+          "m_partName": "right_arm",
+          "m_time": 4,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            18.28,
+            -45,
+            65.65,
+            44.85,
+            0,
+            0.08,
+            0.26	
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 4,
+          "m_offset": 0,
+          "m_joints": [
+            -10.02,
+            47.11,
+            67.94,
+            81.83,
+            80.91,
+            0.03,
+            -0.17,
+            -0.42	
+          ]
+        }
+      ]
+    },
+    "pointToRightBothArms": {
+      "m_movements": [
+        {
+          "m_partName": "right_arm",
+          "m_time": 4,
+          "m_offset": 0,
+          "m_joints": [
+            -9.05,
+            59.68,
+            54.40,
+            49.92,
+            74.95,
+            0,
+            0.64,
+            0.33		
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 4,
+          "m_offset": 0,
+          "m_joints": [
+            23.20,
+            20.74,
+            -44.21,
+            70.05,
+            55.46,
+            0,
+            0.09,
+            -0.42	
+          ]
+        }
+      ]
+    },     
+    "pointToLeftDownBothArms": {
+      "m_movements": [
+        {
+          "m_partName": "right_arm",
+          "m_time": 4,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            18.28,
+            -45,
+            65.65,
+            44.85,
+            0,
+            0.08,
+            0.26	
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 4,
+          "m_offset": 0,
+          "m_joints": [
+            -10.02,
+            19.86,
+            32.34,
+            34.98,
+            69.93,
+            0.03,
+            -0.11,
+            -0.13		
+          ]
+        }
+      ]
+    },
+    "argueRight": {
+      "m_movements": [
+        {
+          "m_partName": "right_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            11.60,
+            -10.11,
+            73.74,
+            62.99,
+            0,
+            -0.02,
+            0.23
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 1.5,
+          "m_offset": 0,
+          "m_joints": [
+            29.4434,
+            11.6016,
+            -10.0196,
+            47.6368,
+            63.0013,
+            0.000153846,
+            -0.0188348,
+            0.22836
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            11.60,
+            25.40,
+            70.14,
+            63.08,
+            0,
+            -0.11,
+            0.07
+          ]
+        }
+      ]
+    },
+    "argueLeft": {
+      "m_movements": [
+        {
+          "m_partName": "left_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            -10.02,
+            72.86,
+            59.10,
+            0,
+            -0.02,
+            -0.36	
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 1.5,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            -10.02,
+            50.27,
+            32.8217,
+            0,
+            -0.02,
+            -0.36	
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            8.53,
+            71.02,
+            61.04,
+            0,
+            -0.06,
+            -0.29	
+          ]
+        }
+      ]
+    },
+    "argueBoth": {
+      "m_movements": [
+        {
+          "m_partName": "right_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            11.60,
+            -10.11,
+            73.74,
+            62.99,
+            0,
+            -0.02,
+            0.23
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            8.53,
+            71.02,
+            61.04,
+            0,
+            -0.06,
+            -0.29	
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            11.60,
+            25.40,
+            70.14,
+            63.08,
+            0,
+            -0.11,
+            0.07
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            -10.02,
+            50.27,
+            32.8217,
+            0,
+            -0.02,
+            -0.36	
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 1.5,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            11.60,
+            25.40,
+            70.14,
+            63.08,
+            0,
+            -0.11,
+            0.07
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 1.5,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            8.53,
+            71.02,
+            61.04,
+            0,
+            -0.06,
+            -0.29	
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.4434,
+            11.6016,
+            -10.0196,
+            47.6368,
+            63.0013,
+            0.000153846,
+            -0.0188348,
+            0.22836
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            -10.02,
+            72.86,
+            59.10,
+            0,
+            -0.02,
+            -0.36	
+          ]
+        }
+      ]
+    },
+    "fallbackMove": {
+      "m_movements": [
+        {
+          "m_partName": "left_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.36,
+            9.05,
+            8.53,
+            71.02,
+            61.04,
+            0,
+            -0.06,
+            -0.29	
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 2,
+          "m_offset": 0,
+          "m_joints": [
+            29.44,
+            11.60,
+            25.40,
+            70.14,
+            63.08,
+            0,
+            -0.11,
+            0.07
+          ]
+        },
+        {
+          "m_partName": "left_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            -9.0,
+            19.1,
+            -28.9,
+            35.9,
+            -0.9,
+            0.0,
+            -0.3,
+            -0.8	
+          ]
+        },
+        {
+          "m_partName": "right_arm",
+          "m_time": 3,
+          "m_offset": 0,
+          "m_joints": [
+            -9,
+            18.2,
+            -23.8,
+            35.1,
+            -0.9,
+            0.0,
+            -0.21,
+            0.36	
+          ]
+        }
+      ]
+    },
+    "idleMove": {
+      "m_movements": [
+        {
+        "m_partName": "left_arm",
+        "m_time": 3,
+        "m_offset": 0,
+        "m_joints": [
+          -9.0,
+          19.1,
+          -28.9,
+          35.9,
+          -0.9,
+          0.0,
+          -0.3,
+          -0.8	
+        ]
+      },
+      {
+        "m_partName": "right_arm",
+        "m_time": 3,
+        "m_offset": 0,
+        "m_joints": [
+          -9,
+          18.2,
+          -23.8,
+          35.1,
+          -0.9,
+          0.0,
+          -0.21,
+          0.36	
+        ]
+      }
+      ]
+    }
+  }
+}
