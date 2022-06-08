@@ -13,7 +13,7 @@
 
 	<module>
 		<name>python3</name>
-		<parameters>/home/user1/robotology/iCubContrib/bin/multiface_classifier.py --context mutual-gaze-classifier-demo --from classifier_conf.ini</parameters>
+		<parameters>/home/user1/robotology/iCubContrib/bin/multiface-mutualgaze-classifier.py --context mutual-gaze-classifier-demo --from classifier_conf.ini</parameters>
 		<node>console1</node>
 	</module>
 
@@ -62,17 +62,17 @@
 
 	<connection>
 		<from>/cer/realsense_repeater/rgbImage:o</from>
-		<to>/classifier/image:i</to>
+		<to>/mutualgaze/image:i</to>
 		<protocol>mjpeg</protocol>
 	</connection>
 
 	<connection>
 		<from>/yarpOpenPose/target:o</from>
-		<to>/classifier/data:i</to>
+		<to>/mutualgaze/data:i</to>
 	</connection>
 
 	<connection>
-		<from>/classifier/image:o</from>
+		<from>/mutualgaze/image:o</from>
 		<to>/view/eyecontact</to>
 		<protocol>mjpeg</protocol>
 	</connection>

@@ -35,7 +35,7 @@
    </connection>
 
   <connection>
-    <from>/classifier/pred:o</from>
+    <from>/mutualgaze/pred:o</from>
     <to>/eyeContactManager/pred:i</to>
     <protocol>fast_tcp</protocol>
   </connection>
