@@ -26,8 +26,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <glpk.h>
-
 #include <yarp/os/Network.h>
 #include <yarp/os/RFModule.h>
 #include <yarp/dev/ControlBoardInterfaces.h>

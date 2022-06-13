@@ -6,9 +6,8 @@
    <!-- modules -->
 
    <module>
-      <name>roslaunch</name>
-      <parameters>robotStatePublisher.launch</parameters>
-      <workdir>/home/user1/robotology/robots-configuration/R1SN003/</workdir>
+      <name>ros2</name>
+      <parameters>run robot_state_publisher robot_state_publisher /home/user1/robotology/robots-configuration/R1SN003/cer.urdf</parameters>
       <node>console</node>
    </module>
 
