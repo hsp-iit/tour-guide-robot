@@ -236,7 +236,7 @@ RUN echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN /bin/bash -c 'source ~/.bashrc'
 WORKDIR /home/user1/catkin_ws/src
 RUN git clone https://github.com/rst-tu-dortmund/costmap_prohibition_layer
-RUN git clone https://github.com/datspace/ros-navigation
+RUN git clone https://github.com/DatSpace/ros-navigation
 RUN git clone https://github.com/DatSpace/ros-speckle-filter
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin_make install -DCMAKE_BUILD_TYPE=Release'
 ENV YARP_CLOCK=/clock

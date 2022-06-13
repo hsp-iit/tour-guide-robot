@@ -252,24 +252,23 @@ RUN echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN /bin/bash -c 'source ~/.bashrc'
 WORKDIR /home/user1/catkin_ws/src
 RUN git clone https://github.com/rst-tu-dortmund/costmap_prohibition_layer
-RUN git clone https://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@github.com/robotology-dependencies/r1-navigation
+RUN git clone https://github.com/DatSpace/ros-navigation
 RUN git clone https://github.com/DatSpace/ros-speckle-filter
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd ~/catkin_ws; catkin_make install -DCMAKE_BUILD_TYPE=Release'
 WORKDIR $user_home
-RUN cd && git clone https://github.com/dpirch/libfvad && cd libfvad && autoreconf -i && ./configure && make && sudo make install
-RUN cd && git clone https://github.com/elandini84/yarp-web-teleop.git
-RUN cd && echo "token expires on May 29 2022" && git clone https://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@github.com/robotology-playground/tour-guide-robot -b master
+RUN git clone https://github.com/dpirch/libfvad && cd libfvad && autoreconf -i && ./configure && make && sudo make install
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b master
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON && sudo make -j11'
 
 # GOOGLE
-RUN cd && git clone --recursive -b v1.43.2 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
+RUN git clone --recursive -b v1.43.2 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
     cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release \
     -DgRPC_SSL_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package && sudo make -j11 install && sudo ldconfig
 RUN cd && git clone https://github.com/googleapis/googleapis.git && cd googleapis && git checkout f78745822aadedb3c165d51372732d672b634db2 && sudo make -j11
 RUN cd && git clone https://github.com/randaz81/speech.git -b gs_external_stream && cd speech && mkdir build && cd build && \
     cmake .. -DBUILD_GOOGLE_SPEECH=ON -Dgoogleapis_INCLUDE_DIR=/home/user1/googleapis/gens && sudo make -j11 install
 ENV GOOGLE_APPLICATION_CREDENTIALS=/home/user1/hsp_google.json
-COPY ./common/hsp_google.json /home/user1/
 
 # R1 NETWORK CONFIG
 RUN echo "source ~/.bashrc_local" >> ~/.bashrc
