@@ -268,9 +268,9 @@ RUN sudo chown -R $robotology_install_user:$robotology_install_user /opt/ros && 
 
 # Konstantinos Karapas stuff only
 WORKDIR ${user1_home}
-RUN cd && git clone https://github.com/dpirch/libfvad
+RUN git clone https://github.com/dpirch/libfvad
 #&& cd libfvad && sudo autoreconf -i && ./configure && make && sudo make install
-RUN cd && git clone https://github.com/elandini84/yarp-web-teleop.git
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2_support
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
