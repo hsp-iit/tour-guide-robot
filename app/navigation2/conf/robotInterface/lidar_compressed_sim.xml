@@ -21,7 +21,7 @@
            </paramlist>
         </action>
      
-        <param name ="node_name"> /cer_laser_local </param>
+        <param name ="node_name"> cer_laser_local </param>
         <param name ="topic_name"> /laser_local</param>
         <param name ="frame_id"> mobile_base_double_lidar </param>
      
