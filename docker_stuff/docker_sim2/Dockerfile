@@ -85,7 +85,7 @@ RUN useradd -l -u 33334 -G sudo -md /home/user1 -s /bin/bash -p user1 user1 && \
 
 # ROS2 Installation (part2)
 USER user1
-RUN sudo rosdep fix-permissions && rosdep update && sudo echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc && /bin/bash -c "source /home/user1/.bashrc"
+RUN sudo rosdep fix-permissions && rosdep update
 
 # Set ENV
 USER user1
@@ -248,6 +248,9 @@ USER $robotology_install_user
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
+RUN echo "source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
+RUN echo "source /home/user1/nav2_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
 ENV DISPLAY=:1
 ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-ros2/build/share/yarp

@@ -33,7 +33,7 @@
    
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation --from map2DServer.ini</parameters>
+      <parameters>--context navigation2 --from mapServer.ini</parameters>
       <node>console</node>
    </module>
    

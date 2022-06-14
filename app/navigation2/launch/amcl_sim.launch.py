@@ -5,9 +5,6 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     amcl_params = os.path.join(os.getcwd(), 'amcl_params.yaml')
-    par = [{'use_sim_time': True},
-           {'autostart': True},
-           {'node_names': ['amcl']}]
     return LaunchDescription([
         Node(
             package='nav2_amcl',
@@ -18,8 +15,10 @@ def generate_launch_description():
         Node(
             package='nav2_lifecycle_manager',
             executable='lifecycle_manager',
-            name='lifecycle_manager_localization',
+            name='amcl_lifecycle_manager',
             output='screen',
-            parameters=par
+            parameters=[{'use_sim_time': True},
+                        {'autostart': True},
+                        {'node_names': ['amcl']}]
         )
     ])
