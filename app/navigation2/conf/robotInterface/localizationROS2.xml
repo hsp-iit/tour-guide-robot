@@ -41,7 +41,7 @@ SPDX-License-Identifier: BSD-3-Clause
 
 
         <device name="loc2DNwsYarp" type="localization2D_nws_yarp">
-            <group name="GENERAL">
+            		<group name="GENERAL">
 				<param extern-name="yarp_loc_server_name" name="name">/localization2D_nws_yarp</param>
 			</group>
 			<action phase="startup" level="5" type="attach">
