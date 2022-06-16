@@ -22,60 +22,16 @@ RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop
+RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-slam-toolbox ros-humble-test-msgs ros-humble-gazebo-ros
 RUN apt-get install -y python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
     python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init 
 
 # Install yarp dependencies
-# RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
-# RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
-# RUN apt-get update && apt-get install -y icub-common libopencv-dev
-RUN apt install -y \
-libace-dev \
-libboost-filesystem-dev \
-libboost-system-dev \ 
-libboost-thread-dev \
-libc6 \
-python3 \
-libgsl0-dev \
-libncurses5-dev \
-libsdl1.2-dev \
-subversion \ 
-git \
-gfortran \ 
-libxmu-dev \
-libode-dev \
-wget \
-unzip \
-qtbase5-dev \
-qtdeclarative5-dev \
-qtmultimedia5-dev \
-libqt5svg5 \
-libqt5opengl5-dev \
-libopencv-dev \
-freeglut3-dev \
-libtinyxml-dev \
-libblas-dev \
-liblapack-dev \
-libmumps-dev \
-qml-module-qtmultimedia \
-qml-module-qtquick-dialogs \
-qml-module-qtquick-controls \
-qml-module-qt-labs-settings \
-libqcustomplot-dev \
-qml-module-qt-labs-folderlistmodel \
-libedit-dev \
-libeigen3-dev \
-libjpeg-dev \
-libxml2-dev \
-libjs-underscore \
-portaudio19-dev \
-libgtkmm-2.4-dev \
-ycm-cmake-modules \
-coinor-libipopt-dev \
-libode8
+RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
+RUN apt-get update && apt-get install -y icub-common libopencv-dev
 
 # Create user: user1
 USER root
@@ -177,15 +133,11 @@ USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology/robots-configuration.git -b devel
 
-# # Install glpk
-# RUN sudo apt-get install -y glpk-doc glpk-utils libglpk-dev libglpk40
-# ENV GLPK_INCLUDE_DIR=/usr/include
-
 # Build navigation
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology/navigation.git -b master
-RUN cd navigation && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON && make -j11
+RUN cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/humble/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
 ENV navigation_ROOT=$robotology_install_folder/navigation
 ENV navigation_DIR=$robotology_install_folder/navigation/build
 
@@ -218,13 +170,6 @@ RUN cd cer && mkdir build && cd build && cmake .. \
 ENV CER_ROOT=$robotology_install_folder/cer
 ENV CER_DIR=$robotology_install_folder/cer/build
 
-# Nav2
-USER $robotology_install_user
-WORKDIR $user1_home
-RUN mkdir -p nav2_ws/src && cd nav2_ws/src && git clone https://github.com/ros-planning/navigation2.git && git clone https://github.com/SteveMacenski/slam_toolbox.git
-RUN cd nav2_ws && rosdep update && rosdep install -y -r -q --from-paths src --ignore-src --rosdistro humble
-RUN cd nav2_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build --symlink-install"
-
 # YARP-ROS2
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology-playground/yarp-ros2 -b master
@@ -250,7 +195,6 @@ USER $robotology_install_user
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
 RUN echo "source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
-RUN echo "source /home/user1/nav2_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
 ENV DISPLAY=:1
 ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-ros2/build/share/yarp

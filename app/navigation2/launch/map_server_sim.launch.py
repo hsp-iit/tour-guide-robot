@@ -8,11 +8,8 @@ def generate_launch_description():
         Node(
             package='nav2_map_server',
             executable='map_server',
-            name='map_server',
-            emulate_tty=True,
-            parameters=[{'yaml_filename': '../../maps/gam_sim_real.yaml'},
-                        {'topic_name': 'map'},
-                        {'frame_id': 'map'}]
+            parameters=[
+                {'yaml_filename': '/home/user1/tour-guide-robot/app/maps/gam_sim_real.yaml'}]
         ),
         Node(
             package='nav2_lifecycle_manager',

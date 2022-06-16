@@ -51,6 +51,13 @@
    
    <module>
       <name>ros2</name>
+      <parameters>launch map_server_sim.launch.py</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
       <parameters>launch amcl_sim.launch.py</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
@@ -95,8 +102,8 @@
 
    <module>
       <name>rviz2</name>
-      <parameters></parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation/conf/</workdir>
+      <parameters>-d r1_visualizer.rviz</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
       <node>console</node>
    </module>
 
