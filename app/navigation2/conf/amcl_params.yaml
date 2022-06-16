@@ -1,6 +1,6 @@
 amcl:
   ros__parameters:
-    use_sim_time: true
+    use_sim_time: True
     alpha1: 0.2
     alpha2: 0.2
     alpha3: 0.2
@@ -28,8 +28,6 @@ amcl:
     resample_interval: 1
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
     save_pose_rate: 0.5
-    set_initial_pose: False
-    initial_pose: {x: -1.98938310, y: -0.49025386, theta: 0.0}
     sigma_hit: 0.2
     tf_broadcast: true
     transform_tolerance: 1.0
@@ -52,6 +50,10 @@ amcl:
 
 amcl_rclcpp_node:
   ros__parameters:
-    use_sim_time: true
+    use_sim_time: True
+
+amcl_map_client:
+  ros__parameters:
+    use_sim_time: True
 
 
