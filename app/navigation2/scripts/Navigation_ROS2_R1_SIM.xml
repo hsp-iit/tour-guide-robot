@@ -71,7 +71,7 @@
 
    <module>
       <name>ros2</name>
-      <parameters>launch navigation_sim.launch</parameters>
+      <parameters>launch navigation_sim.launch.py</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>

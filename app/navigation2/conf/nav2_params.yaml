@@ -137,43 +137,68 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 5.0
+      update_frequency: 6.0
       publish_frequency: 2.0
       global_frame: map
       robot_base_frame: mobile_base_body_link
       use_sim_time: True
       rolling_window: true
-      width: 3
-      height: 3
+      width: 6
+      height: 6
       resolution: 0.05
-      robot_radius: 0.22
-      plugins: ["voxel_layer", "inflation_layer"]
+      robot_radius: 0.3
+      plugins: ["obstacle_layer", "voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
-      voxel_layer:
-        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: true
+        inflation_radius: 1.0
+        cost_scaling_factor: 2.5
+        inflate_unknown: false
+        inflate_around_unknown: true
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        publish_voxel_map: True
-        origin_z: 0.0
-        z_resolution: 0.05
-        z_voxels: 16
-        max_obstacle_height: 2.0
-        mark_threshold: 0
         observation_sources: scan
+        footprint_clearing_enabled: true
+        max_obstacle_height: 1.0
+        combination_method: 1
         scan:
           topic: /laser_local
-          max_obstacle_height: 2.0
+          obstacle_max_range: 5.0
+          obstacle_min_range: 0.05
+          raytrace_max_range: 20.0
+          raytrace_min_range: 0.0
+          max_obstacle_height: 1.0
+          min_obstacle_height: 0.0
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          inf_is_valid: false
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        footprint_clearing_enabled: true
+        max_obstacle_height: 2.0
+        publish_voxel_map: True
+        origin_z: 0.0
+        z_resolution: 0.2
+        z_voxels: 8
+        max_obstacle_height: 1.8
+        unknown_threshold: 15
+        mark_threshold: 2
+        observation_sources: pointcloud
+        combination_method: 1
+        pointcloud:  # no frame set, uses frame from message
+          topic: /camera/depth/color/points
+          max_obstacle_height: 1.8
+          min_obstacle_height: 0.2
+          obstacle_max_range: 3.0
+          obstacle_min_range: 0.2
+          raytrace_max_range: 4.0
           raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
-          obstacle_min_range: 0.0
-      static_layer:
-        map_subscribe_transient_local: True
+          clearing: True
+          marking: True
+          data_type: "PointCloud2"
       always_send_full_costmap: True
   local_costmap_client:
     ros__parameters:
@@ -185,12 +210,12 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      update_frequency: 2.0
+      publish_frequency: 0.5
       global_frame: map
       robot_base_frame: mobile_base_body_link
       use_sim_time: True
-      robot_radius: 0.22
+      robot_radius: 0.3
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -198,23 +223,34 @@ global_costmap:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
         observation_sources: scan
+        footprint_clearing_enabled: true
+        max_obstacle_height: 1.0
+        combination_method: 1
         scan:
           topic: /laser_local
-          max_obstacle_height: 2.0
+          obstacle_max_range: 5.0
+          obstacle_min_range: 0.05
+          raytrace_max_range: 20.0
+          raytrace_min_range: 0.0
+          max_obstacle_height: 1.0
+          min_obstacle_height: 0.0
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
-          raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
-          obstacle_min_range: 0.0
+          inf_is_valid: false
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
+        enabled: true
+        subscribe_to_updates: true
+        transform_tolerance: 0.2
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        enabled: true
+        inflation_radius: 1.0
+        cost_scaling_factor: 2.5
+        inflate_unknown: false
+        inflate_around_unknown: true
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:
