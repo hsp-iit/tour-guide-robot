@@ -15,6 +15,8 @@
 
 and run post installatio steps https://docs.docker.com/engine/install/linux-postinstall/docker%20first%20installation%20guide
 
+enable experimental features https://thenewstack.io/how-to-enable-docker-experimental-features-and-encrypt-your-login-credentials/
+
 #### open a terminal and go to the docker_sim directory
 `cd docker_stuff/docker_sim`
 
