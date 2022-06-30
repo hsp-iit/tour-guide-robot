@@ -19,7 +19,7 @@ and run post installatio steps https://docs.docker.com/engine/install/linux-post
 `cd docker_stuff/docker_sim`
 
 #### compile the docker
-`./build_docker.sh`
+`./build-docker.sh`
 
 #### launch the docker
 `./start-docker-sim.sh`
