@@ -1,1 +1,1 @@
- sudo docker build --squash -t konkarapas/r1images:r1Sim . 
+ sudo docker build --squash -t scope-images:r1Sim-gam . 
