@@ -71,7 +71,7 @@
 
    <module>
       <name>ros2</name>
-      <parameters>launch navigation_sim.launch.py --ros-args --remap use_sim_time:=true</parameters>
+      <parameters>launch navigation_sim.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
@@ -102,7 +102,7 @@
 
    <module>
       <name>rviz2</name>
-      <parameters>-d r1_visualizer.rviz</parameters>
+      <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
       <node>console</node>
    </module>
