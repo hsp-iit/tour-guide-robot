@@ -7,7 +7,7 @@
 
    <module>
       <name>ros2</name>
-      <parameters>launch robot_state_publisher.launch.py --ros-args --remap use_sim_time:=true</parameters>
+      <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
@@ -51,14 +51,14 @@
    
    <module>
       <name>ros2</name>
-      <parameters>launch map_server_sim.launch.py --ros-args --remap use_sim_time:=true</parameters>
+      <parameters>launch map_server_sim.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
    <module>
       <name>ros2</name>
-      <parameters>launch amcl_sim.launch.py --ros-args --remap use_sim_time:=true</parameters>
+      <parameters>launch amcl_sim.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>

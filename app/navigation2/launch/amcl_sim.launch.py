@@ -4,8 +4,13 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     amcl_params = os.path.join(os.getcwd(), '..', 'conf', 'amcl_params.yaml')
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'use_sim_time',
+            default_value='false',
+            description='Use simulation (Gazebo) clock if true'),
         Node(
             package='nav2_amcl',
             executable='amcl',
@@ -17,7 +22,7 @@ def generate_launch_description():
             executable='lifecycle_manager',
             name='amcl_lifecycle_manager',
             output='screen',
-            parameters=[{'use_sim_time': True},
+            parameters=[{'use_sim_time': use_sim_time},
                         {'autostart': True},
                         {'node_names': ['amcl']}]
         )
