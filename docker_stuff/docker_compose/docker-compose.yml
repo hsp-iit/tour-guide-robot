@@ -1,0 +1,53 @@
+version: "3.7"
+
+x-base: &base
+  environment:
+    - DISPLAY=${DISPLAY}
+    - XAUTHORITY=/home/user1/.Xauthority
+    - QT_X11_NO_MITSHM=1
+#    - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user1/1000/bus
+    - LIBGL_ALWAYS_INDIRECT=0
+    - YARP_COLORED_OUTPUT=1
+  volumes:
+    - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+    - "/etc/hosts:/etc/hosts"
+    - "/home/elandini/.gitconfig:/home/user1/.gitconfig"
+    - ".bashrc_local:/home/user1/.bashrc_local"
+#    - "/home/elandini/.config/terminator:/home/user1/.config/terminator:rw"
+  network_mode: host
+  ipc: host
+  pid: host
+  privileged: true
+  security_opt:
+    - apparmor:unconfined
+
+
+services:
+
+# Images
+  ros2-control-image:
+    image: hsp/ros2-bench-test:ros2Ctrl
+    build:
+      dockerfile: Dockerfile
+      target: ros2CtrlDefault
+      context: .
+  moveit2-image:
+    image: hsp/ros2-bench-test:moveit2
+    build:
+      dockerfile: Dockerfile
+      target: moveit2
+      context: .
+
+
+  terminatorCtrl:
+    image: hsp/ros2-bench-test:ros2Ctrl
+    <<: *base
+    container_name: terminatorCtrl
+    command: terminator -g /home/user1/.config/terminator/config
+
+  terminatorMoveit:
+    image: hsp/ros2-bench-test:moveit2
+    <<: *base
+    container_name: terminatorMoveit
+    command: terminator -g /home/user1/.config/terminator/config
+
