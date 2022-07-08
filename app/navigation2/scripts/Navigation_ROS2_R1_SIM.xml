@@ -48,13 +48,6 @@
       <parameters>--context navigation2 --from mapServer.ini</parameters>
       <node>console</node>
    </module>
-   
-   <module>
-      <name>ros2</name>
-      <parameters>launch map_server_sim.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
-      <node>console</node>
-   </module>
 
    <module>
       <name>ros2</name>
@@ -76,9 +69,9 @@
       <node>console</node>
    </module>
    
-   <!-- <module>
+   <module>
       <name>yarpdev</name>
-      <parameters>--device navigation2D_nws_yarp --subdevice rosNavigator</parameters>
+      <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>
       <node>console</node>
    </module>
    
@@ -98,7 +91,7 @@
       <name>yarpview</name>
       <parameters> --name /navView:i --out /mapClick:o --x 512 --y 264 --w 1024 --h 512</parameters>
       <node>console</node>
-   </module> -->
+   </module>
 
    <module>
       <name>rviz2</name>
