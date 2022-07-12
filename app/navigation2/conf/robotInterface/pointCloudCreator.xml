@@ -17,7 +17,7 @@
 
        <device xmlns:xi="http://www.w3.org/2001/XInclude"  name="pc_nws_ros" type="rgbdToPointCloudSensor_nws_ros2">
            <param name="period">0.1</param>
-           <param name="node_name">pc_ros_node</param>
+           <param name="node_name">pc_ros2_node</param>
            <param name="topic_name">/camera/depth/color/points</param> 
            <param name="frame_id">extra_camera_tf</param>
            <action phase="startup" level="5" type="attach">

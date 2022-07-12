@@ -1,0 +1,140 @@
+<application>
+   <name>Navigation_ROS2_R1SN003</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters></parameters>
+      <workdir>/home/user1/robotology/robots-configuration/R1SN003/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from realsense2_remote.ini</parameters>
+      <node>r1-torso</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from pointCloudCreator.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from lidar_compressed.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch robot_state_publisher.launch.py</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>baseControl2</name>
+      <parameters>--context baseControl2 --from baseCtrl_cer.ini --skip_robot_interface_check</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>joystickCtrl</name>
+      <parameters>--context navigation2 --from joystick_cer_linux_high_speed_stratus.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>./set_navigation_position.sh</name>
+      <parameters></parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <node>console</node>
+   </module>
+   
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device frameTransformServer --testxml_option /home/user1/robotology/yarp-ros2/src/devices/frameTransformUtils/robotinterface_xml_files/fts_full/fts_full_ros2.xml</parameters>
+      <node>r1-base</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from mapServer.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch amcl.launch.py</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>r1-base</node>
+   </module>
+   
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from localizationROS2.ini --init_map mapSquirico_20m</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch navigation.launch.py</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+   
+   <module>
+      <name>yarpdev</name>
+      <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>
+      <node>console</node>
+   </module>
+   
+   <module>
+      <name>headObstaclesScanner</name>
+      <parameters>--GENERAL::robot cer --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>navigationGUI</name>
+      <parameters>--context navigationGUI --from navigationGUI_base_nws-nwc.ini --LASER::remote_laser /cer/laser:o --LASER::laser_client Rangefinder2DClient --NAVIGATIONGUI_GENERAL::draw_and_publish_period 1.0 --UPDATE_DATA::period_laser_data 0.5</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarpview</name>
+      <parameters> --name /navView:i --out /mapClick:o --x 512 --y 264 --w 1024 --h 512</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>rviz2</name>
+      <parameters>-d r1_visualizer.rviz</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
+      <node>console</node>
+   </module>
+
+   <!-- connections -->
+   <connection>
+      <from>/joystickCtrl:o</from>
+      <to>/baseControl/input/joystick:i</to>
+      <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
+   </connection>
+
+   <connection>
+      <from>/navigationGui/map:o</from>
+      <to>/navView:i</to>
+      <protocol>mjpeg</protocol>
+   </connection>
+
+   <connection>
+      <from>/mapClick:o</from>
+      <to>/navigationGui/yarpviewTarget:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+</application>
