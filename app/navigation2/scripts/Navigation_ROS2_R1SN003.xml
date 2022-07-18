@@ -7,7 +7,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters></parameters>
+      <parameters>--config CER-ros2.xml</parameters>
       <workdir>/home/user1/robotology/robots-configuration/R1SN003/</workdir>
       <node>r1-base</node>
    </module>
@@ -39,7 +39,7 @@
 
    <module>
       <name>baseControl2</name>
-      <parameters>--context baseControl2 --from baseCtrl_cer.ini --skip_robot_interface_check</parameters>
+      <parameters>--context baseControl2 --from baseCtrl_cer_ros2.ini --skip_robot_interface_check</parameters>
       <node>r1-base</node>
    </module>
 

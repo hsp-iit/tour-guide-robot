@@ -22,7 +22,7 @@ RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-slam-toolbox ros-humble-test-msgs ros-humble-gazebo-ros
+RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-slam-toolbox ros-humble-test-msgs
 RUN apt-get install -y python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
@@ -50,9 +50,6 @@ ENV robotology_install_user user1
 ENV user1_home /home/$robotology_install_user
 ENV robotology_install_folder $user1_home/robotology
 
-#gazebo models
-RUN mkdir -p $user1_home/.gazebo && git clone https://github.com/osrf/gazebo_models $user1_home/.gazebo/models
-
 # Build ycm
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -73,27 +70,20 @@ RUN cd yarp && mkdir build && cd build && \
     -DYARP_COMPILE_GUIS=ON \
     -DYARP_COMPILE_DEVICE_PLUGINS=ON \
     -DENABLE_yarpcar_mjpeg=ON \
+    -DENABLE_yarpcar_human=ON \
     -DENABLE_yarpcar_segmentationimage=ON \
     -DENABLE_yarpcar_portmonitor=ON \
     -DENABLE_yarpmod_portaudio=ON \
     -DENABLE_yarpmod_portaudioPlayer=ON \
     -DENABLE_yarpmod_portaudioRecorder=ON \
-    -DENABLE_yarpmod_fakeAnalogSensor=ON \
     -DENABLE_yarpmod_fakeBattery=ON  \
-    -DENABLE_yarpmod_fakeDepthCamera=ON \
-    -DENABLE_yarpmod_fakeIMU=ON  \
-    -DENABLE_yarpmod_fakeLaser=ON  \
-    -DENABLE_yarpmod_fakeLocalizer=ON \
-    -DENABLE_yarpmod_fakeMicrophone=ON  \
-    -DENABLE_yarpmod_fakeMotionControl=ON  \
-    -DENABLE_yarpmod_fakeNavigation=ON  \
-    -DENABLE_yarpmod_fakeSpeaker=ON  \
-    -DENABLE_yarpmod_fakebot=ON \
+    -DENABLE_yarpmod_controlboardwrapper2 \
     -DENABLE_yarpmod_laserFromDepth=ON \
     -DENABLE_yarpmod_laserFromExternalPort=ON \
     -DENABLE_yarpmod_laserFromDepth=ON \
     -DENABLE_yarpmod_laserFromPointCloud=ON \
     -DENABLE_yarpmod_laserFromRosTopic=ON \
+    -DENABLE_yarpmod_rpLidar3=ON \
     -DENABLE_yarppm_soundfilter_resample=ON \
     -DENABLE_yarppm_bottle_compression_zlib=ON \
     -DENABLE_yarppm_depthimage_compression_zlib=ON \
@@ -112,6 +102,14 @@ RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTH
 # Install YARP completion   
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
+# Build icub-firmware-shared
+USER $robotology_install_user
+WORKDIR $robotology_install_folder
+RUN git clone https://github.com/robotology/icub-firmware-shared -b master
+RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+ENV icub_firmware_shared_ROOT=$robotology_install_folder/icub-firmware-shared
+ENV icub_firmware_shared_DIR=$robotology_install_folder/icub-firmware-shared/build
+
 # Build icub-main
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -121,6 +119,18 @@ RUN cd icub-main && mkdir build && cd build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
+    -DENABLE_icubmod_embObjAnalogSensor=ON \
+    -DENABLE_icubmod_embObjFTsensor=ON \
+    -DENABLE_icubmod_embObjIMU=ON \
+    -DENABLE_icubmod_embObjInertials=ON \
+    -DENABLE_icubmod_embObjMais=ON \
+    -DENABLE_icubmod_embObjMotionControl=ON \
+    -DENABLE_icubmod_embObjMultiEnc=ON \
+    -DENABLE_icubmod_embObjPSC=ON \
+    -DENABLE_icubmod_embObjSkin=ON \
+    -DENABLE_icubmod_embObjStrain=ON \
+    -DENABLE_icubmod_parametricCalibrator=ON \
+    -DENABLE_icubmod_parametricCalibratorEth=ON \
     -DENABLE_icubmod_gazecontrollerclient=ON && \
     make -j11
 ENV ICUB_ROOT=$robotology_install_folder/icub-main
@@ -138,23 +148,6 @@ RUN git clone https://github.com/robotology/navigation.git -b master
 RUN cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/humble/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
 ENV navigation_ROOT=$robotology_install_folder/navigation
 ENV navigation_DIR=$robotology_install_folder/navigation/build
-
-# Gazebo
-RUN sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-RUN wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-RUN sudo apt-get update && sudo apt-get install -y gazebo-common gazebo libgazebo-dev mesa-utils
-
-# Gazebo Plugins
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/gazebo-yarp-plugins -b devel
-RUN cd gazebo-yarp-plugins && mkdir build && cd build && \
-    cmake .. \ 
-    -DCMAKE_BUILD_TYPE=Release \ 
-    -DGAZEBO_YARP_PLUGINS_DISABLE_IMPLICIT_NETWORK_WRAPPERS=ON && \
-    make -j11
-ENV GazeboYARPPlugins_ROOT=$robotology_install_folder/gazebo-yarp-plugins
-ENV GazeboYARPPlugins_DIR=$robotology_install_folder/gazebo-yarp-plugins/build
 
 # CER
 USER $robotology_install_user
@@ -174,12 +167,6 @@ RUN git clone https://github.com/robotology-playground/yarp-ros2 -b master
 RUN cd yarp-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
 RUN cd yarp-ros2 && /bin/bash -c "source /opt/ros/humble/setup.bash; source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash; cmake -S. -Bbuild; cmake --build build"
 
-# CER-Sim stuff
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/cer-sim -b ros2
-RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build; source /home/user1/robotology/cer-sim/colcon_ws/install/local_setup.bash"
-
 # Build icub-contrib-common
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -197,8 +184,6 @@ ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$rob
 ENV DISPLAY=:1
 ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-ros2/build/share/yarp
 ENV LD_LIBRARY_PATH=$robotology_install_folder/yarp/build/lib/yarp/
-ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib
-ENV GAZEBO_MODEL_PATH=$robotology_install_folder/cer-sim/gazebo/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:/home/user1/robotology/yarp/bindings/build/lib/python3/
@@ -221,7 +206,8 @@ RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2_support
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
 # R1 NETWORK CONFIG
-RUN yarp conf 172.17.0.1 10000
+#RUN echo "source ~/.bashrc_local" >> ~/.bashrc
+RUN yarp conf 192.168.100.10 10000
 
 # Clean-up
 RUN sudo apt-get clean && sudo apt-get update

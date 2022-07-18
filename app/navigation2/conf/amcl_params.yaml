@@ -37,7 +37,7 @@ amcl:
     z_rand: 0.05
     z_short: 0.05
     map_topic: map
-    scan_topic: double_lidar
+    scan_topic: laser
     set_initial_pose: true
     always_reset_initial_pose: false
     first_map_only: false

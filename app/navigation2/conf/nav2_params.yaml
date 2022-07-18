@@ -190,6 +190,7 @@ local_costmap:
       height: 6
       resolution: 0.05
       robot_radius: 0.3
+      always_send_full_costmap: true
       plugins:
       - obstacle_layer
       - voxel_layer
@@ -245,7 +246,6 @@ local_costmap:
           clearing: true
           marking: true
           data_type: "PointCloud2"
-      always_send_full_costmap: true
   local_costmap_client:
     ros__parameters:
       use_sim_time: true
