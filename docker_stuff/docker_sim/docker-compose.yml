@@ -1,0 +1,105 @@
+version: "3.7"
+
+x-base: &base
+  environment:
+    - DISPLAY=${DISPLAY}
+    - XAUTHORITY=/home/user1/.Xauthority
+    - QT_X11_NO_MITSHM=1
+    # - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user1/1000/bus
+    - LIBGL_ALWAYS_INDIRECT=0
+    - YARP_COLORED_OUTPUT=1
+    # - YARP_CLOCK=/clock
+    - YARP_NAMESPACE=/root
+    - ROS_MASTER_URI=http://172.17.0.1:11311
+    - ROS_IP=172.17.0.1
+    - GAZEBO_MASTER_URI=http://172.17.0.1:11345
+    # - ROS_VERSION=1
+    # - ROS_PYTHON_VERSION=3
+    # - ROS_PACKAGE_PATH=/home/user1/catkin_ws/src:/opt/ros/noetic/share
+    # - ROSLISP_PACKAGE_DIRECTORIES=/home/user1/catkin_ws/devel/share/common-lisp
+    # - ROS_ETC_DIR=/opt/ros/noetic/etc/ros
+    # - CMAKE_PREFIX_PATH=/home/user1/catkin_ws/devel:/opt/ros/noetic
+    # - PYTHONPATH=/home/user1/catkin_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages:/home/user1/robotology/yarp/bindings/build/lib/python3/
+    # - LD_LIBRARY_PATH=/home/user1/catkin_ws/devel/lib:/opt/ros/noetic/lib:/opt/ros/noetic/lib/x86_64-linux-gnu:/home/user1/robotology/yarp/build/lib/yarp/
+    # - PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/cuda/bin/:/home/user1/robotology/yarp/build/bin:/home/user1/robotology/navigation/build/bin:/home/user1/robotology/cer/build/bin:/home/user1/robotology/icub-main/build/bin:/home/user1/robotology/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
+    # - ROS_ROOT=/opt/ros/noetic/share/ros
+    # - ROS_DISTRO=noetic
+    # - PKG_CONFIG_PATH=/home/user1/catkin_ws/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig
+  volumes:
+    - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+    - "/etc/hosts:/etc/hosts"
+    - ".bashrc_local:/home/user1/.bashrc_local"
+
+  network_mode: host
+  ipc: host
+  pid: host
+  privileged: true
+  security_opt:
+    - apparmor:unconfined
+
+
+services:
+
+# Images
+  ros2-r1-sim:
+    image: konkarapas/r1images:r1Sim
+    build:
+      dockerfile: Dockerfile
+      context: .
+
+# containers
+  terminator:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: terminator
+    command: bash -c "yarp conf 172.17.0.1 10000; terminator --no-dbus"
+
+  roscore:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: roscore
+    command: bash -c "source /opt/ros/noetic/setup.bash; roscore"
+
+  yarpserver:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: yarpserver
+    command: bash -c "yarp conf 172.17.0.1 10000;source /opt/ros/noetic/setup.bash;  yarpserver --ros"
+    depends_on:
+      - roscore    
+
+  gazebo:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: gazebo
+    command : bash -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; source /opt/ros/noetic/setup.bash; rosrun gazebo_ros gazebo -s libgazebo_yarp_clock.so /home/user1/tour-guide-robot/app/maps/SIM_GAM/GAM.world"
+    depends_on:
+      - yarpserver
+      - roscore
+
+  yarpmanager:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: yarpmanager
+    command: bash -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarpmanager"
+    depends_on:
+      - yarpserver
+      - roscore
+
+  yarplogger:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: yarplogger
+    command: bash -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarplogger --start"
+    depends_on:
+      - yarpserver
+      - roscore
+
+  yarprun:
+    image: konkarapas/r1images:r1Sim
+    <<: *base
+    container_name: yarprun
+    command: bash -c " source ~/.bashrc; yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE};source /opt/ros/noetic/setup.bash; source /home/user1/catkin_ws/devel/setup.bash; env;yarp run --server /console --log"
+    depends_on:
+      - yarpserver
+      - roscore
