@@ -167,6 +167,7 @@ RUN git clone https://github.com/robotology-playground/yarp-ros2 -b master
 RUN cd yarp-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
 RUN cd yarp-ros2 && /bin/bash -c "source /opt/ros/humble/setup.bash; source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash; cmake -S. -Bbuild; cmake --build build"
 
+# YARP RPLidar Devices
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology/yarp-device-rplidar -b master
 RUN cd yarp-device-rplidar && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_rpLidar4=OFF && make -j11
@@ -188,7 +189,7 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
 RUN echo "source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-ros2/build/share/yarp
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp
 ENV LD_LIBRARY_PATH=$robotology_install_folder/yarp/build/lib/yarp/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
