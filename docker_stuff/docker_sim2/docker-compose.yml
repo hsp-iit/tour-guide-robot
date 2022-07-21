@@ -10,6 +10,10 @@ x-base: &base
     - YARP_COLORED_OUTPUT=1
     # - YARP_CLOCK=/clock
     - YARP_NAMESPACE=/root
+    - ROS_VERSION=2
+    - ROS_PYTHON_VERSION=3
+    - ROS_DISTRO=humble
+    - ROS_DOMAIN_ID=0
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
     - "/etc/hosts:/etc/hosts"
@@ -37,13 +41,13 @@ services:
     image: konkarapas/r1images:r1Sim2
     <<: *base
     container_name: terminator
-    command: sh -c "yarp conf 172.17.0.1 10000; terminator --no-dbus"
+    command: bash -c "yarp conf 172.17.0.1 10000; terminator --no-dbus"
 
   yarpserver:
     image: konkarapas/r1images:r1Sim2
     <<: *base
     container_name: yarpserver
-    command: sh -c "yarp conf 172.17.0.1 10000; yarpserver"
+    command: bash -c "yarp conf 172.17.0.1 10000; yarpserver"
 
   gazebo:
     image: konkarapas/r1images:r1Sim2
@@ -57,7 +61,7 @@ services:
     image: konkarapas/r1images:r1Sim2
     <<: *base
     container_name: yarpmanager
-    command: sh -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarpmanager"
+    command: bash -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarpmanager"
     depends_on:
       - yarpserver
 
@@ -65,7 +69,7 @@ services:
     image: konkarapas/r1images:r1Sim2
     <<: *base
     container_name: yarplogger
-    command: sh -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarplogger --start"
+    command: bash -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarplogger --start"
     depends_on:
       - yarpserver
 
