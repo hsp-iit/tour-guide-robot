@@ -77,13 +77,13 @@ RUN cd yarp && mkdir build && cd build && \
     -DENABLE_yarpmod_portaudioPlayer=ON \
     -DENABLE_yarpmod_portaudioRecorder=ON \
     -DENABLE_yarpmod_fakeBattery=ON  \
-    -DENABLE_yarpmod_controlboardwrapper2 \
+    -DENABLE_yarpmod_controlboardwrapper2=ON \
     -DENABLE_yarpmod_laserFromDepth=ON \
     -DENABLE_yarpmod_laserFromExternalPort=ON \
     -DENABLE_yarpmod_laserFromDepth=ON \
     -DENABLE_yarpmod_laserFromPointCloud=ON \
     -DENABLE_yarpmod_laserFromRosTopic=ON \
-    -DENABLE_yarpmod_rpLidar3=ON \
+    #-DENABLE_yarpmod_rpLidar3=ON \
     -DENABLE_yarppm_soundfilter_resample=ON \
     -DENABLE_yarppm_bottle_compression_zlib=ON \
     -DENABLE_yarppm_depthimage_compression_zlib=ON \
@@ -167,6 +167,12 @@ RUN git clone https://github.com/robotology-playground/yarp-ros2 -b master
 RUN cd yarp-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
 RUN cd yarp-ros2 && /bin/bash -c "source /opt/ros/humble/setup.bash; source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash; cmake -S. -Bbuild; cmake --build build"
 
+WORKDIR $robotology_install_folder
+RUN git clone https://github.com/robotology/yarp-device-rplidar -b master
+RUN cd yarp-device-rplidar && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_rpLidar4=OFF && make -j11
+ENV yarp-device-rpLidar_ROOT=$robotology_install_folder/yarp-device-rplidar
+ENV yarp-device-rpLidar_DIR=$robotology_install_folder/yarp-device-rplidar/build
+
 # Build icub-contrib-common
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -219,4 +225,4 @@ RUN sudo updatedb
 RUN sudo apt-get install -y cyclonedds-dev cyclonedds-tools ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-CMD ["bash"]
+CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
