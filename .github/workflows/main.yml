@@ -11,5 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Change docker to experimental mode
+      run: |
+       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
     - name: Build the Docker image
       run: docker build --squash --tag konkarapas/r1images:r1Core2 ../../docker_stuff/docker_core2/Dockerfile
