@@ -10,6 +10,6 @@ jobs:
   build-r1Core2:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@ros2_support
+    - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build --squash --tag konkarapas/r1images:r1Core2 ../../docker_stuff/docker_core2/Dockerfile
