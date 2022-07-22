@@ -77,7 +77,7 @@
    
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from localizationROS2.ini --init_map mapSquirico_20m</parameters>
+      <parameters>--context navigation2 --from localizationROS2.ini --init_map arena</parameters>
       <node>console</node>
    </module>
 
