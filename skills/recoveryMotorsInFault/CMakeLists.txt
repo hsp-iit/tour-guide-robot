@@ -5,7 +5,7 @@
 #                                                                              #
 ################################################################################
 
-set(SKILL_NAME bt_motorsNotInFault)
+set(SKILL_NAME bt_recoveryMotorsInFault)
 add_executable(${SKILL_NAME})
 target_include_directories(${SKILL_NAME}
   PRIVATE
@@ -26,7 +26,7 @@ target_sources(${SKILL_NAME}
 target_link_libraries(${SKILL_NAME}
   PRIVATE
     YARP::YARP_os
-    YARP::YARP_dev
     YARP::YARP_init
-    skill_interface)
+    skill_interface
+    tourManagerRPC)
 install(TARGETS ${SKILL_NAME} DESTINATION bin)

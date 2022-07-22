@@ -13,8 +13,7 @@ YARP_LOG_COMPONENT(MOTORS_NOT_IN_FAULT, "behavior_tour_robot.skills.motorsNotInF
 
 motorsNotInFault::motorsNotInFault(std::string name) : m_name(name),
                                                        m_portName("/" + name + "/BT_rpc/server"),
-                                                       m_tourManagerPortName("/" + name + "/TourManager/thrift:c"),
-                                                       m_period(0.1)
+                                                       m_period(10)
 {
 }
 
@@ -26,28 +25,6 @@ double motorsNotInFault::getPeriod()
 
 bool motorsNotInFault::updateModule()
 {
-    m_condition = !(BaseInFault() || LeftArmInFault() || RightArmInFault());
-    double time_start = yarp::os::Time::now();
-
-    if (!m_condition)
-    {
-        m_tourManager.sendError("MOTORS_ERROR");
-        do
-        {
-            if (yarp::os::Time::now() - time_start >= 5.0)
-            {
-                m_tourManager.sendError("MOTORS_ERROR");
-                time_start = yarp::os::Time::now();
-            }
-
-            m_condition = !(BaseInFault() || LeftArmInFault() || RightArmInFault());
-            if (m_condition)
-            {
-                m_tourManager.recovered();
-            }
-            yarp::os::Time::delay(m_period);
-        } while (!m_condition);
-    }
     return true;
 }
 
@@ -276,17 +253,6 @@ bool motorsNotInFault::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    if (!m_tourManagerPort.open(m_tourManagerPortName))
-    {
-        yCError(MOTORS_NOT_IN_FAULT) << "Error! Cannot the tourManagerRPC client port (%s)", m_tourManagerPortName.c_str();
-        return false;
-    }
-    if (!m_tourManager.yarp().attachAsClient(m_tourManagerPort))
-    {
-        yCError(MOTORS_NOT_IN_FAULT) << "Error! Cannot attach the %s port as client", m_tourManagerPortName.c_str();
-        return false;
-    }
-
     yCInfo(MOTORS_NOT_IN_FAULT, "Configuration Done!");
 
     return true;
@@ -301,7 +267,6 @@ bool motorsNotInFault::interruptModule()
 bool motorsNotInFault::close()
 {
     m_port.close();
-    m_tourManagerPort.close();
     if (m_controlBoard_base.isValid())
         m_controlBoard_base.close();
     if (m_controlBoard_rightArm.isValid())
@@ -318,6 +283,7 @@ SkillStatus motorsNotInFault::get_status()
 
 bool motorsNotInFault::start()
 {
+    m_condition = !(BaseInFault() || LeftArmInFault() || RightArmInFault());
     yCDebug(MOTORS_NOT_IN_FAULT) << "Skill status returned" << m_condition;
     return m_condition;
 }
