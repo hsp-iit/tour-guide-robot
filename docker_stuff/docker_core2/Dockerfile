@@ -209,7 +209,7 @@ WORKDIR ${user1_home}
 RUN git clone https://github.com/dpirch/libfvad
 #&& cd libfvad && sudo autoreconf -i && ./configure && make && sudo make install
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2_support
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
 # R1 NETWORK CONFIG
