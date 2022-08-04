@@ -3,7 +3,7 @@ LABEL maintainer="Konstantinos Karapas"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=18_07_2022
+ENV DOCKER_UPDATED_ON=04_08_2022
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release \
@@ -202,8 +202,7 @@ ENV GAZEBO_MODEL_PATH=$robotology_install_folder/cer-sim/gazebo/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:/home/user1/robotology/yarp/bindings/build/lib/python3/
-ENV CYCLONEDDS_URI=/home/user1/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
-#ENV YARP_CLOCK=/clock
+#ENV CYCLONEDDS_URI=/home/user1/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -214,8 +213,6 @@ RUN sudo chown -R $robotology_install_user:$robotology_install_user /opt/ros && 
 
 # Konstantinos Karapas stuff only
 WORKDIR ${user1_home}
-RUN git clone https://github.com/dpirch/libfvad
-#&& cd libfvad && sudo autoreconf -i && ./configure && make && sudo make install
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11

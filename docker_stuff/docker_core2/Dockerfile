@@ -3,7 +3,7 @@ LABEL maintainer="Konstantinos Karapas"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=18_07_2022
+ENV DOCKER_UPDATED_ON=04_08_2022
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release \
@@ -50,6 +50,20 @@ ENV robotology_install_user user1
 ENV user1_home /home/$robotology_install_user
 ENV robotology_install_folder $user1_home/robotology
 
+# CUDA and cuDNN (has to be those versions)
+USER $robotology_install_user
+WORKDIR $user1_home
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
+RUN sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub
+RUN sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
+RUN sudo apt-get update && sudo apt-get -y install cuda-toolkit-10-0
+
+RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v7.6.1/Ubuntu18_04-x64/libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
+RUN sudo dpkg -i libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
+RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v7.6.1/Ubuntu18_04-x64/libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
+RUN sudo dpkg -i libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
+RUN sudo rm libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
+
 # Build ycm
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -58,6 +72,28 @@ RUN cd ycm && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
+
+# GCC Compiler (because openpose requires this version)
+# Add Ubuntu 20.04 repos to install gcc-7 and remove after for safety
+RUN sudo /bin/bash -c 'echo deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal main universe >> /etc/apt/sources.list'
+RUN sudo apt-get update && sudo apt-get install -y gcc-7 g++-7
+RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+RUN sudo /bin/bash -c "head -n -1 /etc/apt/sources.list > /etc/apt/file.tmp; mv /etc/apt/file.tmp /etc/apt/sources.list"
+
+# Build openpose (Maria Lombardi)
+USER $robotology_install_user
+WORKDIR $user1_home
+RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
+    cd ./openpose/ && \
+    git submodule update --init --recursive --remote && \
+    git checkout tags/v1.6.0
+RUN cd $user1_home/openpose && \
+    mkdir build && \
+    cd ./build && \
+    cmake .. -DDOWNLOAD_HAND_MODEL=OFF && \
+    make -j11
+ENV openpose_ROOT=$user1_home/openpose
+RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
 
 # Build YARP
 USER $robotology_install_user
@@ -83,7 +119,6 @@ RUN cd yarp && mkdir build && cd build && \
     -DENABLE_yarpmod_laserFromDepth=ON \
     -DENABLE_yarpmod_laserFromPointCloud=ON \
     -DENABLE_yarpmod_laserFromRosTopic=ON \
-    #-DENABLE_yarpmod_rpLidar3=ON \
     -DENABLE_yarppm_soundfilter_resample=ON \
     -DENABLE_yarppm_bottle_compression_zlib=ON \
     -DENABLE_yarppm_depthimage_compression_zlib=ON \
@@ -181,9 +216,28 @@ RUN git clone https://github.com/robotology/icub-contrib-common.git
 RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$robotology_install_folder/iCubContrib && sudo make -j11 install
 ENV ICUBcontrib_DIR=$robotology_install_folder/iCubContrib/build
 
+# Build yarpopenpose (Maria Lombardi)
 USER $robotology_install_user
+WORKDIR $robotology_install_folder
+RUN git clone https://github.com/robotology/human-sensing
+RUN cd human-sensing/yarpOpenPose && \
+    mkdir build && \
+    cd ./build && \
+    cmake .. && \
+    make && sudo make install
+
+# Build mutual gaze classifier (Maria Lombardi)
+USER $robotology_install_user
+WORKDIR $user1_home
+RUN git clone https://github.com/MariaLombardi/mutual-gaze-classifier-demo.git
+RUN cd mutual-gaze-classifier-demo && \
+    mkdir build && \
+    cd ./build && \
+    cmake .. && \
+    make && sudo make install
 
 # Set environmental variables
+USER $robotology_install_user
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
 RUN echo "source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
@@ -206,20 +260,18 @@ RUN sudo chown -R $robotology_install_user:$robotology_install_user /opt/ros && 
 # Groot and BT dependencies
 RUN sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make
 USER $robotology_install_user
-# WORKDIR $robotology_install_folder
-# RUN git clone https://github.com/BehaviorTree/BehaviorTree.CPP && cd BehaviorTree.CPP && git checkout 4b21907 && mkdir build && cd build && cmake .. && sudo make -j11
-# ENV BehaviorTreeV3_DIR=/home/user1/robotology/BehaviorTree.CPP/build/
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/BehaviorTree/Groot.git
 #RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
 
 # Navigation stuff
 WORKDIR ${user1_home}
-RUN git clone https://github.com/dpirch/libfvad && cd libfvad && mkdir build && cmake .. && sudo make install
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2 && cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON && make -j11
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON; make -j11"
 
 # GOOGLE
+RUN git clone https://github.com/dpirch/libfvad && cd libfvad && mkdir build && cd build && cmake .. && sudo make install
 RUN git clone --recursive -b v1.43.2 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
     cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release \
     -DgRPC_SSL_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package && sudo make -j11 install && sudo ldconfig
