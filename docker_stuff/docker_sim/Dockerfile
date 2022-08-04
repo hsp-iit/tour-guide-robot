@@ -243,7 +243,7 @@ ENV YARP_CLOCK=/clock
 WORKDIR /home/user1
 RUN cd && git clone https://github.com/dpirch/libfvad && cd libfvad && autoreconf -i && ./configure && make && sudo make install
 RUN cd && git clone https://github.com/elandini84/yarp-web-teleop.git
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b master
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros1
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
 # R1 NETWORK CONFIG
