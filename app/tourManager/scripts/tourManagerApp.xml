@@ -3,6 +3,38 @@
 
     <dependencies>
     </dependencies>
+
+    <module>
+        <name>ctpService</name>
+        <parameters>--robot cer --part left_arm</parameters>
+        <node>console1</node>
+    </module>
+    <module>
+        <name>ctpService</name>
+        <parameters>--robot cer --part right_arm</parameters>
+        <node>console1</node>
+    </module>
+    <module>
+        <name>ctpService</name>
+        <parameters>--robot cer --part torso</parameters>
+        <node>console1</node>
+    </module>
+    <module>
+        <name>ctpService</name>
+        <parameters>--robot cer --part right_hand</parameters>
+        <node>console1</node>
+    </module>
+    <module>
+        <name>ctpService</name>
+        <parameters>--robot cer --part left_hand</parameters>
+        <node>console1</node>
+    </module>
+    <module>
+        <name>ctpService</name>
+        <parameters>--robot cer --part head</parameters>
+        <node>console1</node>
+    </module>
+
     <module>
         <name>tourManager</name>
         <parameters>--context tourManager --from conf.ini --tourName TOUR_CRIS</parameters>

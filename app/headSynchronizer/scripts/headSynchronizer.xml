@@ -3,6 +3,12 @@
 
   <dependencies>
   </dependencies>
+  
+  <module>
+    <name>yarpdev </name>
+    <parameters>--device faceDisplayServer</parameters>
+    <node>r1-face</node>
+  </module>
 
   <module>
     <name>headSynchronizer</name>
@@ -21,6 +27,18 @@
     <parameters>--cameras::context cameraCalibration --cameras::file cerEyes_320x240.ini --joints-limits::pitch "(-20.0 20.0)" --joints-limits::yaw "(-40.0 40.0)"</parameters>
     <node>r1-base</node>
   </module>
+
+  <module>
+    <name>faceExpressionImage5GTour</name>
+    <parameters></parameters>
+    <node>console1</node>
+  </module>
+    
+  <connection>
+    <from>/faceExpressionImage/image:o</from>
+    <to>/robot/faceDisplay/image:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
 
   <connection>
     <from>/eyeContactManager/pred:o</from>
