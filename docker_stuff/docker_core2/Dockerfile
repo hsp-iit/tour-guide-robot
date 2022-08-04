@@ -195,7 +195,6 @@ ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:/home/user1/robotology/yarp/bindings/build/lib/python3/
 ENV CYCLONEDDS_URI=/home/user1/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
-#ENV YARP_CLOCK=/clock
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -204,16 +203,32 @@ EXPOSE 10000/tcp 10000/udp
 USER $robotology_install_user
 RUN sudo chown -R $robotology_install_user:$robotology_install_user /opt/ros && sudo chown -R $robotology_install_user:$robotology_install_user /home/$robotology_install_user/.ros
 
-# Konstantinos Karapas stuff only
+# Groot and BT dependencies
+RUN sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make
+USER $robotology_install_user
+# WORKDIR $robotology_install_folder
+# RUN git clone https://github.com/BehaviorTree/BehaviorTree.CPP && cd BehaviorTree.CPP && git checkout 4b21907 && mkdir build && cd build && cmake .. && sudo make -j11
+# ENV BehaviorTreeV3_DIR=/home/user1/robotology/BehaviorTree.CPP/build/
+WORKDIR $robotology_install_folder
+RUN git clone https://github.com/BehaviorTree/Groot.git
+#RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
+
+# Navigation stuff
 WORKDIR ${user1_home}
-RUN git clone https://github.com/dpirch/libfvad
-#&& cd libfvad && sudo autoreconf -i && ./configure && make && sudo make install
+RUN git clone https://github.com/dpirch/libfvad && cd libfvad && mkdir build && cmake .. && sudo make install
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
-RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2 && cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON && make -j11
+
+# GOOGLE
+RUN git clone --recursive -b v1.43.2 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
+    cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release \
+    -DgRPC_SSL_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package && sudo make -j11 install && sudo ldconfig
+RUN cd && git clone https://github.com/googleapis/googleapis.git && cd googleapis && git checkout f78745822aadedb3c165d51372732d672b634db2 && sudo make -j11
+RUN cd && git clone https://github.com/randaz81/speech.git -b gs_external_stream && cd speech && mkdir build && cd build && \
+    cmake .. -DBUILD_GOOGLE_SPEECH=ON -Dgoogleapis_INCLUDE_DIR=/home/user1/googleapis/gens && sudo make -j11 install
+ENV GOOGLE_APPLICATION_CREDENTIALS=/home/user1/hsp_google.json
 
 # R1 NETWORK CONFIG
-#RUN echo "source ~/.bashrc_local" >> ~/.bashrc
 RUN yarp conf 192.168.100.10 10000
 
 # Clean-up
@@ -226,4 +241,5 @@ RUN sudo updatedb
 RUN sudo apt-get install -y cyclonedds-dev cyclonedds-tools ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+# Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
 CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
