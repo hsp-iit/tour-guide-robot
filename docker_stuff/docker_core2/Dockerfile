@@ -105,7 +105,7 @@ RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash
 # Build icub-firmware-shared
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/icub-firmware-shared -b master
+RUN git clone https://github.com/robotology/icub-firmware-shared -b devel
 RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 ENV icub_firmware_shared_ROOT=$robotology_install_folder/icub-firmware-shared
 ENV icub_firmware_shared_DIR=$robotology_install_folder/icub-firmware-shared/build
