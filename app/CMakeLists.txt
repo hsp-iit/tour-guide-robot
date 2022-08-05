@@ -14,6 +14,6 @@ add_subdirectory(navigation2)
 add_subdirectory(openPoseStuff)
 add_subdirectory(tourManager)
 
-file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/scripts/*.xml)
+file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 
 yarp_install(FILES ${apps}    DESTINATION ${BEHAVIOR-TOUR-ROBOT_APPLICATIONS_INSTALL_DIR})

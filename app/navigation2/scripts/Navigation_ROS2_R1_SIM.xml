@@ -82,18 +82,6 @@
    </module>
 
    <module>
-      <name>navigationGUI</name>
-      <parameters>--context navigationGUI --from navigationGUI_base_nws-nwc.ini --LASER::remote_laser /SIM_CER_ROBOT/laser:o --LASER::laser_client Rangefinder2DClient --NAVIGATIONGUI_GENERAL::draw_and_publish_period 1.0 --UPDATE_DATA::period_laser_data 0.5</parameters>
-      <node>console</node>
-   </module>
-
-   <module>
-      <name>yarpview</name>
-      <parameters> --name /navView:i --out /mapClick:o --x 512 --y 264 --w 1024 --h 512</parameters>
-      <node>console</node>
-   </module>
-
-   <module>
       <name>rviz2</name>
       <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
@@ -101,15 +89,5 @@
    </module>
 
    <!-- connections -->
-   <connection>
-      <from>/navigationGui/map:o</from>
-      <to>/navView:i</to>
-      <protocol>mjpeg</protocol>
-   </connection>
 
-   <connection>
-      <from>/mapClick:o</from>
-      <to>/navigationGui/yarpviewTarget:i</to>
-      <protocol>fast_tcp</protocol>
-   </connection>
 </application>
