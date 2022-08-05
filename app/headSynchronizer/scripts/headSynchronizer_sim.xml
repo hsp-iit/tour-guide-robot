@@ -10,6 +10,24 @@
     <node>console1</node>
   </module>
 
+  <module>
+    <name>faceExpressionImage5GTour</name>
+    <parameters></parameters>
+    <node>console1</node>
+  </module>
+
+  <module>
+    <name>yarpview </name>
+    <parameters>--name /faceView/img:i</parameters>
+    <node>console3</node>
+  </module>
+
+  <connection>
+    <from>/faceExpressionImage/image:o</from>
+    <to>/faceView/img:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
   <connection>
     <from>/HeadSynchronizer/microphone:o</from>
     <to>/audioRecorderWrapper/rpc</to>
