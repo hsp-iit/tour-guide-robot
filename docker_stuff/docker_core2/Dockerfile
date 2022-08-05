@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_UPDATED_ON=04_08_2022
 
 # Install essentials
-RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release \
+RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate
@@ -214,7 +214,7 @@ USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology/icub-contrib-common.git
 RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$robotology_install_folder/iCubContrib && sudo make -j11 install
-ENV ICUBcontrib_DIR=$robotology_install_folder/iCubContrib/build
+ENV ICUBcontrib_DIR=$robotology_install_folder/iCubContrib/lib
 
 # Build yarpopenpose (Maria Lombardi)
 USER $robotology_install_user
