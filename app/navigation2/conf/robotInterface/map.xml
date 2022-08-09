@@ -11,6 +11,7 @@ SPDX-License-Identifier: BSD-3-Clause
 				maps
 			</param>
 		</device>
+		
 		<device name="mapNwsRos2" type="map2D_nws_ros2">
 			<action phase="startup" level="5" type="attach">
 				<paramlist name="networks">
@@ -21,8 +22,6 @@ SPDX-License-Identifier: BSD-3-Clause
 			</action>
 			<action phase="shutdown" level="5" type="detach" />
 		</device>
-
-
 
         <device name="mapNwsYarp" type="map2D_nws_yarp">
             <param extern-name="mapNwsYarp_name" name="name">

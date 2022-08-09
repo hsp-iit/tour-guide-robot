@@ -57,12 +57,6 @@
    </module>
    
    <module>
-      <name>yarpdev</name>
-      <parameters>--device frameTransformServer --testxml_option /home/user1/robotology/yarp-ros2/src/devices/frameTransformUtils/robotinterface_xml_files/fts_full/fts_full_ros2.xml</parameters>
-      <node>r1-base</node>
-   </module>
-   
-   <module>
       <name>yarprobotinterface</name>
       <parameters>--context navigation2 --from mapServer.ini</parameters>
       <node>console</node>
