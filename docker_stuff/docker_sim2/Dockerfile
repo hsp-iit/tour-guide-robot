@@ -9,7 +9,7 @@ ENV DOCKER_UPDATED_ON=04_08_2022
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
-    python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate
+    python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install numpy bpytop
 
@@ -22,16 +22,17 @@ RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-slam-toolbox ros-humble-test-msgs ros-humble-gazebo-ros
-RUN apt-get install -y python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup \
+    ros-humble-slam-toolbox ros-humble-test-msgs ros-humble-gazebo-ros \
+    python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
-    python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init 
+    python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init && rm -rf /var/lib/apt/lists/*
 
 # Install yarp dependencies
 RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
-RUN apt-get update && apt-get install -y icub-common libopencv-dev
+RUN apt-get update && apt-get install -y icub-common libopencv-dev && sudo rm -rf /var/lib/apt/lists/*
 
 # Create user: user1
 USER root
@@ -41,7 +42,7 @@ RUN useradd -l -u 33334 -G sudo -md /home/user1 -s /bin/bash -p user1 user1 && \
 
 # ROS2 Installation (part2)
 USER user1
-RUN sudo rosdep fix-permissions && rosdep update
+RUN rosdep fix-permissions && rosdep update
 
 # Set ENV
 USER user1
@@ -142,7 +143,7 @@ ENV navigation_DIR=$robotology_install_folder/navigation/build
 # Gazebo
 RUN sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 RUN wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-RUN sudo apt-get update && sudo apt-get install -y gazebo-common gazebo libgazebo-dev mesa-utils
+RUN sudo apt-get update && sudo apt-get install -y gazebo-common gazebo libgazebo-dev mesa-utils && sudo rm -rf /var/lib/apt/lists/*
 
 # Gazebo Plugins
 USER $robotology_install_user
@@ -221,14 +222,13 @@ RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYP
 # R1 NETWORK CONFIG
 RUN yarp conf 172.17.0.1 10000
 
-# Clean-up
-RUN sudo apt-get clean && sudo apt-get update
-WORKDIR ${user1_home}/tour-guide-robot
-RUN sudo updatedb
-
-
 # Possibly temporary ROS2 network middleware change
-RUN sudo apt-get install -y cyclonedds-dev cyclonedds-tools ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0
+RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
+    ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp \
+    ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+WORKDIR ${user1_home}/tour-guide-robot
+RUN sudo updatedb
 CMD ["bash"]

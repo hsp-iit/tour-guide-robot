@@ -1,1 +1,1 @@
- sudo docker build --squash -t konkarapas/r1images:r1Core2 . 
+ sudo docker build -t konkarapas/r1images:r1Core2 . 

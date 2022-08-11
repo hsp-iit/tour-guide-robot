@@ -9,7 +9,7 @@ ENV DOCKER_UPDATED_ON=04_08_2022
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
-    python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate
+    python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install numpy bpytop
 
@@ -22,16 +22,17 @@ RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-slam-toolbox ros-humble-test-msgs
-RUN apt-get install -y python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-humble-desktop ros-humble-navigation2 ros-humble-nav2-bringup \
+    ros-humble-slam-toolbox ros-humble-test-msgs ros-humble-gazebo-ros \
+    python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
-    python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init 
+    python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init && rm -rf /var/lib/apt/lists/*
 
 # Install yarp dependencies
 RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
-RUN apt-get update && apt-get install -y icub-common libopencv-dev
+RUN apt-get update && apt-get install -y icub-common libopencv-dev && sudo rm -rf /var/lib/apt/lists/*
 
 # Create user: user1
 USER root
@@ -76,7 +77,7 @@ RUN cd ycm && mkdir build && cd build && \
 # GCC Compiler (because openpose requires this version)
 # Add Ubuntu 20.04 repos to install gcc-7 and remove after for safety
 RUN sudo /bin/bash -c 'echo deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal main universe >> /etc/apt/sources.list'
-RUN sudo apt-get update && sudo apt-get install -y gcc-7 g++-7
+RUN sudo apt-get update && sudo apt-get install -y gcc-7 g++-7 && sudo rm -rf /var/lib/apt/lists/*
 RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 RUN sudo /bin/bash -c "head -n -1 /etc/apt/sources.list > /etc/apt/file.tmp; mv /etc/apt/file.tmp /etc/apt/sources.list"
 
@@ -258,7 +259,8 @@ USER $robotology_install_user
 RUN sudo chown -R $robotology_install_user:$robotology_install_user /opt/ros && sudo chown -R $robotology_install_user:$robotology_install_user /home/$robotology_install_user/.ros
 
 # Groot and BT dependencies
-RUN sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make
+RUN sudo apt-get update && sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && \
+    cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/BehaviorTree/Groot.git
@@ -283,15 +285,14 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/home/user1/hsp_google.json
 # R1 NETWORK CONFIG
 RUN yarp conf 192.168.100.10 10000
 
-# Clean-up
-RUN sudo apt-get clean && sudo apt-get update
-WORKDIR ${user1_home}/tour-guide-robot
-RUN sudo updatedb
-
-
 # Possibly temporary ROS2 network middleware change
-RUN sudo apt-get install -y cyclonedds-dev cyclonedds-tools ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0
+RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
+    ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp \
+    ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+WORKDIR ${user1_home}/tour-guide-robot
+RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
 CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
