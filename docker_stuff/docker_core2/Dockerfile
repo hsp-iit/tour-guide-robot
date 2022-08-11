@@ -263,6 +263,7 @@ USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/BehaviorTree/Groot.git
 #RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
+RUN git clone https://github.com/DatSpace/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 
 # Navigation stuff
 WORKDIR ${user1_home}
@@ -271,7 +272,6 @@ RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON; make -j11"
 
 # GOOGLE
-RUN git clone https://github.com/DatSpace/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 RUN git clone --recursive -b v1.43.2 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
     cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release \
     -DgRPC_SSL_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package && sudo make -j11 install && sudo ldconfig

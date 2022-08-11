@@ -214,6 +214,7 @@ RUN sudo chown -R $robotology_install_user:$robotology_install_user /opt/ros && 
 # Konstantinos Karapas stuff only
 WORKDIR ${user1_home}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git
+RUN git clone https://github.com/DatSpace/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
@@ -228,6 +229,6 @@ RUN sudo updatedb
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get install -y cyclonedds-dev cyclonedds-tools ros-humble-cyclonedds-dbgsym ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp ros-humble-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0
-#ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 CMD ["bash"]
