@@ -27,13 +27,13 @@ jobs:
       working-directory: docker_stuff/docker_core2/
       run: ./build-docker.sh
     - name: Push image
-      run: docker push konkarapas/r1images:r1Core2
+      run: docker push elandini84/r1images:r1Core2
 
 ################################################################## Currently runs OOM as the diffult containers for linux are 7Gb of RAM.
 #   build-r1Sim2:
 #     runs-on: ubuntu-latest
 #     needs: build-r1Core2
-    
+
 #     steps:
 #     - name: Change docker to experimental mode
 #       run: |
