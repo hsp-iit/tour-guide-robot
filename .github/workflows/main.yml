@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Info
+      run: |
+       echo "Event type: ${{github.event_name}}"
     - name: Change docker to experimental mode
       run: |
        sudo rm -rf /etc/docker/daemon.json
