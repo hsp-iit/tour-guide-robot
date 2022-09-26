@@ -40,7 +40,7 @@ then do the steps in yarp manager
 
 ## docker compose
 
-go to the correct directory `cd docker_stuff/docker_sim`, then build docker `docker-compose build` and run it `ducker-compose up`
+go to the correct directory `cd docker_stuff/docker_sim`, then build docker `docker-compose build`, allow users to connect to x `sudo xhost +` and run docker `ducker-compose up`
 
 to shut it down `docker-compose down` in the same directory, then do the steps in yarp manager
 
