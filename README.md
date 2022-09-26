@@ -17,6 +17,8 @@ and run post installatio steps https://docs.docker.com/engine/install/linux-post
 
 enable experimental features https://thenewstack.io/how-to-enable-docker-experimental-features-and-encrypt-your-login-credentials/
 
+## Docker Standalone
+
 #### open a terminal and go to the docker_sim directory
 `cd docker_stuff/docker_sim`
 
@@ -34,7 +36,16 @@ enable experimental features https://thenewstack.io/how-to-enable-docker-experim
 #### run the simulation
 `./start_sim.sh`
 
-### in yarp manager
+then do the steps in yarp manager
+
+## docker compose
+
+go to the correct directory `cd docker_stuff/docker_sim`, then build docker `docker-compose build` and run it `ducker-compose up`
+
+to shut it down `docker-compose down` in the same directory, then do the steps in yarp manager
+
+
+## in yarp manager
 
 #### open the app **Navigation_ROS_R1_SIM**
 
