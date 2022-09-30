@@ -1,9 +1,9 @@
 FROM ubuntu:22.04
-LABEL maintainer="Konstantinos Karapas"
+LABEL maintainer="Ettore Landini"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=04_08_2022
+ENV DOCKER_UPDATED_ON=28_09_2022
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
@@ -135,7 +135,7 @@ USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTHON=ON && make -j11
 
-# Install YARP completion   
+# Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
 # Build icub-firmware-shared
@@ -175,7 +175,7 @@ ENV ICUB_DIR=$robotology_install_folder/icub-main/build
 # Build robots-configuration devel
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/randaz81/robots-configuration.git -b R1SN003_ros2 
+RUN git clone https://github.com/randaz81/robots-configuration.git -b R1SN003_ros2
 
 # Build navigation
 USER $robotology_install_user
@@ -197,11 +197,11 @@ RUN cd cer && mkdir build && cd build && cmake .. \
 ENV CER_ROOT=$robotology_install_folder/cer
 ENV CER_DIR=$robotology_install_folder/cer/build
 
-# YARP-ROS2
+# YARP-DEVICES-ROS2
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology-playground/yarp-ros2 -b master
-RUN cd yarp-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
-RUN cd yarp-ros2 && /bin/bash -c "source /opt/ros/humble/setup.bash; source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash; cmake -S. -Bbuild; cmake --build build"
+RUN git clone https://github.com/robotology-playground/yarp-devices-ros2 -b master
+RUN cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
+RUN cd yarp-devices-ros2 && /bin/bash -c "source /opt/ros/humble/setup.bash; source /home/user1/robotology/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash; cmake -S. -Bbuild; cmake --build build"
 
 # YARP RPLidar Devices
 WORKDIR $robotology_install_folder
@@ -241,10 +241,10 @@ RUN cd mutual-gaze-classifier-demo && \
 USER $robotology_install_user
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
-RUN echo "source /home/user1/robotology/yarp-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
+RUN echo "source /home/user1/robotology/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-devices-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp
 ENV LD_LIBRARY_PATH=$robotology_install_folder/yarp/build/lib/yarp/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1

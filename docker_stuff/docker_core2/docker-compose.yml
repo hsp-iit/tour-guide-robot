@@ -27,26 +27,26 @@ services:
 
 # Images
   ros2-r1-sim:
-    image: elandini84/r1images:r1Core2
+    image: elandini84/r1images:r1Core2_devel
     build:
       dockerfile: Dockerfile
       context: .
 
 # containers
   terminator:
-    image: elandini84/r1images:r1Core2
+    image: elandini84/r1images:r1Core2_devel
     <<: *base
     container_name: terminator
     command: sh -c "yarp conf 172.17.0.1 10000; terminator --no-dbus"
 
   yarpserver:
-    image: elandini84/r1images:r1Core2
+    image: elandini84/r1images:r1Core2_devel
     <<: *base
     container_name: yarpserver
     command: sh -c "yarp conf 172.17.0.1 10000; yarpserver"
 
   gazebo:
-    image: elandini84/r1images:r1Core2
+    image: elandini84/r1images:r1Core2_devel
     <<: *base
     container_name: gazebo
     command: bash -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; source /opt/ros/humble/setup.bash; ros2 launch gazebo_ros gazebo.launch.py world:=/home/user1/tour-guide-robot/app/maps/SIM_GAM/GAM.world"
@@ -54,7 +54,7 @@ services:
       - yarpserver
 
   yarpmanager:
-    image: elandini84/r1images:r1Core2
+    image: elandini84/r1images:r1Core2_devel
     <<: *base
     container_name: yarpmanager
     command: sh -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarpmanager"
@@ -62,7 +62,7 @@ services:
       - yarpserver
 
   yarplogger:
-    image: elandini84/r1images:r1Core2
+    image: elandini84/r1images:r1Core2_devel
     <<: *base
     container_name: yarplogger
     command: sh -c "yarp conf 172.17.0.1 10000; yarp wait $${YARP_NAMESPACE}; yarplogger --start"
