@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     cris_new_area_fixed
+YarpMapData cris_new_area_fixed.ppm
+RosMapData  cris_new_area_fixed.yaml
