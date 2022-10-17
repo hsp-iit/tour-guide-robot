@@ -4,7 +4,8 @@ killall -9 gzclient
 killall -9 baseControl2
 killall -9 yarpmobilebasegui
 killall -9 state_publisher
-killall -9 amcl
+pkill -f amcl
+pkill -f nav2
 killall -9 rviz2
 killall -9 navigationGui
 killall -9 yarpmanager
