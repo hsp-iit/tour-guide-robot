@@ -50,7 +50,7 @@
    </module>
 
    <module>
-      <name>./set_navigation_position.sh</name>
+      <name>./set_navigation_position_001.sh</name>
       <parameters></parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
       <node>console</node>
@@ -71,7 +71,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from localizationROS2.ini --init_map arena</parameters>
+      <parameters>--context navigation2 --from localizationROS2.ini --init_map erzelli6</parameters>
       <node>console</node>
    </module>
 
