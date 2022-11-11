@@ -2379,7 +2379,7 @@
                 "m_type": "signal"
               }
             ],
-            
+
             "sayWhileNavigating": [
               {
                 "m_isBlocking": true,
@@ -8400,7 +8400,7 @@
                 "m_param": "From Caserta, after the return of the Borbone family in 1815, the set, that was composed of 640 pieces, was moved to the Reggia di Portici, the original destination.",
                 "m_type": "speak"
               },
-              
+
               {
                 "m_isBlocking": false,
                 "m_param": "pointToRightBothArms",
@@ -9338,7 +9338,7 @@
                 "m_type": "signal"
               }
             ],
-            
+
             "sayWhileNavigating": [
               {
                 "m_isBlocking": true,
@@ -12418,7 +12418,7 @@
                 "m_param": "startHearing",
                 "m_type": "signal"
               }
-            ],        
+            ],
             "greetings": [
               {
                 "m_isBlocking": true,
@@ -13361,6 +13361,1537 @@
             ]
           },
           "m_name": "cris_icub3"
+        }
+      }
+    }
+  },
+  "TOUR_CRIS_SHORT": {
+    "m_activeTourPoIs": [
+      "cris_new_start",
+      "cris_new_arena"
+    ],
+    "m_availablePoIs": {
+      "en-US": {
+        "___generic___": {
+          "m_availableActions": {
+            "resetTourManager": [
+              {
+                "m_isBlocking": false,
+                "m_param": "reset",
+                "m_type": "signal"
+              }
+            ],
+            "nextPoi": [
+              {
+                "m_isBlocking": false,
+                "m_param": "nextPoi",
+                "m_type": "signal"
+              }
+            ],
+            "goalNotAvailableError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "You are on my spot, please make space in front of me.",
+                "m_type": "speak"
+              }
+            ],
+            "localizationError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Localization error. Please call for assistance.",
+                "m_type": "speak"
+              }
+            ],
+            "networkError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Network error. Please call for assistance.",
+                "m_type": "speak"
+              }
+            ],
+            "motorsError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Motors failed. Please call for assistance.",
+                "m_type": "speak"
+              }
+            ],
+            "navigationError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "I failed to navigate. Please make some space.",
+                "m_type": "speak"
+              }
+            ],
+            "touchedError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Please, don't touch me.",
+                "m_type": "speak"
+              }
+            ],
+            "fallback": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I'm sorry, I didn't understand",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              }
+            ],
+            "questionMoreDetailsOpera": [
+              {
+                "m_isBlocking": false,
+                "m_param": "What would you like to ask? You can ask me more details about the robot, the future plans or how does it work.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "warningNextNavigation": [
+              {
+                "m_isBlocking": true,
+                "m_param": "We will move to the next area. Please make some space.",
+                "m_type": "speak"
+              }
+            ],
+            "sayWhileNavigating": [],
+            "explainQuestionMainPiece": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I'm sorry, I didn't understand",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionTechnique": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I'm sorry, I didn't understand",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionAuthor": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I'm sorry, I didn't understand",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralMuseum": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I'm sorry, I didn't understand",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ]
+          },
+          "m_name": "___generic___"
+        },
+        "cris_new_start": {
+          "m_availableActions": {
+            "explainGeneralRobotName": [
+              {
+                "m_isBlocking": false,
+                "m_param": "My name is R1. I am a humanoid robot developed by the Italian Institute of Technology to study robotics in the service domain.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotName1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I am a humanoid robot developed by the Italian Institute of Technology to study robotics in the service domain. You can call me R1.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotAge": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I might look young but I was born in 2016.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotAge1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I am 6 years old. Cool, right?",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotMaker": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I was made by IIT. Who built you?",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotMaker1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I was built by the humanoid robots group of the Italian institute of technology.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotEmotions": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Unfortunately I can't feel emotions, but hopefully one day I will!",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotEmotions1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "No, but I can fake them!",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralToilet": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Starting from the entrance, the first bathroom is on the right.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainListOfQuestions": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I can answer several questions. You can ask me questions like: Who are you? How old are you? Who created you? Can you feel emotions? Where is the bathroom? Can you tell me a joke? Is there anything you would like to ask or can we start the tour?",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralJoke": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I went to a Russian Art museum once... To my surprise, it had another museum inside, just a little bit smaller. Inside that one, there was another slightly smaller museum. Then, another... Then, another... Then, another...",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralJoke1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Why did the console gamer get a headache at the art museum? Too many frames.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralJoke2": [
+              {
+                "m_isBlocking": false,
+                "m_param": "I went to a space museum today but was a bit disappointed... It was completely empty! Well, except for the black hole on display, but it sucked.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralJoke3": [
+              {
+                "m_isBlocking": false,
+                "m_param": "What's green and smells like blue paint? Green paint!",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralProject": [
+              {
+                "m_isBlocking": false,
+                "m_param": "This demonstration is part of the project 5G TOURS, funded by the European Union. The project studies, among others, the applications of 5G in robotics. This is demonstrated in this short demo of a remotely managed robot guided tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "If you would you like to start the tour, please say: let's start the tour. If you have more questions, please say: list of questions.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "greetings": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Hello there!",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "Try saying: project, to get more information about the 5G tours project. Try saying: robot, to receive more information about me, ask for a list of questions, or let's start the tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueRight",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "warningNextNavigation": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Our tour ends here, thanks for being with me in this short tour. Feel free to ask our researchers any question you might have. They will be happy to explain their work. I will now return to my charging point. Please make some space.",
+                "m_type": "speak"
+              }
+            ]
+          },
+          "m_name": "cris_new_start"
+        },
+        "cris_new_arena": {
+          "m_availableActions": {
+            "explainQuestionMoreDetails": [
+              {
+                "m_isBlocking": false,
+                "m_param": "As of today more than 50 robots are currently used by research laboratories outside the italian institute of technology.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Do you have any other questions? If you don't know what to ask, ask me for the list of questions. If you don't have questions, ask me to continue the tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionHowItWorks": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Highly trained technicians assemble, calibrate and test the robots before shipping them all over the world.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Do you have any other questions? If you don't know what to ask, ask me for the list of questions. If you don't have questions, ask me to continue the tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionFuturePlans": [
+              {
+                "m_isBlocking": false,
+                "m_param": "We always work to increase robot reliability continuously updating the design and assembly processes.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Do you have any other questions? If you don't know what to ask, ask me for the list of questions. If you don't have questions, ask me to continue the tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainOpera": [
+              {
+                "m_isBlocking": false,
+                "m_param": "We have prepared some demonstrations for you from the groups Humanoid Sensing and Perception, Event Driven Perception and Artificial and Mechanical Intelligence and iCub Tech. We will also show you our new robot ergoCub. I will now let Lorenzo continue the tour, thank you.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "sayWhileNavigating": [
+              {
+                "m_isBlocking": true,
+                "m_param": "We will visit the new open space dedicated to experiments with the robots of the iCub family including myself, R1. This area was opened recently and became active this summer.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "This area usually hosts three iCub robots and two R1 robots. Unfortunately one of the iCub is not here, because it took part to the avatar competition.",
+                "m_type": "speak"
+              }
+            ]
+          },
+          "m_name": "cris_new_arena"
+        }
+      },
+      "it-IT": {
+        "___generic___": {
+          "m_availableActions": {
+            "resetTourManager": [
+              {
+                "m_isBlocking": false,
+                "m_param": "reset",
+                "m_type": "signal"
+              }
+            ],
+            "nextPoi": [
+              {
+                "m_isBlocking": false,
+                "m_param": "nextPoi",
+                "m_type": "signal"
+              }
+            ],
+            "fallback": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Mi dispiace, non ho capito",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              }
+            ],
+            "goalNotAvailableError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Goal occupato, per favore spostarsi.",
+                "m_type": "speak"
+              }
+            ],
+            "localizationError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Errore di localizzazione. Per favore chiamare l'assistenza.",
+                "m_type": "speak"
+              }
+            ],
+            "networkError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Errore di rete. Per favore chiamare l'assistenza.",
+                "m_type": "speak"
+              }
+            ],
+            "motorsError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Errore ai motori. Per favore chiamare l'assistenza",
+                "m_type": "speak"
+              }
+            ],
+            "navigationError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Per favore, fatemi spazio!",
+                "m_type": "speak"
+              }
+            ],
+            "touchedError": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Per favore,le mie braccia sono molto sensibili, non toccare",
+                "m_type": "speak"
+              }
+            ],
+            "warningNextNavigation": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Per favore liberare il percorso. stiamo per andare alla prossima posizione.",
+                "m_type": "speak"
+              }
+            ],
+            "sayWhileNavigating": [],
+            "questionMoreDetailsOpera": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Che domande volete farmi? Provate a dire maggiori informazioni, prossimi obiettivi, come funziona.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "argueRight",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionMainPiece": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Mi dispiace, non ho capito",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionTechnique": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Mi dispiace, non ho capito",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionAuthor": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Mi dispiace, non ho capito",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralMuseum": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Mi dispiace, non ho capito",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "fallbackMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ]
+          },
+          "m_name": "___generic___"
+        },
+        "cris_new_start": {
+          "m_availableActions": {
+            "explainGeneralRobotName": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Il mio nome è R1. Sono un robot umanoide realizzato dall'istituto italiano di tecnologia per studiare le applicazioni della robotica nel dominio dei servizi.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotName1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Mi chiamo R1 e sono un robot umanoide. L'istituto italiano di tecnologia mi ha realizzato per studiare le applicazioni della robotica nel dominio dei servizi.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotAge": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Sono nato nel 2016, per cui ho 6 anni.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotAge1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Ho 6 anni.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotMaker": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Il mio creatore è IIt.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotMaker1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Sono stato costruito dall'istituto italiano di tecnologia.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotEmotions": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Purtroppo non provo emozioni al momento. Ma un giorno, chissà...",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralRobotEmotions1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Al momento no, sfortunatamente. Ma mai dire mai.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralToilet": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Partendo dall'ingresso del museo il primo bagno è a destra.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainListOfQuestions": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Al momento so rispondere a diverse domande: puoi chiedermi domande come chi sei, quanti anni hai, chi ti ha creato, sai provare emozioni, dove si trova il bagno, parlami del progetto. Altrimenti, potete chiedermi di iniziare il tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralJoke": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Un anziano si reca in un museo.Stanco, si siede su una poltrona in esposizione.Ad un certo punto arriva il custode del museo, che molto gentilmente dice all'anziano:Signore, le chiedo scusa, ma questa poltrona è di Luigi XVI! L'anziano risponde: Ah, sì? Allora appena torna gli cedo il posto",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralJoke1": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Qual e' lo sport preferito dai robot? Braccio di ferro.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainGeneralProject": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Questa dimostrazione fa parte del progetto 5G Tours, finanziato dalla comunità europea. Questo progetto si prefigge di studiare le applicazioni del 5G in differenti campi tra cui la robotica, prendendo, nello specifico, come caso d'uso l'impiego di un robot quale guida all'interno di un museo.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "I miei sensori vengono elaborati da un pc remoto a cui sono connesso tramite la rete mobile 5G. Il risultato di questa attività é quello che potrete provare qui oggi.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora, se volete proseguire chiedetemi di iniziare il tour, altrimenti chiedetemi la lista di domande.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "englishLanguage": [
+              {
+                "m_isBlocking": true,
+                "m_param": "setLanguage_en-US-Wavenet-C",
+                "m_type": "signal"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Language set to: English.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "You can try asking me a few questions. If you don't know what to ask, try saying: list of questions or start the tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "greetings": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Benvenuti!",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "argueRight",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Per incominciare provate a dire lista di domande per sapere cosa potete chiedermi oppure dite iniziamo il tour per incominciare la visita.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "italianLanguage": [
+              {
+                "m_isBlocking": true,
+                "m_param": "setLanguage_it-IT-Wavenet-A",
+                "m_type": "signal"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Lingua selezionata: italiano.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Per incominciare provate a dire lista di domande per sapere cosa potete chiedermi oppure dite iniziamo il tour per incominciare la visita.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "languageFallback": [
+              {
+                "m_isBlocking": true,
+                "m_param": "setLanguage_it-IT-Wavenet-A",
+                "m_type": "signal"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Per la lingua italiana dire italiano.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "setLanguage_en-US-Wavenet-C",
+                "m_type": "signal"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "For English language, say English.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "setLanguage_it-IT-Wavenet-A",
+                "m_type": "signal"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "selectLanguage": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Per favore, scegliete una lingua.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "warningNextNavigation": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Questo è stato un rapido giro del laboratorio, ovviamente c'è molto altro da vedere e scoprire di quello che potrei descrivere in così poco tempo. Sentiti libero di chiedere maggiori informazioni ai nostri ricercatori, di solito sono felici di spiegare il loro lavoro in dettaglio.",
+                "m_type": "speak"
+              }
+            ]
+          },
+          "m_name": "cris_new_start"
+        },
+        "cris_new_arena": {
+          "m_availableActions": {
+            "explainQuestionMoreDetails": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Ad oggi più di 50 robot sono attualmente utilizzati da laboratori di ricerca esterni all'istituto italiano di tecnologia.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "pointToLeftBothArms",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Avete altre domande? Se non sapete cosa chiedere, chiedetemi la lista delle domande. Se non avete domande ditemi continua il tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionHowItWorks": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Tecnici altamente qualificati assemblano, calibrano e testano i robot prima di spedirli in tutto il mondo.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "pointToLeftBothArms",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Avete altre domande? Se non sapete cosa chiedere, chiedetemi la lista delle domande. Se non avete domande ditemi continua il tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainQuestionFuturePlans": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Lavoriamo sempre per aumentare l'affidabilità dei robot aggiornando continuamente i processi di progettazione e montaggio.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "pointToLeftBothArms",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Avete altre domande? Se non sapete cosa chiedere, chiedetemi la lista delle domande. Se non avete domande ditemi continua il tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "explainOpera": [
+              {
+                "m_isBlocking": false,
+                "m_param": "Il robot aiCab è una piattaforma largamente utilizzata per fare ricerca, non solo nell'istituto italiano di tecnologia, ma anche in altri laboratori nel mondo. Questa stanza è l'area di produzione. Qui assembliamo i robot ed eseguiamo la calibrazione e il test finali prima che vengano spediti agli utenti finali. Qui eseguiamo anche manutenzione e riparazione di robot che si rompono durante gli esperimenti.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "pointToLeftBothArms",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "idleMove",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "Avete altre domande? Se non sapete cosa chiedere, chiedetemi la lista delle domande. Se non avete domande ditemi continua il tour.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": false,
+                "m_param": "startHearing",
+                "m_type": "signal"
+              }
+            ],
+            "sayWhileNavigating": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Ora siamo nel Centro per la Robotica ei Sistemi Intelligenti. In quest'area dell'edificio costruiamo robot umanoidi come aicab e me. I ricercatori e gli ingegneri qui lavorano per migliorare le nostre capacità di interazione con l'ambiente e gli esseri umani, imparando a percepire l'ambiente, manipolare oggetti e muoversi.",
+                "m_type": "speak"
+              }
+            ]
+          },
+          "m_name": "cris_new_arena"
         }
       }
     }
