@@ -1,0 +1,42 @@
+<application>
+  <name>5g_Tours_R1SN003_CRIS_SHORT</name>
+
+  <application>
+    <name>Navigation_ROS2_R1SN003</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>headSynchronizer</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>vad</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>google</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>open_pose_stuff</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>btStructure_cer</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>tourManagerApp_CRIS_SHORT</name>
+    <prefix></prefix>
+  </application>
+
+  <dependencies>
+  </dependencies>
+
+</application>
