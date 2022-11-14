@@ -13948,7 +13948,7 @@
               },
               {
                 "m_isBlocking": false,
-                "m_param": "Try saying: project, to get more information about the 5G tours project. Try saying: robot, to receive more information about me, ask for a list of questions, or let's start the tour.",
+                "m_param": "Welcome to the Center for Robotics and Intelligent Systems, I am R1 and I will guide you to the iCub laboratories. Just tell me to go when you are ready",
                 "m_type": "speak"
               },
               {
