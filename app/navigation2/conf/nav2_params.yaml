@@ -173,7 +173,11 @@ controller_server:
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
 
-controller_server_rclcpp_node:
+      filters: ["keepout_filter"]
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"controller_server_rclcpp_node:
   ros__parameters:
     use_sim_time: true
 
@@ -259,6 +263,11 @@ local_costmap:
           clearing: true
           marking: false
           data_type: "PointCloud2"
+      filters: ["keepout_filter"]
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
   local_costmap_client:
     ros__parameters:
       use_sim_time: true
@@ -316,6 +325,10 @@ global_costmap:
         cost_scaling_factor: 2.5
         inflate_unknown: false
         inflate_around_unknown: false
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
   global_costmap_client:
     ros__parameters:
       use_sim_time: true
