@@ -16,7 +16,8 @@ endif()
 find_package(Boost COMPONENTS coroutine REQUIRED)
 
 if(${BTState})
-	find_package(BehaviorTreeV3 REQUIRED)
+	find_package(ament_index_cpp)
+	find_package(behaviortree_cpp_v3 REQUIRED)
 endif()
 find_package(YCM REQUIRED)
 
