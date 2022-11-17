@@ -3,10 +3,10 @@
 
   <dependencies>
   </dependencies>
-  
+
   <module>
-    <name>yarpdev </name>
-    <parameters>--device faceDisplayServer</parameters>
+    <name>yarprobotinterface </name>
+    <parameters>--context headSynchronizer --from faceDisplay.ini</parameters>
     <node>r1-face</node>
   </module>
 
@@ -33,7 +33,7 @@
     <parameters></parameters>
     <node>console1</node>
   </module>
-    
+
   <connection>
     <from>/faceExpressionImage/image:o</from>
     <to>/robot/faceDisplay/image:i</to>
@@ -87,7 +87,7 @@
     <to>/HeadSynchronizer/thrift:s</to>
     <protocol>fast_tcp</protocol>
   </connection>
-  
+
   <connection>
     <from>/vad/HeadSynchronizer/thrift:c</from>
     <to>/HeadSynchronizer/thrift:s</to>
