@@ -3,10 +3,10 @@
 
   <dependencies></dependencies>
 
-   <module>
-    <name>yarpdev</name>
-    <parameters>--device batteryWrapper --subdevice fakeBattery --name /battery --charge 50</parameters>
-    <node>console1</node>
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context btStructure --from battery.ini</parameters>
+    <node>r1-base</node>
   </module>
 
   <module>
