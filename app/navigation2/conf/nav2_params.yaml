@@ -321,6 +321,7 @@ global_costmap:
         cost_scaling_factor: 2.5
         inflate_unknown: false
         inflate_around_unknown: false
+      filters: ["keepout_filter"]
       keepout_filter:
         plugin: "nav2_costmap_2d::KeepoutFilter"
         enabled: True
