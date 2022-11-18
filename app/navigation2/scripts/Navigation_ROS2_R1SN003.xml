@@ -97,6 +97,7 @@
       <node>console</node>
    </module>
 
+   <module>
       <name>yarprobotinterface</name>
       <parameters>--context navigation2 --from navigator2D.ini</parameters>
       <node>console</node>
