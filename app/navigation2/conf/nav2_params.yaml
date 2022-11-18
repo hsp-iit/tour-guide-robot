@@ -173,11 +173,7 @@ controller_server:
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
 
-      filters: ["keepout_filter"]
-      keepout_filter:
-        plugin: "nav2_costmap_2d::KeepoutFilter"
-        enabled: True
-        filter_info_topic: "/costmap_filter_info"controller_server_rclcpp_node:
+controller_server_rclcpp_node:
   ros__parameters:
     use_sim_time: true
 
