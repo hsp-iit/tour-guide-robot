@@ -293,6 +293,7 @@ RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-too
     sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+RUN echo "source /home/user1/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.bashrc
 WORKDIR ${user1_home}/tour-guide-robot
 RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
