@@ -259,6 +259,11 @@ local_costmap:
           clearing: true
           marking: false
           data_type: "PointCloud2"
+      filters: ["keepout_filter"]
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
   local_costmap_client:
     ros__parameters:
       use_sim_time: true
@@ -316,6 +321,11 @@ global_costmap:
         cost_scaling_factor: 2.5
         inflate_unknown: false
         inflate_around_unknown: false
+      filters: ["keepout_filter"]
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
   global_costmap_client:
     ros__parameters:
       use_sim_time: true

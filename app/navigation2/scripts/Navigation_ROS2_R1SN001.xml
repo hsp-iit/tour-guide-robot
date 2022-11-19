@@ -1,5 +1,5 @@
 <application>
-   <name>Navigation_ROS2_R1SN003</name>
+   <name>Navigation_ROS2_R1SN001</name>
    <dependencies>
    </dependencies>
 
@@ -7,8 +7,8 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters></parameters>
-      <workdir>/home/user1/robotology/robots-configuration/R1SN003/</workdir>
+      <parameters>--config CER-ros2.xml</parameters>
+      <workdir>/home/user1/robotology/robots-configuration/R1SN001</workdir>
       <node>r1-base</node>
    </module>
 
@@ -20,7 +20,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from pointCloudCreator.ini</parameters>
+      <parameters>--context navigation2 --from pointCloudCreator_depth_center.ini</parameters>
       <node>console</node>
    </module>
 
@@ -37,13 +37,6 @@
       <node>r1-base</node>
    </module>
 
-   <!-- Frame for external realsense -->
-   <module>
-      <name>ros2</name>
-      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 1 depth_center extra_camera_tf</parameters>
-      <node>r1-base</node>
-   </module>
-
    <module>
       <name>baseControl2</name>
       <parameters>--context baseControl2 --from baseCtrl_cer_ros2.ini --skip_robot_interface_check</parameters>
@@ -52,12 +45,12 @@
 
    <module>
       <name>joystickCtrl</name>
-      <parameters>--context navigation2 --from joystick_cer_linux_high_speed_stratus.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
+      <parameters>--context navigation2 --from joystick_cer_linux_high_speed_xbox.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
       <node>r1-base</node>
    </module>
 
    <module>
-      <name>./set_navigation_position.sh</name>
+      <name>./set_navigation_position_001.sh</name>
       <parameters></parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
       <node>console</node>
@@ -78,7 +71,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from localizationROS2.ini --init_map cris_new_area_fixed</parameters>
+      <parameters>--context navigation2 --from localizationROS2.ini --init_map erzelli6</parameters>
       <node>console</node>
    </module>
 
@@ -89,13 +82,6 @@
       <node>console</node>
    </module>
 
-   <module>
-      <name>ros2</name>
-      <parameters>launch launch/costmap_filter_info.launch.py params_file:=conf/cris_new_area_fixed_keepout_params.yaml mask:=/home/user1/tour-guide-robot/app/maps/cris_new_area_fixed_keepout_mask.yaml</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/</workdir>
-      <node>console</node>
-   </module>
-   
    <module>
       <name>yarpdev</name>
       <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>

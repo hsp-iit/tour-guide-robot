@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 LABEL maintainer="Ettore Landini"
 
 # Non-interactive installation mode
@@ -51,19 +51,21 @@ ENV robotology_install_user user1
 ENV user1_home /home/$robotology_install_user
 ENV robotology_install_folder $user1_home/robotology
 
-# CUDA and cuDNN (has to be those versions)
+
+# Build openpose
 USER $robotology_install_user
 WORKDIR $user1_home
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-RUN sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub
-RUN sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
-RUN sudo apt-get update && sudo apt-get -y install cuda-toolkit-10-0
+RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
+    cd ./openpose/ && \
+    git submodule update --init --recursive --remote && \
+    git checkout tags/v1.7.0
+RUN cd $user1_home/openpose && \
+    mkdir build && \
+    cd ./build && \
+    cmake .. -DDOWNLOAD_HAND_MODEL=OFF && \
+    make -j11
+ENV openpose_ROOT=$user1_home/openpose
 
-RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v7.6.1/Ubuntu18_04-x64/libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
-RUN sudo dpkg -i libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
-RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v7.6.1/Ubuntu18_04-x64/libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
-RUN sudo dpkg -i libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
-RUN sudo rm libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
 
 # Build ycm
 USER $robotology_install_user
@@ -73,28 +75,6 @@ RUN cd ycm && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
-
-# GCC Compiler (because openpose requires this version)
-# Add Ubuntu 20.04 repos to install gcc-7 and remove after for safety
-RUN sudo /bin/bash -c 'echo deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal main universe >> /etc/apt/sources.list'
-RUN sudo apt-get update && sudo apt-get install -y gcc-7 g++-7 && sudo rm -rf /var/lib/apt/lists/*
-RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-RUN sudo /bin/bash -c "head -n -1 /etc/apt/sources.list > /etc/apt/file.tmp; mv /etc/apt/file.tmp /etc/apt/sources.list"
-
-# Build openpose (Maria Lombardi)
-USER $robotology_install_user
-WORKDIR $user1_home
-RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
-    cd ./openpose/ && \
-    git submodule update --init --recursive --remote && \
-    git checkout tags/v1.6.0
-RUN cd $user1_home/openpose && \
-    mkdir build && \
-    cd ./build && \
-    cmake .. -DDOWNLOAD_HAND_MODEL=OFF && \
-    make -j11
-ENV openpose_ROOT=$user1_home/openpose
-RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
 
 # Build YARP
 USER $robotology_install_user
@@ -175,7 +155,7 @@ ENV ICUB_DIR=$robotology_install_folder/icub-main/build
 # Build robots-configuration devel
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/robots-configuration.git -b devel
+RUN git clone https://github.com/randaz81/robots-configuration.git -b R1SN003_ros2
 
 # Build navigation
 USER $robotology_install_user
@@ -216,7 +196,6 @@ WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology/icub-contrib-common.git
 RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$robotology_install_folder/iCubContrib && sudo make -j11 install
 ENV ICUBcontrib_DIR=$robotology_install_folder/iCubContrib/lib
-ENV ICUBcontrib_SHARE=$robotology_install_folder/iCubContrib/share/ICUBcontrib
 
 # Build yarpopenpose (Maria Lombardi)
 USER $robotology_install_user
@@ -243,9 +222,9 @@ USER $robotology_install_user
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
 RUN echo "source /home/user1/robotology/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
-ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin:/home/user1/robotology/icub-main/build
+ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-devices-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp:$ICUBcontrib_SHARE
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-devices-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp
 ENV LD_LIBRARY_PATH=$robotology_install_folder/yarp/build/lib/yarp/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
