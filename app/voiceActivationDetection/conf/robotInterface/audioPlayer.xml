@@ -16,6 +16,7 @@ SPDX-License-Identifier: BSD-3-Clause
 
         <device name="audioPlayWrap" type="AudioPlayerWrapper">
             <param extern-name="play_start" name="start">
+                true
             </param>
             <param extern-name="play_playback_network_buffer_size" name="playback_network_buffer_size">
                 0.1

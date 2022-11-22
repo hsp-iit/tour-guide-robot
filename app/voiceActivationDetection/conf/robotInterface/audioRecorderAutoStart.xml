@@ -22,6 +22,7 @@ SPDX-License-Identifier: BSD-3-Clause
 
         <device name="audioAutoRecWrap" type="AudioRecorderWrapper">
             <param extern-name="autoRec_start" name="start">
+                true
             </param>
             <param extern-name="autoRec_min_samples_over_network" name="min_samples_over_network">
                 8820
