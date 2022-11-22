@@ -9,34 +9,34 @@
   <!-- recording audio from microphone -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioRecorderAutoStart.ini</parameters>
+    <parameters>--context vadModule --from audioRecorderAutoStart.ini</parameters>
     <node>console</node>
   </module>
 
   <!-- saving the original audio received from the port to original.wav -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioPlayerToFileOrig.ini</parameters>
+    <parameters>--context vadModule --from audioPlayerToFileOrig.ini</parameters>
     <node>console</node>
   </module>
 
   <!-- saving the filtered audio received from the port to filtered.wav -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioPlayerToFileFiltered.ini</parameters>
+    <parameters>--context vadModule --from audioPlayerToFileFiltered.ini</parameters>
     <node>console</node>
   </module>
 
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioPlayer.ini</parameters>
+    <parameters>--context vadModule --from audioPlayer.ini</parameters>
     <node>console</node>
   </module>
 
   <!-- playing the audio from the file original.wav to a port -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioRecorderFromFile.ini</parameters>
+    <parameters>--context vadModule --from audioRecorderFromFile.ini</parameters>
     <node>console</node>
   </module>
 
@@ -47,7 +47,7 @@
   </module>
 
   <module>
-    <name>voiceActivationDetection</name>
+    <name>vadModule</name>
     <parameters>--</parameters>
     <node>console</node>
   </module>

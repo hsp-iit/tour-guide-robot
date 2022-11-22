@@ -6,18 +6,18 @@
 
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioRecorder.ini</parameters>
+    <parameters>--context vadModule --from audioRecorder.ini</parameters>
     <node>r1-torso</node>
   </module>
 
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context voiceActivationDetection --from audioPlayer.ini</parameters>
+    <parameters>--context vadModule --from audioPlayer.ini</parameters>
     <node>r1-face</node>
   </module>
 
   <module>
-    <name>voiceActivationDetection</name>
+    <name>vadModule</name>
     <parameters></parameters>
     <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
     <node>r1-torso</node>
