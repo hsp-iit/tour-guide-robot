@@ -62,6 +62,7 @@ RUN cd ycm && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
+ENV YCM_DIR=/home/user1/robotology/ycm/build
 
 # Build YARP
 USER $robotology_install_user
@@ -122,6 +123,7 @@ RUN cd icub-main && mkdir build && cd build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
+    -DICUBMAIN_COMPILE_SIMULATORS=OFF \
     -DENABLE_icubmod_gazecontrollerclient=ON && \
     make -j11
 ENV ICUB_ROOT=$robotology_install_folder/icub-main

@@ -73,6 +73,7 @@ RUN cd ycm && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
+ENV YCM_DIR=/home/user1/robotology/ycm/build
 
 # GCC Compiler (because openpose requires this version)
 # Add Ubuntu 20.04 repos to install gcc-7 and remove after for safety
@@ -167,6 +168,7 @@ RUN cd icub-main && mkdir build && cd build && \
     -DENABLE_icubmod_embObjStrain=ON \
     -DENABLE_icubmod_parametricCalibrator=ON \
     -DENABLE_icubmod_parametricCalibratorEth=ON \
+    -DICUBMAIN_COMPILE_SIMULATORS=OFF \
     -DENABLE_icubmod_gazecontrollerclient=ON && \
     make -j11
 ENV ICUB_ROOT=$robotology_install_folder/icub-main
