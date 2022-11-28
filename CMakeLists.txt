@@ -22,8 +22,9 @@ endif()
 find_package(YCM REQUIRED)
 
 # Checking if opencv4 is installed (for python3 and ubuntu 20.04) and including the required directory for compatibility. Else, continue as it was.
-find_package (OpenCV REQUIRED)
+find_package (OpenCV)
 if (${OpenCV_FOUND})
+	set(OPENCV_ON ON)
 	if (IS_DIRECTORY /usr/include/opencv4/)
 		include_directories ("/usr/include/opencv4/")
 	endif ()
