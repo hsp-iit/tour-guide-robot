@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y apt-utils software-properties-common su
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install numpy bpytop
+RUN pip3 install numpy bpytop scikit-learn opencv-python
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
@@ -51,7 +51,7 @@ RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
 RUN cd $user1_home/openpose && \
     mkdir build && \
     cd ./build && \
-    cmake .. -DDOWNLOAD_HAND_MODEL=OFF && \
+    cmake .. -DDOWNLOAD_HAND_MODEL=OFF -DUSE_CUDNN=OFF && \
     make -j11
 ENV openpose_ROOT=$user1_home/openpose
 
@@ -104,14 +104,6 @@ RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTH
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
-# Build icub-firmware-shared
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/icub-firmware-shared -b devel
-RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
-ENV icub_firmware_shared_ROOT=$robotology_install_folder/icub-firmware-shared
-ENV icub_firmware_shared_DIR=$robotology_install_folder/icub-firmware-shared/build
-
 # Build icub-main
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -133,6 +125,7 @@ WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology/icub-contrib-common.git
 RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$robotology_install_folder/iCubContrib && sudo make -j11 install
 ENV ICUBcontrib_DIR=$robotology_install_folder/iCubContrib/lib
+ENV ICUBcontrib_SHARE=$robotology_install_folder/iCubContrib/share/ICUBcontrib
 
 # Build yarpopenpose (Maria Lombardi)
 USER $robotology_install_user
@@ -157,11 +150,9 @@ RUN cd mutual-gaze-classifier-demo && \
 # Set environmental variables
 USER $robotology_install_user
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/user1/.bashrc
-RUN echo "source /home/user1/robotology/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
-ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
+ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:$robotology_install_folder/iCubContrib/bin:/home/user1/robotology/Groot/build:/home/user1/tour-guide-robot/build/bin
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-devices-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/behavior-tour-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:$robotology_install_folder/yarp-devices-ros2/build/share/yarp:$robotology_install_folder/yarp-device-rplidar/build/share/yarp:$ICUBcontrib_SHARE
 ENV LD_LIBRARY_PATH=$robotology_install_folder/yarp/build/lib/yarp/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
