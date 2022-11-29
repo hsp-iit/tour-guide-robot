@@ -6,7 +6,7 @@
   <module>
     <name>yarprobotinterface</name>
     <parameters>--context btStructure --from battery.ini</parameters>
-    <node>r1-base</node>
+    <node>console1</node>
   </module>
 
   <module>
