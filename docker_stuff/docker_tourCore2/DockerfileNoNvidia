@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
+FROM ubuntu:22.04
 LABEL maintainer="Ettore Landini"
 
 # Non-interactive installation mode
