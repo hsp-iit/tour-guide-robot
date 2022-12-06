@@ -17,7 +17,7 @@
   </module>
 
   <module>
-    <name>vadModule</name>
+    <name>voiceActivationDetection</name>
     <parameters></parameters>
     <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
     <node>console1</node>
