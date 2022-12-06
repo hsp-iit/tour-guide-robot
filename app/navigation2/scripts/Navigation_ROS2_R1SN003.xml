@@ -40,7 +40,7 @@
    <!-- Frame for external realsense -->
    <module>
       <name>ros2</name>
-      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 1 depth_center extra_camera_tf</parameters>
+      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
       <node>r1-base</node>
    </module>
 
