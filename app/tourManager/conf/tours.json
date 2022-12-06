@@ -14854,7 +14854,7 @@
             "explainOpera": [
               {
                 "m_isBlocking": false,
-                "m_param": "Il robot aiCab è una piattaforma largamente utilizzata per fare ricerca, non solo nell'istituto italiano di tecnologia, ma anche in altri laboratori nel mondo. Questa stanza è l'area di produzione. Qui assembliamo i robot ed eseguiamo la calibrazione e il test finali prima che vengano spediti agli utenti finali. Qui eseguiamo anche manutenzione e riparazione di robot che si rompono durante gli esperimenti.",
+                "m_param": "Abbiamo preparato una dimostrazione che mostra alcuni recenti sviluppi nel campo dell'apprendimento automatico di oggetti e l'interazione uomo-robot. A questo punto lascio la parola a Lorenzo per rispondere ad eventuali domande, per spiegare meglio la ricerca che viene svolta in questi laboratori o per introdurre la dimostrazione.",
                 "m_type": "speak"
               },
               {
@@ -14873,11 +14873,6 @@
                 "m_type": "dance"
               },
               {
-                "m_isBlocking": true,
-                "m_param": "Avete altre domande? Se non sapete cosa chiedere, chiedetemi la lista delle domande. Se non avete domande ditemi continua il tour.",
-                "m_type": "speak"
-              },
-              {
                 "m_isBlocking": false,
                 "m_param": "startHearing",
                 "m_type": "signal"
@@ -14886,7 +14881,19 @@
             "sayWhileNavigating": [
               {
                 "m_isBlocking": true,
-                "m_param": "Ora siamo nel Centro per la Robotica ei Sistemi Intelligenti. In quest'area dell'edificio costruiamo robot umanoidi come aicab e me. I ricercatori e gli ingegneri qui lavorano per migliorare le nostre capacità di interazione con l'ambiente e gli esseri umani, imparando a percepire l'ambiente, manipolare oggetti e muoversi.",
+                "m_param": "Visiteremo l'open space dedicato agli esperimenti con i robot della famiglia di iCub, di cui faccio parte io stesso. Quest'area e' stata aperta solo recentemente ed e' attiva da quest'estate.",
+                "m_type": "speak"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "In questo spazio si trovano 3 aiCab a due R1 che vengono usati per esperimenti di locomozione, collaborazione robot-uomo, visione artificiale e manipolazione di oggetti. In questa area lavorano i gruppi Humanoid Sensing and Perception, Event Driven Perception and Artificial and Mechanical Intelligence.",
+                "m_type": "speak"
+              }
+            ],
+            "warningNextNavigation": [
+              {
+                "m_isBlocking": true,
+                "m_param": "Stiamo per andare alla prossima posizione. Per favore, fatemi spazio.",
                 "m_type": "speak"
               }
             ]
