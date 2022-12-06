@@ -14,7 +14,7 @@
 	<module>
 		<name>python3</name>
 		<parameters>/home/user1/robotology/iCubContrib/bin/multiface-mutualgaze-classifier.py --context mutual-gaze-classifier-demo --from classifier_conf.ini</parameters>
-		<node>console1</node>
+		<node>console3</node>
 	</module>
 
 	<!-- <module>
@@ -22,7 +22,7 @@
 		<parameters>--context openPoseStuff --from skeleton.ini --transformClient::rootFrameName depth_center --camera::fov "(86 57)"</parameters>
 		<node>console</node>
 	</module> -->
-   
+
 	<module>
 		<name>yarpview</name>
 		<parameters>--name /view/rgb --w 640 --h 480</parameters>
@@ -81,7 +81,7 @@
 		<from>/yarpOpenPose/float:o</from>
 		<to>/skeletonRetriever/depth:i</to>
 		<protocol>fast_tcp</protocol>
-	</connection> 
+	</connection>
 
 	<connection>
 		<from>/yarpOpenPose/target:o</from>

@@ -5,16 +5,14 @@
   </dependencies>
 
   <module>
-    <name>yarpdev</name>
-    <parameters>--device AudioRecorderWrapper --subdevice portaudioRecorder --min_samples_over_network 8820 --max_samples_over_network 8820 --AUDIO_BASE::rate 44100 --AUDIO_BASE::samples 17640 --AUDIO_BASE::channels 1   </parameters>
-    <environment>YARP_LOG_PROCESS_LABEL=Audio_Recorder</environment>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioRecorder.ini</parameters>
     <node>consoleOut</node>
   </module>
 
   <module>
-    <name>yarpdev</name>
-    <parameters>--device AudioPlayerWrapper --subdevice portaudioPlayer --start --playback_network_buffer_size 0.1  --AUDIO_BASE::samples 1323000   </parameters>
-    <environment>YARP_LOG_PROCESS_LABEL=AudioPlayer</environment>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioPlayer.ini</parameters>
     <node>consoleOut</node>
   </module>
 

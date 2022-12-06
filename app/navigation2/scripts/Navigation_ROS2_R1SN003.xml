@@ -90,15 +90,16 @@
    </module>
 
    <module>
+
       <name>ros2</name>
       <parameters>launch launch/costmap_filter_info.launch.py params_file:=conf/cris_new_area_fixed_keepout_params.yaml mask:=/home/user1/tour-guide-robot/app/maps/cris_new_area_fixed_keepout_mask.yaml</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/</workdir>
       <node>console</node>
    </module>
-   
+
    <module>
-      <name>yarpdev</name>
-      <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
       <node>console</node>
    </module>
 

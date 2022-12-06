@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2006-2021 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="fromFileRecorderDev" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="fromFileRec" type="audioFromFileDevice">
+            <group name="AUDIO_BASE">
+                <param extern-name="fromFile_base_rate" name="rate">
+                    44100
+                </param>
+                <param extern-name="fromFile_base_samples" name="samples">
+                    17640
+                </param>
+                <param extern-name="fromFile_base_channels" name="channels">
+                    1
+                </param>
+            </group>
+            <param extern-name="fromFile_fileName" name="file_name">
+                internal_75vol_far_alone.wav
+            </param>
+        </device>
+
+        <device name="fromFileRecWrap" type="AudioRecorderWrapper">
+            <param extern-name="fromFile_min_samples_over_network" name="min_samples_over_network">
+                8820
+            </param>
+            <param extern-name="fromFile_max_samples_over_network" name="max_samples_over_network">
+                8820
+            </param>
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdeviceaudiofromfile">
+                        fromFileRec
+                    </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+    </devices>
+</robot>

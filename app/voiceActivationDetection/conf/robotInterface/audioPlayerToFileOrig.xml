@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2006-2021 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="audioPlayerFileOrigDev" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="toFileOrigPlay" type="audioToFileDevice">
+            <group name="AUDIO_BASE">
+                <param extern-name="toFileOrig_base_samples" name="samples">
+                    1323000
+                </param>
+            </group>
+            <param extern-name="toFileOrig_fileName" name="file_name">
+                original.wav
+            </param>
+            <param extern-name="toFileOrig_saveMode" name="save_mode">
+                overwrite_file
+            </param>
+        </device>
+
+        <device name="toFileOrigPlayWrap" type="AudioPlayerWrapper">
+            <param extern-name="toFileOrig_start" name="start">
+                true
+            </param>
+            <param extern-name="toFileOrig_playback_network_buffer_size" name="playback_network_buffer_size">
+                0.1
+            </param>
+            <param extern-name="toFileOrig_name" name="name">
+                /original
+            </param>
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdevicetofileorig">
+                        toFileOrigPlay
+                    </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+    </devices>
+</robot>

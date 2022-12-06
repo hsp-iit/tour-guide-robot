@@ -83,8 +83,8 @@
    </module>
 
    <module>
-      <name>yarpdev</name>
-      <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
       <node>console</node>
    </module>
 
