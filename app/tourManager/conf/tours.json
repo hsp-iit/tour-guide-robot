@@ -14663,7 +14663,7 @@
               },
               {
                 "m_isBlocking": true,
-                "m_param": "Benvenuti al Centro di Robotica e Sistemi Intelligenti. Mi chiamo R1 e vi mostreró i nostri laboratori. Se siete pronti, ditemi di iniziare il tour.",
+                "m_param": "Benvenuti al Centro di Robotica e Sistemi Intelligenti. Mi chiamo R1 e vi mostrerò i nostri laboratori. Se siete pronti, ditemi di iniziare il tour.",
                 "m_type": "speak"
               },
               {
@@ -14859,7 +14859,12 @@
               },
               {
                 "m_isBlocking": false,
-                "m_param": "pointToLeftBothArms",
+                "m_param": "pointToRightBothArms",
+                "m_type": "dance"
+              },
+              {
+                "m_isBlocking": true,
+                "m_param": "argueBoth",
                 "m_type": "dance"
               },
               {
@@ -14881,7 +14886,7 @@
             "sayWhileNavigating": [
               {
                 "m_isBlocking": true,
-                "m_param": "Visiteremo l'open space dedicato agli esperimenti con i robot della famiglia di aiCab, di cui faccio parte io stesso. Quest'area é stata aperta solo recentemente ed é attiva da quest'estate.",
+                "m_param": "Visiteremo l'open space dedicato agli esperimenti con i robot della famiglia di aiCab, di cui faccio parte io stesso. Quest'area è stata aperta solo recentemente ed è attiva da quest'estate.",
                 "m_type": "speak"
               },
               {
