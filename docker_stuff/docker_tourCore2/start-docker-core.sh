@@ -7,8 +7,6 @@ if [[ -n $1 ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -e QT_X11_NO_MITSHM=1 --gpus all elandini84/r1images:tourCore2_devel
     elif [[ $1 == "-s"  || $1 == "--stable" ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -e QT_X11_NO_MITSHM=1 --gpus all elandini84/r1images:tourCore2_stable
-    elif [[ $1 == "-n" || $1 == "--no-nvidia" ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -e QT_X11_NO_MITSHM=1 elandini84/r1images:tourCore2_noNvidia
     elif [[ $1 == "-h"  || $1 == "--help" ]]; then
         echo "Syntax: ./start-docker-core [option]"
         echo "options:"

@@ -3,7 +3,7 @@ LABEL maintainer="Ettore Landini"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=28_09_2022
+ENV DOCKER_UPDATED_ON=15_12_2022
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
@@ -51,20 +51,6 @@ ENV robotology_install_user user1
 ENV user1_home /home/$robotology_install_user
 ENV robotology_install_folder $user1_home/robotology
 
-# CUDA and cuDNN (has to be those versions)
-USER $robotology_install_user
-WORKDIR $user1_home
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-RUN sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub
-RUN sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
-RUN sudo apt-get update && sudo apt-get -y install cuda-toolkit-10-0
-
-RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v7.6.1/Ubuntu18_04-x64/libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
-RUN sudo dpkg -i libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
-RUN wget https://developer.download.nvidia.com/compute/redist/cudnn/v7.6.1/Ubuntu18_04-x64/libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
-RUN sudo dpkg -i libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
-RUN sudo rm libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb libcudnn7-dev_7.6.1.34-1+cuda10.0_amd64.deb
-
 # Build ycm
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
@@ -74,28 +60,6 @@ RUN cd ycm && mkdir build && cd build && \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
 ENV YCM_DIR=/home/user1/robotology/ycm/build
-
-# GCC Compiler (because openpose requires this version)
-# Add Ubuntu 20.04 repos to install gcc-7 and remove after for safety
-RUN sudo /bin/bash -c 'echo deb [arch=amd64] http://archive.ubuntu.com/ubuntu focal main universe >> /etc/apt/sources.list'
-RUN sudo apt-get update && sudo apt-get install -y gcc-7 g++-7 && sudo rm -rf /var/lib/apt/lists/*
-RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-RUN sudo /bin/bash -c "head -n -1 /etc/apt/sources.list > /etc/apt/file.tmp; mv /etc/apt/file.tmp /etc/apt/sources.list"
-
-# Build openpose (Maria Lombardi)
-USER $robotology_install_user
-WORKDIR $user1_home
-RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
-    cd ./openpose/ && \
-    git submodule update --init --recursive --remote && \
-    git checkout tags/v1.6.0
-RUN cd $user1_home/openpose && \
-    mkdir build && \
-    cd ./build && \
-    cmake .. -DDOWNLOAD_HAND_MODEL=OFF && \
-    make -j11
-ENV openpose_ROOT=$user1_home/openpose
-RUN sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
 
 # Build YARP
 USER $robotology_install_user
@@ -220,26 +184,6 @@ RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTAL
 ENV ICUBcontrib_DIR=$robotology_install_folder/iCubContrib/lib
 ENV ICUBcontrib_SHARE=$robotology_install_folder/iCubContrib/share/ICUBcontrib
 
-# Build yarpopenpose (Maria Lombardi)
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/human-sensing
-RUN cd human-sensing/yarpOpenPose && \
-    mkdir build && \
-    cd ./build && \
-    cmake .. && \
-    make && sudo make install
-
-# Build mutual gaze classifier (Maria Lombardi)
-USER $robotology_install_user
-WORKDIR $user1_home
-RUN git clone https://github.com/MariaLombardi/mutual-gaze-classifier-demo.git
-RUN cd mutual-gaze-classifier-demo && \
-    mkdir build && \
-    cd ./build && \
-    cmake .. && \
-    make && sudo make install
-
 # Set environmental variables
 USER $robotology_install_user
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/$robotology_install_user/.bashrc
@@ -268,7 +212,7 @@ USER $robotology_install_user
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/BehaviorTree/Groot.git
 #RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
-RUN git clone https://github.com/DatSpace/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
+RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 
 # Navigation stuff
 WORKDIR ${user1_home}
@@ -277,11 +221,12 @@ RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON; make -j11"
 
 # GOOGLE
-RUN git clone --recursive -b v1.43.2 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
+RUN git clone --recursive -b v1.51.0 https://github.com/grpc/grpc.git && cd grpc && mkdir build && \
     cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release \
     -DgRPC_SSL_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package && sudo make -j11 install && sudo ldconfig
-RUN cd && git clone https://github.com/googleapis/googleapis.git && cd googleapis && git checkout f78745822aadedb3c165d51372732d672b634db2 && sudo make -j11
-RUN cd && git clone https://github.com/randaz81/speech.git -b gs_external_stream && cd speech && mkdir build && cd build && \
+#RUN cd && git clone https://github.com/googleapis/googleapis.git && cd googleapis && git checkout f78745822aadedb3c165d51372732d672b634db2 && sudo make -j11
+RUN cd && git clone https://github.com/googleapis/googleapis.git && cd googleapis && sudo make -j11
+RUN cd && git clone https://github.com/robotology/speech.git && cd speech && mkdir build && cd build && \
     cmake .. -DBUILD_GOOGLE_SPEECH=ON -Dgoogleapis_INCLUDE_DIR=/home/user1/googleapis/gens && sudo make -j11 install
 ENV GOOGLE_APPLICATION_CREDENTIALS=/home/user1/hsp_google.json
 
