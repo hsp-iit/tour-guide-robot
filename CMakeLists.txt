@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(behavior-tour-robot LANGUAGES CXX)
+project(tour-guide-robot LANGUAGES CXX)
 
 set(BTState OFF CACHE BOOL OFF)
 set(CMAKE_CXX_STANDARD 11)
