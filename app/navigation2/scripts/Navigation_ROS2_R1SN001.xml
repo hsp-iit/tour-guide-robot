@@ -7,7 +7,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--config CER-ros2.xml</parameters>
+      <parameters></parameters>
       <workdir>/home/user1/robotology/robots-configuration/R1SN001</workdir>
       <node>r1-base</node>
    </module>
