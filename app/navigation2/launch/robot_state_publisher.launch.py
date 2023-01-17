@@ -8,7 +8,7 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
 
-    urdf = os.path.abspath("/home/user1/robotology/robots-configuration/R1SN003/cer.urdf")
+    urdf = os.path.abspath("/home/user1/robotology/cer-sim/R1SN00x_urdf/R1SN003/cer.urdf")
     with open(urdf, 'r') as infp:
         robot_desc = infp.read()
 

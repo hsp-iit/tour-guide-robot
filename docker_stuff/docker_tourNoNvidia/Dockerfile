@@ -163,6 +163,11 @@ RUN cd cer && mkdir build && cd build && cmake .. \
 ENV CER_ROOT=$robotology_install_folder/cer
 ENV CER_DIR=$robotology_install_folder/cer/build
 
+# CER-SIM
+USER $robotology_install_user
+WORKDIR $robotology_install_folder
+RUN git clone https://github.com/robotology/cer-sim
+
 # YARP-DEVICES-ROS2
 WORKDIR $robotology_install_folder
 RUN git clone https://github.com/robotology-playground/yarp-devices-ros2 -b master
