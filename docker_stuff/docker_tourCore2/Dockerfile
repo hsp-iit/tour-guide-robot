@@ -166,7 +166,8 @@ ENV CER_DIR=$robotology_install_folder/cer/build
 # CER-SIM
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/cer-sim
+RUN git clone https://github.com/robotology/cer-sim -b ros2
+RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build; source /home/user1/robotology/cer-sim/colcon_ws/install/local_setup.bash"
 
 # YARP-DEVICES-ROS2
 WORKDIR $robotology_install_folder
