@@ -14663,7 +14663,7 @@
               },
               {
                 "m_isBlocking": true,
-                "m_param": "Benvenuti al Centro di Robotica e Sistemi Intelligenti. Mi chiamo R1 e vi mostrerò i nostri laboratori. Se siete pronti, ditemi di iniziare il tour.",
+                "m_param": "Ciao! Benvenuti al Centro di Robotica e Sistemi Intelligenti. Mi chiamo R1 e vi mostrerò i nostri laboratori. Se siete pronti, ditemi di iniziare il tour.",
                 "m_type": "speak"
               },
               {
@@ -14854,7 +14854,7 @@
             "explainOpera": [
               {
                 "m_isBlocking": false,
-                "m_param": "Abbiamo preparato una dimostrazione che mostra alcuni recenti sviluppi nel campo dell'apprendimento automatico di oggetti e l'interazione uomo-robot. A questo punto lascio la parola a Lorenzo per rispondere ad eventuali domande, per spiegare meglio la ricerca che viene svolta in questi laboratori o per introdurre la dimostrazione.",
+                "m_param": "In questo laboratorio studiamo metodi e algoritmi per la percezione artificiale, il controllo della manipolazione e la locomozione dinamica. Vi ringrazio per l'attenzione e lascio la parola a Lorenzo per continuare la visita.",
                 "m_type": "speak"
               },
               {
@@ -14886,12 +14886,12 @@
             "sayWhileNavigating": [
               {
                 "m_isBlocking": true,
-                "m_param": "Visiteremo l'open space dedicato agli esperimenti con i robot della famiglia di aiCab, di cui faccio parte io stesso. Quest'area è stata aperta solo recentemente ed è attiva da quest'estate.",
+                "m_param": "Visiteremo l'open space dedicato agli esperimenti con i robot della famiglia di aiCab, di cui faccio parte io stesso. Quest'area è stata aperta solo recentemente ed è attiva dalla scorsa estate.",
                 "m_type": "speak"
               },
               {
                 "m_isBlocking": true,
-                "m_param": "In questo spazio si trovano 3 aiCab a due R1 che vengono usati per esperimenti di locomozione, collaborazione robot-uomo, visione artificiale e manipolazione di oggetti. In questa area lavorano i gruppi Humanoid Sensing and Perception, Event Driven Perception and Artificial and Mechanical Intelligence.",
+                "m_param": "In questo spazio si trovano 3 aiCab, due R1 e un èrgocab. In questa area lavorano i gruppi Humanoid Sensing and Perception, Event Driven Perception and Artificial and Mechanical Intelligence.",
                 "m_type": "speak"
               }
             ],
