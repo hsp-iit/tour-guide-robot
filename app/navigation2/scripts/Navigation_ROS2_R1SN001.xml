@@ -89,6 +89,12 @@
    </module>
 
    <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D_nwc.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
       <name>headObstaclesScanner</name>
       <parameters>--GENERAL::robot cer --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
       <node>r1-base</node>
