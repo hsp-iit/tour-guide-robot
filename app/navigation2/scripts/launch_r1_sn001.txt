@@ -1,0 +1,56 @@
+BASE:
+- yarp server fuori dal docker
+- docker no nvidia v2 for the base →
+
+sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -e QT_X11_NO_MITSHM=1 elandini84/r1images:tourNoNvida_devel
+
+
+	DENTRO IL DOCKER LANCIARE 
+
+		yarp run --server /r1-base --log
+
+Joystick fuori dal docker:
+
+sudo xboxdrv --silent &
+
+joystickCtrl --context navigation2 --from joystick_cer_linux_high_speed_xbox.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o
+
+
+TORSO2
+
+yarp run --server /r1-torso --log
+
+
+FACE
+
+yarp run --server /r1-face --log
+
+CONSOLE
+
+sudo xhost +
+
+sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -e QT_X11_NO_MITSHM=1 --gpus all elandini84/r1images:tourCore2_devel 
+
+	dentro il docker lanciare
+		
+		yarp run --server /console --log
+		
+		yarpmanager
+		
+		yarplogger --start
+		
+		
+		
+		
+		
+OPENPOSE (NON NECESSARIO)
+
+sudo xhost +
+
+sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -e QT_X11_NO_MITSHM=1 --gpus all elandini84/r1images:r1Core2_stable
+
+	dentro il docker 
+	
+		yarp run --server /server1
+		
+		yarp run --server /console3 --log
