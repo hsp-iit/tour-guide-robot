@@ -16,6 +16,7 @@
       <name>yarprobotinterface</name>
       <parameters>--context navigation2 --from realsense2_remote.ini</parameters>
       <node>r1-torso</node>
+      <environment>YARP_PORTNUMBER_cer_realsense_rgbImage_o=20002</environment>
    </module>
 
    <module>
