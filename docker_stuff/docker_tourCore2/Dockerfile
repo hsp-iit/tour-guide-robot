@@ -171,7 +171,7 @@ RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; col
 
 # YARP-DEVICES-ROS2
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology-playground/yarp-devices-ros2 -b master
+RUN git clone https://github.com/robotology/yarp-devices-ros2 -b master
 RUN cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/humble/setup.bash; colcon build"
 RUN cd yarp-devices-ros2 && /bin/bash -c "source /opt/ros/humble/setup.bash; source /home/user1/robotology/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash; cmake -S. -Bbuild; cmake --build build"
 
