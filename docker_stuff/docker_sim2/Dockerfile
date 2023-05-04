@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+ARG base_img
+FROM $base_img
 LABEL maintainer="Ettore Landini"
 
 # Non-interactive installation mode
