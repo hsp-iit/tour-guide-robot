@@ -1,0 +1,50 @@
+<application>
+  <name>vad_faceTempFix</name>
+
+  <dependencies>
+  </dependencies>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioRecorder.ini</parameters>
+    <node>r1-torso</node>
+  </module>
+
+  <module>
+    <name>yarpdev</name>
+    <parameters>--device AudioPlayerWrapper --subdevice portaudioPlayer --start --playback_network_buffer_size 0.1  --AUDIO_BASE::samples 1323000</parameters>
+    <node>r1-face</node>
+  </module>
+
+  <module>
+    <name>voiceActivationDetection</name>
+    <parameters></parameters>
+    <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
+    <node>r1-torso</node>
+  </module>
+
+  <connection>
+    <from>/audioRecorderWrapper/audio:o</from>
+    <to>/faceExpressionImage/earsAudioData:i</to>
+    <protocol>fast_tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioRecorderWrapper/audio:o</from>
+    <to>/vad/audio:i</to>
+    <protocol>fast_tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+    <connection>
+    <from>/audioRecorderWrapper/status:o</from>
+    <to>/vad/microphone/status:i </to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/vad/audio:o</from>
+    <to>/googleSpeech/sound:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+</application>

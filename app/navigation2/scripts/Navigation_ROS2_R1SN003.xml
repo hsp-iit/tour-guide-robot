@@ -40,7 +40,7 @@
    <!-- Frame for external realsense -->
    <module>
       <name>ros2</name>
-      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 1 depth_center extra_camera_tf</parameters>
+      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
       <node>r1-base</node>
    </module>
 
@@ -90,15 +90,16 @@
    </module>
 
    <module>
+
       <name>ros2</name>
       <parameters>launch launch/costmap_filter_info.launch.py params_file:=conf/cris_new_area_fixed_keepout_params.yaml mask:=/home/user1/tour-guide-robot/app/maps/cris_new_area_fixed_keepout_mask.yaml</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/</workdir>
       <node>console</node>
    </module>
-   
+
    <module>
-      <name>yarpdev</name>
-      <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
       <node>console</node>
    </module>
 

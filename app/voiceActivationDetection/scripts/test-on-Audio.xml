@@ -6,71 +6,72 @@
 
 
 
-    <!-- recording audio from microphone -->
+  <!-- recording audio from microphone -->
   <module>
-    <name>yarpdev</name>
-    <parameters>--device AudioRecorderWrapper --subdevice portaudioRecorder --min_samples_over_network 8820 --max_samples_over_network 8820 --AUDIO_BASE::rate 44100 --AUDIO_BASE::samples 17640 --AUDIO_BASE::channels 1  --start</parameters>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioRecorderAutoStart.ini</parameters>
     <node>console</node>
   </module>
 
-    <!-- saving the original audio received from the port to original.wav -->
+  <!-- saving the original audio received from the port to original.wav -->
   <module>
-    <name>yarpdev</name>
-    <parameters>--device AudioPlayerWrapper --subdevice audioToFileDevice --save_mode overwrite_file --file_name original.wav --name /original ---playback_network_buffer_size 0.1 --AUDIO_BASE::samples 1323000 --start</parameters>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioPlayerToFileOrig.ini</parameters>
     <node>console</node>
   </module>
 
-    <!-- saving the filtered audio received from the port to filtered.wav -->
-    <module>
-        <name>yarpdev</name>
-        <parameters>--device AudioPlayerWrapper --subdevice audioToFileDevice --save_mode overwrite_file --file_name filtered.wav --name /filtered --playback_network_buffer_size 0.1 --AUDIO_BASE::samples 1323000 --start</parameters>
-        <node>console</node>
-    </module>
-
-    <module>
-        <name>yarpdev</name>
-        <parameters>--device AudioPlayerWrapper --subdevice portaudioPlayer --start --playback_network_buffer_size 0.1 --AUDIO_BASE::samples 1323000</parameters>
-        <node>console</node>
-    </module>
-    <!-- playing the audio from the file original.wav to a port -->
+  <!-- saving the filtered audio received from the port to filtered.wav -->
   <module>
-    <name>yarpdev</name>
-    <parameters>--device AudioRecorderWrapper --subdevice audioFromFileDevice --file_name internal_75vol_far_alone.wav  --min_samples_over_network 8820 --max_samples_over_network 8820 --AUDIO_BASE::rate 44100 --AUDIO_BASE::samples 17640 --AUDIO_BASE::channels 1</parameters>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioPlayerToFileFiltered.ini</parameters>
     <node>console</node>
   </module>
 
-    <module>
-        <name>Teller</name>
-        <parameters>--</parameters>
-        <node>console</node>
-    </module>
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioPlayer.ini</parameters>
+    <node>console</node>
+  </module>
 
-    <module>
-        <name>voiceActivationDetection</name>
-        <parameters>--</parameters>
-        <node>console</node>
-    </module>
+  <!-- playing the audio from the file original.wav to a port -->
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioRecorderFromFile.ini</parameters>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>Teller</name>
+    <parameters>--</parameters>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>vadModule</name>
+    <parameters>--</parameters>
+    <node>console</node>
+  </module>
 
 
 
-    <connection>
+  <connection>
     <from>/audioRecorderWrapper/audio:o</from>
     <to>/vad/audio:i</to>
     <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
   </connection>
 
 
-    <connection>
-        <from>/audioRecorderWrapper/audio:o</from>
-        <to>/audioPlayerWrapper/audio:i</to>
-        <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
-    </connection>
+  <connection>
+    <from>/audioRecorderWrapper/audio:o</from>
+    <to>/audioPlayerWrapper/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
 
-    <connection>
-        <from>/audioRecorderWrapper/audio:o</from>
-        <to>/original/audio:i</to>
-        <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
-    </connection>
+  <connection>
+    <from>/audioRecorderWrapper/audio:o</from>
+    <to>/original/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
 
   <connection>
     <from>/vad/audioFiltered:o</from>
@@ -79,34 +80,34 @@
   </connection>
 
 
-    <connection>
-        <from>/vad/sync_rpc:o</from>
-        <to>/HeadSynchronizer/vad/sync:i</to>
-        <protocol>fast_tcp</protocol>
-    </connection>
+  <connection>
+    <from>/vad/sync_rpc:o</from>
+    <to>/HeadSynchronizer/vad/sync:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
 
-    <connection>
-        <from>/audioRecorderWrapper/status:o</from>
-        <to>/vad/microphone/status:i</to>
-        <protocol>fast_tcp</protocol>
-    </connection>
+  <connection>
+    <from>/audioRecorderWrapper/status:o</from>
+    <to>/vad/microphone/status:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
 
-    <connection>
-        <from>/audioRecorderWrapper/audio:o</from>
-        <to>/vad/audio:i</to>
-        <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
-    </connection>
+  <connection>
+    <from>/audioRecorderWrapper/audio:o</from>
+    <to>/vad/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
 
-    <connection>
-        <from>/HeadSynchronizer/shared/rpc:o</from>
-        <to>/audioRecorderWrapper/rpc</to>
-        <protocol>fast_tcp</protocol>
-    </connection>
+  <connection>
+    <from>/HeadSynchronizer/shared/rpc:o</from>
+    <to>/audioRecorderWrapper/rpc</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
 
-    <connection>
-        <from>/audioRecorderWrapper/status:o</from>
-        <to>/HeadSynchronizer/shared/microphone/status:o</to>
-        <protocol>fast_tcp</protocol>
-    </connection>
+  <connection>
+    <from>/audioRecorderWrapper/status:o</from>
+    <to>/HeadSynchronizer/shared/microphone/status:o</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
 
 </application>

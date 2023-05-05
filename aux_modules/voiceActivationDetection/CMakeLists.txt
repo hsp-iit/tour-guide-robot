@@ -28,9 +28,6 @@ target_sources(${AUX_NAME}
     AudioCallback.h
 )
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(libfvad REQUIRED IMPORTED_TARGET libfvad)
-
 target_sources(${AUX_NAME}
   PRIVATE
     ${STATECHARTS_FILES})

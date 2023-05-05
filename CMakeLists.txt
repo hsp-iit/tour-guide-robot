@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(behavior-tour-robot LANGUAGES CXX)
+project(tour-guide-robot LANGUAGES CXX)
 
 set(BTState OFF CACHE BOOL OFF)
 set(CMAKE_CXX_STANDARD 11)
@@ -12,18 +12,19 @@ if(BASE_INCOHERENT_TO_FAULT)
 	add_definitions(-DBASE_INCOHERENT_TO_FAULT=1)
 endif()
 
-# BehaviorTree.CPP links Boost::coroutine, but does not look for it
-find_package(Boost COMPONENTS coroutine REQUIRED)
 
 if(${BTState})
+	# BehaviorTree.CPP links Boost::coroutine, but does not look for it
+	find_package(Boost COMPONENTS coroutine REQUIRED)
 	find_package(ament_index_cpp)
 	find_package(behaviortree_cpp_v3 REQUIRED)
 endif()
 find_package(YCM REQUIRED)
 
 # Checking if opencv4 is installed (for python3 and ubuntu 20.04) and including the required directory for compatibility. Else, continue as it was.
-find_package (OpenCV REQUIRED)
+find_package (OpenCV)
 if (${OpenCV_FOUND})
+	set(OPENCV_ON ON)
 	if (IS_DIRECTORY /usr/include/opencv4/)
 		include_directories ("/usr/include/opencv4/")
 	endif ()

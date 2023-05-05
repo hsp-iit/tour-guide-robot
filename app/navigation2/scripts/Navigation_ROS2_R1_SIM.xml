@@ -30,13 +30,13 @@
       <parameters>--context navigation2 --from pointCloudCreator_sim.ini</parameters>
       <node>console</node>
    </module>
-   
+
    <module>
       <name>yarprobotinterface</name>
       <parameters>--context navigation2 --from lidar_compressed_sim.ini</parameters>
       <node>console</node>
    </module>
-   
+
    <module>
       <name>yarprobotinterface</name>
       <parameters>--context navigation2 --from mapServer.ini</parameters>
@@ -49,7 +49,7 @@
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
-   
+
    <module>
       <name>yarprobotinterface</name>
       <parameters>--context navigation2 --from localizationROS2.ini --init_map gam_sim_real</parameters>
@@ -62,13 +62,20 @@
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
-   
+
    <module>
-      <name>yarpdev</name>
-      <parameters>--device navigation2D_nws_yarp --subdevice ros2Navigator</parameters>
+      <name>ros2</name>
+      <parameters>launch costmap_filter_info.launch.py params_file:=../conf/gam_sim_real_keepout_params.yaml mask:=../../maps/gam_sim_real_keepout_mask.yaml use_sim_time:=true</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
-   
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
+      <node>console</node>
+   </module>
+
    <module>
       <name>headObstaclesScanner</name>
       <parameters>--GENERAL::robot SIM_CER_ROBOT --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>

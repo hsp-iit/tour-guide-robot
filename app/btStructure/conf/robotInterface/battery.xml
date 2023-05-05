@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2006-2021 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="batteryDev" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<devices>
+		<device name="battery" type="fakeBattery">
+			<param extern-name="battery_charge" name="charge">
+				50
+			</param>
+		</device>
+
+        <device name="batteryWrap" type="batteryWrapper">
+            <param extern-name="battery_name" name="name">
+				/battery
+			</param>
+			<action phase="startup" level="5" type="attach">
+				<paramlist name="networks">
+					<elem name="subdevicebattery">
+						battery
+					</elem>
+				</paramlist>
+			</action>
+			<action phase="shutdown" level="5" type="detach" />
+		</device>
+	</devices>
+</robot>

@@ -3,7 +3,7 @@
       <General>
          <AllowMulticast>false</AllowMulticast>
          <Interfaces>
-            <NetworkInterface address="192.168.100.10" priority="default"/>
+            <NetworkInterface address="LOCALIP" priority="default"/>
          </Interfaces>
       </General>
       <Discovery>
@@ -11,7 +11,7 @@
          <ParticipantIndex>auto</ParticipantIndex>
          <Peers>
             <Peer address="localhost"/>
-            <Peer address="192.168.100.3"/>
+            <Peer address="REMOTEIP"/>
          </Peers>
       </Discovery>
    </Domain>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2006-2021 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="navigation2DServer" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<devices>
+		<device name="nav2DNwcYarp" type="navigation2D_nwc_yarp">
+			<param extern-name="nav2DNwcLocal" name="local">
+                /cli/navClient
+            </param>
+			<param extern-name="nav2DNwcNavServer" name="navigation_server">
+                /navigation2D_nws_yarp
+            </param>
+			<param extern-name="nav2DNwcMapServer" name="map_locations_server">
+                /map2D_nws_yarp
+            </param>
+			<param extern-name="nav2DNwcLocServer" name="localization_server">
+                /localization2D_nws_yarp
+            </param>
+			<param extern-name="nav2DNwcPeriod" name="period">
+                5
+            </param>
+		</device>
+	</devices>
+</robot>

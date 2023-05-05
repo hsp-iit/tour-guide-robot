@@ -16,4 +16,4 @@ add_subdirectory(tourManager)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 
-yarp_install(FILES ${apps}    DESTINATION ${BEHAVIOR-TOUR-ROBOT_APPLICATIONS_INSTALL_DIR})
+yarp_install(FILES ${apps}    DESTINATION ${TOUR-GUIDE-ROBOT_APPLICATIONS_INSTALL_DIR})
