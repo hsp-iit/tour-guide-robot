@@ -19,7 +19,7 @@
            <param name="period">0.1</param>
            <param name="node_name">pc_ros2_node</param>
            <param name="topic_name">/camera/depth/color/points</param>
-           <param name="frame_id">extra_camera_tf</param>
+           <param extern-name="pointCloud_frame" name="frame_id">extra_camera_tf</param>
            <action phase="startup" level="5" type="attach">
                <paramlist name="networks">
                    <elem name="the_device"> depth_nwc_yarp </elem>
