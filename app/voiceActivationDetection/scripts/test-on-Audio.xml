@@ -9,21 +9,21 @@
   <!-- recording audio from microphone -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context vadModule --from audioRecorderAutoStart.ini</parameters>
+    <parameters>--context vadModule --from audioRecorder.ini --rec_start true</parameters>
     <node>console</node>
   </module>
 
   <!-- saving the original audio received from the port to original.wav -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context vadModule --from audioPlayerToFileOrig.ini</parameters>
+    <parameters>--context vadModule --from audioPlayerToFile.ini --toFile_fileName original.wav --toFile_name /original</parameters>
     <node>console</node>
   </module>
 
   <!-- saving the filtered audio received from the port to filtered.wav -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context vadModule --from audioPlayerToFileFiltered.ini</parameters>
+    <parameters>--context vadModule --from audioPlayerToFile.ini --toFile_fileName filtered.wav --toFile_name /filtered</parameters>
     <node>console</node>
   </module>
 
