@@ -47,7 +47,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-    <light name='sun1' type='directional'>
+    <light name='sun' type='directional'>
       <cast_shadows>1</cast_shadows>
       <pose>0 0 10 0 -0 0</pose>
       <diffuse>0.8 0.8 0.8 1</diffuse>
@@ -65,26 +65,6 @@
         <falloff>0</falloff>
       </spot>
     </light>
-
-    <light name='sun2' type='directional'>
-      <cast_shadows>0</cast_shadows>
-      <pose>0 0 10 0 -0 0</pose>
-      <diffuse>0.8 0.8 0.8 1</diffuse>
-      <specular>0.2 0.2 0.2 1</specular>
-      <attenuation>
-        <range>1000</range>
-        <constant>0.9</constant>
-        <linear>0.01</linear>
-        <quadratic>0.001</quadratic>
-      </attenuation>
-      <direction>0.7 -0.9 -0.9</direction>
-      <spot>
-        <inner_angle>0</inner_angle>
-        <outer_angle>0</outer_angle>
-        <falloff>0</falloff>
-      </spot>
-    </light>
-
     <model name='my_mesh'>
       <pose>0 0 0 0 -0 0</pose>
       <static>1</static>

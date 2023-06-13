@@ -4,7 +4,7 @@ if [[ -n $1 ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --gpus all elandini84/r1images:r1Sim2_cuda
     elif [[ $1 == "-u"  || $1 == "--ubuntu" ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --gpus all elandini84/r1images:r1Sim2
-    elif [[$1 == "--nogpu" ]]; then
+    elif [[ $1 == "--nogpu" ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 elandini84/r1images:r1Sim2
     elif [[ $1 == "-h"  || $1 == "--help" ]]; then
         echo "Syntax: ./start-docker-core [option]"
