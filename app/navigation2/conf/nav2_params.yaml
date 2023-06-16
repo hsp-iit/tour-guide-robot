@@ -80,7 +80,8 @@ controller_server:
     failure_tolerance: 0.3
     speed_limit_topic: /speed_limit
     odom_topic: /odometry
-    progress_checker_plugins: progress_checker
+    progress_checker_plugins:
+    - progress_checker
     goal_checker_plugins:
     - goal_checker
     controller_plugins:
