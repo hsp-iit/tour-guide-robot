@@ -1,6 +1,8 @@
 FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 LABEL maintainer="Ettore Landini"
 
+ARG ros_distro
+
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_UPDATED_ON=28_09_2022
@@ -165,7 +167,7 @@ EXPOSE 10000/tcp 10000/udp
 # Navigation stuff
 WORKDIR ${user1_home}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git -b master
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ros2
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $ros_distro
 RUN /bin/bash -c "cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF"
 
 # R1 NETWORK CONFIG

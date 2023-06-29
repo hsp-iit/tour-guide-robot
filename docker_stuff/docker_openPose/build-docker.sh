@@ -1,10 +1,13 @@
  #!/bin/bash
 
+# Set default values
+source ../docker_mng_vars.sh
+
 if [[ -n $1 ]]; then
     if [[ $1 == "-d"  || $1 == "--devel" ]]; then
-        sudo docker build -t elandini84/r1images:r1OpenPose_devel .
+        sudo docker build --build-arg ros_distro=$ROS_DEF -t elandini84/r1images:r1OpenPose_devel .
     elif [[ $1 == "-s"  || $1 == "--stable" ]]; then
-        sudo docker build -t elandini84/r1images:r1OpenPose_stable .
+        sudo docker build --build-arg ros_distro=$ROS_DEF -t elandini84/r1images:r1OpenPose_stable .
     elif [[ $1 == "-h"  || $1 == "--help" ]]; then
         echo "Syntax: ./build-docker.sh [option]"
         echo "options:"
