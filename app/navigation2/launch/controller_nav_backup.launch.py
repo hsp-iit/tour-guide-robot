@@ -38,12 +38,7 @@ def generate_launch_description():
     container_name = LaunchConfiguration('container_name')
     use_respawn = LaunchConfiguration('use_respawn')
 
-    lifecycle_nodes = ['controller_server_backup',
-                       'smoother_server_backup',
-                       'planner_server_backup',
-                       'behavior_server_backup',
-                       'bt_navigator_backup',
-                       'waypoint_follower_backup']
+    lifecycle_nodes = ['controller_server_backup']
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -105,54 +100,9 @@ def generate_launch_description():
         condition=IfCondition(PythonExpression(['not ', use_composition])),
         actions=[
             Node(
-                package='nav2_costmap_2d',
-                executable='nav2_costmap_2d_markers',
-                name='nav2_costmap_2d_markers_backup',
-                output='screen',
-                respawn=use_respawn,
-                respawn_delay=2.0,
-                parameters=[configured_params],
-                remappings=remappings),
-            Node(
-                package='nav2_smoother',
-                executable='smoother_server',
-                name='smoother_server_backup',
-                output='screen',
-                respawn=use_respawn,
-                respawn_delay=2.0,
-                parameters=[configured_params],
-                remappings=remappings),
-            Node(
-                package='nav2_planner',
-                executable='planner_server',
-                name='planner_server_backup',
-                output='screen',
-                respawn=use_respawn,
-                respawn_delay=2.0,
-                parameters=[configured_params],
-                remappings=remappings),
-            Node(
-                package='nav2_behaviors',
-                executable='behavior_server',
-                name='behavior_server_backup',
-                output='screen',
-                respawn=use_respawn,
-                respawn_delay=2.0,
-                parameters=[configured_params],
-                remappings=remappings),
-            Node(
-                package='nav2_bt_navigator',
-                executable='bt_navigator',
-                name='bt_navigator_backup',
-                output='screen',
-                respawn=use_respawn,
-                respawn_delay=2.0,
-                parameters=[configured_params],
-                remappings=remappings),
-            Node(
-                package='nav2_waypoint_follower',
-                executable='waypoint_follower',
-                name='waypoint_follower_backup',
+                package='nav2_controller',
+                executable='controller_server',
+                name='controller_server_backup',
                 output='screen',
                 respawn=use_respawn,
                 respawn_delay=2.0,
@@ -161,7 +111,7 @@ def generate_launch_description():
             Node(
                 package='nav2_lifecycle_manager',
                 executable='lifecycle_manager',
-                name='lifecycle_manager_navigation_backup',
+                name='lifecycle_manager_controller_backup',
                 output='screen',
                 parameters=[{'use_sim_time': use_sim_time},
                             {'autostart': autostart},
@@ -180,39 +130,9 @@ def generate_launch_description():
                 parameters=[configured_params],
                 remappings=remappings),
             ComposableNode(
-                package='nav2_smoother',
-                plugin='nav2_smoother::SmootherServer',
-                name='smoother_server_backup',
-                parameters=[configured_params],
-                remappings=remappings),
-            ComposableNode(
-                package='nav2_planner',
-                plugin='nav2_planner::PlannerServer',
-                name='planner_server_backup',
-                parameters=[configured_params],
-                remappings=remappings),
-            ComposableNode(
-                package='nav2_behaviors',
-                plugin='behavior_server::BehaviorServer',
-                name='behavior_server_backup',
-                parameters=[configured_params],
-                remappings=remappings),
-            ComposableNode(
-                package='nav2_bt_navigator',
-                plugin='nav2_bt_navigator::BtNavigator',
-                name='bt_navigator_backup',
-                parameters=[configured_params],
-                remappings=remappings),
-            ComposableNode(
-                package='nav2_waypoint_follower',
-                plugin='nav2_waypoint_follower::WaypointFollower',
-                name='waypoint_follower_backup',
-                parameters=[configured_params],
-                remappings=remappings),
-            ComposableNode(
                 package='nav2_lifecycle_manager',
                 plugin='nav2_lifecycle_manager::LifecycleManager',
-                name='lifecycle_manager_navigation_backup',
+                name='lifecycle_manager_controller_backup',
                 parameters=[{'use_sim_time': use_sim_time,
                              'autostart': autostart,
                              'node_names': lifecycle_nodes}]),

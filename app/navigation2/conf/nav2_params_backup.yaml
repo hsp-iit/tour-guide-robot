@@ -66,7 +66,7 @@ bt_navigator_backup:
       - compute_path_error_code
       - follow_path_error_code
 
-bt_navigator_rclcpp_node:
+bt_navigator_rclcpp_node_backup:
   ros__parameters:
     use_sim_time: true
 
@@ -184,7 +184,7 @@ controller_server_backup:
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
 
-controller_server_rclcpp_node:
+controller_server_rclcpp_node_backup:
   ros__parameters:
     use_sim_time: true
 
@@ -193,6 +193,7 @@ local_costmap:
     ros__parameters:
       update_frequency: 6.0
       publish_frequency: 2.0
+      namespace: "pluto"
       global_frame: map
       robot_base_frame: mobile_base_body_link
       use_sim_time: true
@@ -281,105 +282,7 @@ local_costmap:
     ros__parameters:
       use_sim_time: true
 
-global_costmap:
-  global_costmap:
-    ros__parameters:
-      update_frequency: 2.0
-      publish_frequency: 0.5
-      global_frame: map
-      robot_base_frame: mobile_base_body_link
-      use_sim_time: true
-      robot_radius: 0.3
-      resolution: 0.05
-      track_unknown_space: false
-      unknown_cost_value: 100
-      always_send_full_costmap: true
-      trinary_costmap: true
-      plugins:
-      - static_layer
-      - obstacle_layer
-      - inflation_layer
-      obstacle_layer:
-        plugin: nav2_costmap_2d::ObstacleLayer
-        enabled: true
-        observation_sources: scan
-        footprint_clearing_enabled: true
-        max_obstacle_height: 1.0
-        combination_method: 1
-        scan:
-          topic: /laser_local
-          obstacle_max_range: 5.0
-          obstacle_min_range: 0.05
-          raytrace_max_range: 20.0
-          raytrace_min_range: 0.0
-          max_obstacle_height: 1.0
-          min_obstacle_height: 0.0
-          clearing: true
-          marking: true
-          data_type: "LaserScan"
-          inf_is_valid: false
-      static_layer:
-        plugin: nav2_costmap_2d::StaticLayer
-        map_subscribe_transient_local: true
-        enabled: true
-        subscribe_to_updates: true
-        transform_tolerance: 0.2
-      inflation_layer:
-        plugin: nav2_costmap_2d::InflationLayer
-        enabled: true
-        inflation_radius: 1.0
-        cost_scaling_factor: 2.5
-        inflate_unknown: false
-        inflate_around_unknown: false
-      filters: ["keepout_filter"]
-      keepout_filter:
-        plugin: "nav2_costmap_2d::KeepoutFilter"
-        enabled: True
-        filter_info_topic: "/costmap_filter_info"
-  global_costmap_client:
-    ros__parameters:
-      use_sim_time: true
-  global_costmap_rclcpp_node:
-    ros__parameters:
-      use_sim_time: true
-
-planner_server:
-  ros__parameters:
-    expected_planner_frequency: 1.0
-    use_sim_time: true
-    planner_plugins:
-    - GridBased
-    GridBased:
-      plugin: nav2_theta_star_planner/ThetaStarPlanner
-      how_many_corners: 8
-      w_euc_cost: 1.0
-      w_traversal_cost: 2.0
-      use_final_approach_orientation: false
-      allow_unknown: false
-
-planner_server_rclcpp_node:
-  ros__parameters:
-    use_sim_time: true
-
-smoother_server:
-  ros__parameters:
-    use_sim_time: true
-    costmap_topic: global_costmap/costmap_raw
-    footprint_topic: global_costmap/published_footprint
-    robot_base_frame: mobile_base_body_link
-    transform_timeout: 0.2
-    smoother_plugins:
-    - simple_smoother
-    simple_smoother:
-      plugin: nav2_smoother::SimpleSmoother
-      tolerance: 1.0e-10
-      max_its: 1000
-      do_refinement: true
-      w_data: 0.2
-      w_smooth: 0.3
-
-
-behavior_server:
+behavior_server_backup:
   ros__parameters:
     costmap_topic: local_costmap/costmap_raw
     footprint_topic: local_costmap/published_footprint
@@ -406,7 +309,7 @@ behavior_server:
     min_rotational_vel: 0.4
     rotational_acc_lim: 3.2
 
-waypoint_follower:
+waypoint_follower_backup:
   ros__parameters:
     loop_rate: 20
     stop_on_failure: false
