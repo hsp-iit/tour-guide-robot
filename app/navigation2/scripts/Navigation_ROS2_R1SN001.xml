@@ -139,10 +139,10 @@
    <!-- connections -->
    <connection>
       <from>/joystickCtrl:o</from>
-      <to>/baseControl/input/joystick:i</to>
+      <to>/baseControl/input/joystick/data:i</to>
       <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
    </connection>
-   
+
   <connection>
     <from> /googleSynthesis/sound:o</from>
     <to>/audioPlayerWrapper/audio:i</to>
