@@ -12,21 +12,21 @@ jobs:
     strategy:
       matrix:
          config:
-         - {
-            ros2_distro: "humble",
-            base_image: "ubuntu:22.04",
-            base_image_label: "ubuntu22.04",
-         }
+         # - {
+         #    ros2_distro: "humble",
+         #    base_image: "ubuntu:22.04",
+         #    base_image_label: "ubuntu22.04",
+         # }
          - {
             ros2_distro: "iron",
             base_image: "ubuntu:22.04",
             base_image_label: "ubuntu22.04",
          }
-         - {
-            ros2_distro: "humble",
-            base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-            base_image_label: "cuda.11.7.1-cudnn8",
-         }
+         # - {
+         #    ros2_distro: "humble",
+         #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
+         #    base_image_label: "cuda.11.7.1-cudnn8",
+         # }
          - {
             ros2_distro: "iron",
             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
@@ -106,7 +106,7 @@ jobs:
           sudo docker build --build-arg ros_distro=${{steps.extract_branch.outputs.branch}} --tag elandini84/r1images:r1OpenPose_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable tour openPose image"
-          sudo docker build --tag elandini84/r1images:r1OpenPose_stable .
+          sudo docker build --build-arg ros_distro=${{steps.extract_branch.outputs.branch}} --tag elandini84/r1images:r1OpenPose_stable .
        else
           echo "Failure!"
           exit 1
@@ -130,21 +130,21 @@ jobs:
     strategy:
       matrix:
          config:
-         - {
-            ros2_distro: "humble",
-            base_image: "ubuntu:22.04",
-            base_image_label: "ubuntu22.04",
-         }
+         # - {
+         #    ros2_distro: "humble",
+         #    base_image: "ubuntu:22.04",
+         #    base_image_label: "ubuntu22.04",
+         # }
          - {
             ros2_distro: "iron",
             base_image: "ubuntu:22.04",
             base_image_label: "ubuntu22.04",
          }
-         - {
-            ros2_distro: "humble",
-            base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-            base_image_label: "cuda.11.7.1-cudnn8",
-         }
+         # - {
+         #    ros2_distro: "humble",
+         #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
+         #    base_image_label: "cuda.11.7.1-cudnn8",
+         # }
          - {
             ros2_distro: "iron",
             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
