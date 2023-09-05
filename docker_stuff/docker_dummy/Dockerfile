@@ -1,6 +1,8 @@
 FROM ubuntu:22.04
 LABEL maintainer="Ettore Landini"
 
+ENV ros_distro=iron
+
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_UPDATED_ON=20_06_2023
