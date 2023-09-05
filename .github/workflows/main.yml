@@ -68,7 +68,7 @@ jobs:
           sudo docker build --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:dummy_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable dummy image"
-          sudo docker build -t elandini84/r1images:dummy_stable .
+          sudo docker build --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:dummy_stable .
        else
           echo "Failure!"
           exit 1
