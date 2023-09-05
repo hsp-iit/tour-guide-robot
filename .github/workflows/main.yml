@@ -49,30 +49,43 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build the tour core Docker image
-      working-directory: docker_stuff/docker_tourCore2/
+      # working-directory: docker_stuff/docker_tourCore2/
+      # run: |
+      #  if [ ${{ github.event_name }} == 'schedule' ]; then
+      #     echo "Building development tour core image"
+      #     sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
+      #  elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+      #     echo "Building stable tour core image"
+      #     sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
+      #  else
+      #     echo "Failure!"
+      #     exit 1
+      #  fi
+      working-directory: docker_stuff/docker_dummy/
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
+          echo "Building development dummy image"
+          sudo docker build -t elandini84/r1images:dummy_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
+          echo "Building stable dummy image"
+          sudo docker build -t elandini84/r1images:dummy_stable .
        else
           echo "Failure!"
           exit 1
        fi
-    - name: Push tourCore2 image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing tourCore2 development image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing tourCore2 stable image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable
-       else
-          echo "Failure!"
-          exit 1
-       fi
+
+   #  - name: Push tourCore2 image
+   #    run: |
+   #     if [ ${{ github.event_name }} == 'schedule' ]; then
+   #        echo "Pushing tourCore2 development image"
+   #        docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel
+   #     elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+   #        echo "Pushing tourCore2 stable image"
+   #        docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable
+   #     else
+   #        echo "Failure!"
+   #        exit 1
+   #     fi
 
 
 #   build-r1OpenPose:
