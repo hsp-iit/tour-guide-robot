@@ -7,138 +7,223 @@ ARG ros_distro
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_UPDATED_ON=20_06_2023
 
-# Install essentials
-RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
-    tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
-    net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
-    python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install numpy bpytop
-
-RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
-COPY ./common/xorg.conf /etc/X11/xorg.conf
-
-# ROS2 Installation
-RUN locale-gen en_US en_US.UTF-8
-RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-ENV LANG=en_US.UTF-8
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-$ros_distro-desktop ros-$ros_distro-navigation2 ros-$ros_distro-nav2-bringup \
-    ros-$ros_distro-slam-toolbox ros-$ros_distro-test-msgs ros-$ros_distro-gazebo-ros \
-    python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
-    python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
-    python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
-    python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init && rm -rf /var/lib/apt/lists/*
-
-# Install yarp dependencies
-RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
-RUN apt-get update && apt-get install -y icub-common libopencv-dev && sudo rm -rf /var/lib/apt/lists/*
-
 # Create user: user1
 USER root
 RUN useradd -l -u 33334 -G sudo -md /home/user1 -s /bin/bash -p user1 user1 && \
     # passwordless sudo for users in the 'sudo' group
     sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers
 
-# ROS2 Installation (part2)
 USER user1
-RUN sudo rosdep fix-permissions && rosdep update
+WORKDIR /home/user1
 
-# Set ENV
-USER user1
-RUN mkdir /home/user1/robotology
-ENV robotology_install_user user1
-ENV user1_home /home/$robotology_install_user
-ENV robotology_install_folder $user1_home/robotology
+RUN mkdir dir1
+RUN mkdir dir12
+RUN mkdir dir13
+RUN mkdir dir14
+RUN mkdir dir15
+RUN mkdir dir16
+RUN mkdir dir17
+RUN mkdir dir18
+RUN mkdir dir19
+RUN mkdir dir10
+RUN mkdir dir11
+RUN mkdir dir112
+RUN mkdir dir113
+RUN mkdir dir114
+RUN mkdir dir115
+RUN mkdir dir116
+RUN mkdir dir117
+RUN mkdir dir118
+RUN mkdir dir119
+RUN mkdir dir110
+RUN mkdir dir111
+RUN mkdir dir1112
+RUN mkdir dir1113
+RUN mkdir dir1114
+RUN mkdir dir1115
+RUN mkdir dir1116
+RUN mkdir dir1117
+RUN mkdir dir1118
+RUN mkdir dir1119
+RUN mkdir dir1110
+RUN mkdir dir1111
+RUN mkdir dir11112
+RUN mkdir dir11113
+RUN mkdir dir11114
+RUN mkdir dir11115
+RUN mkdir dir11116
+RUN mkdir dir11117
+RUN mkdir dir11118
+RUN mkdir dir11119
+RUN mkdir dir11110
+RUN mkdir dir11111
+RUN mkdir dir111112
+RUN mkdir dir111113
+RUN mkdir dir111114
+RUN mkdir dir111115
+RUN mkdir dir111116
+RUN mkdir dir111117
+RUN mkdir dir111118
+RUN mkdir dir111119
+RUN mkdir dir111110
+RUN mkdir dir111111
+RUN mkdir dir1111112
+RUN mkdir dir1111113
+RUN mkdir dir1111114
+RUN mkdir dir1111115
+RUN mkdir dir1111116
+RUN mkdir dir1111117
+RUN mkdir dir1111118
+RUN mkdir dir1111119
+RUN mkdir dir1111110
+RUN mkdir dir1111111
+RUN mkdir dir11111112
+RUN mkdir dir11111113
+RUN mkdir dir11111114
+RUN mkdir dir11111115
+RUN mkdir dir11111116
+RUN mkdir dir11111117
+RUN mkdir dir11111118
+RUN mkdir dir11111119
+RUN mkdir dir11111110
+RUN mkdir dir11111111
+RUN mkdir dir111111112
+RUN mkdir dir111111113
+RUN mkdir dir111111114
+RUN mkdir dir111111115
+RUN mkdir dir111111116
+RUN mkdir dir111111117
+RUN mkdir dir111111118
+RUN mkdir dir111111119
+RUN mkdir dir111111110
 
-# Build ycm
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/ycm.git -b master
-RUN cd ycm && mkdir build && cd build && \
-    cmake .. \
-    -DCMAKE_BUILD_TYPE=Release && \
-    make -j11
-ENV YCM_DIR=/home/user1/robotology/ycm/build
+# # Install essentials
+# RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
+#     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
+#     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
+#     python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
 
-# Build YARP
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/yarp.git -b master
-RUN cd yarp && mkdir build && cd build && \
-    cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DYARP_COMPILE_libYARP_math=ON \
-    -DYARP_COMPILE_GUIS=ON \
-    -DYARP_COMPILE_DEVICE_PLUGINS=ON \
-    -DENABLE_yarpcar_mjpeg=ON \
-    -DENABLE_yarpcar_human=ON \
-    -DENABLE_yarpcar_segmentationimage=ON \
-    -DENABLE_yarpcar_portmonitor=ON \
-    -DENABLE_yarpmod_portaudio=ON \
-    -DENABLE_yarpmod_portaudioPlayer=ON \
-    -DENABLE_yarpmod_portaudioRecorder=ON \
-    -DENABLE_yarpmod_fakeBattery=ON  \
-    -DENABLE_yarpmod_controlboardwrapper2=ON \
-    -DENABLE_yarpmod_laserFromDepth=ON \
-    -DENABLE_yarpmod_laserFromExternalPort=ON \
-    -DENABLE_yarpmod_laserFromDepth=ON \
-    -DENABLE_yarpmod_laserFromPointCloud=ON \
-    -DENABLE_yarpmod_laserFromRosTopic=ON \
-    -DENABLE_yarppm_soundfilter_resample=ON \
-    -DENABLE_yarppm_bottle_compression_zlib=ON \
-    -DENABLE_yarppm_depthimage_compression_zlib=ON \
-    -DENABLE_yarppm_image_compression_ffmpeg=ON \
-    -DENABLE_yarppm_depthimage_to_mono=ON \
-    -DENABLE_yarppm_depthimage_to_rgb=ON && \
-    make -j11
-ENV YARP_ROOT=$robotology_install_folder/yarp
-ENV YARP_DIR=$robotology_install_folder/yarp/build
+# RUN pip3 install numpy bpytop
 
-# YARP bindings
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTHON=ON && make -j11
+# RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
+# COPY ./common/xorg.conf /etc/X11/xorg.conf
 
-# Install YARP completion
-RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
+# # ROS2 Installation
+# RUN locale-gen en_US en_US.UTF-8
+# RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+# ENV LANG=en_US.UTF-8
+# RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+# RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+# RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-$ros_distro-desktop ros-$ros_distro-navigation2 ros-$ros_distro-nav2-bringup \
+#     ros-$ros_distro-slam-toolbox ros-$ros_distro-test-msgs ros-$ros_distro-gazebo-ros \
+#     python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
+#     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
+#     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
+#     python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init && rm -rf /var/lib/apt/lists/*
 
-# Build icub-firmware-shared
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/icub-firmware-shared -b devel
-RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
-ENV icub_firmware_shared_ROOT=$robotology_install_folder/icub-firmware-shared
-ENV icub_firmware_shared_DIR=$robotology_install_folder/icub-firmware-shared/build
+# # Install yarp dependencies
+# RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
+# RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
+# RUN apt-get update && apt-get install -y icub-common libopencv-dev && sudo rm -rf /var/lib/apt/lists/*
 
-# Build icub-main
-USER $robotology_install_user
-WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/icub-main.git -b devel
-RUN cd icub-main && mkdir build && cd build && \
-    cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DENABLE_icubmod_cartesiancontrollerserver=ON \
-    -DENABLE_icubmod_cartesiancontrollerclient=ON \
-    -DENABLE_icubmod_embObjAnalogSensor=ON \
-    -DENABLE_icubmod_embObjFTsensor=ON \
-    -DENABLE_icubmod_embObjIMU=ON \
-    -DENABLE_icubmod_embObjInertials=ON \
-    -DENABLE_icubmod_embObjMais=ON \
-    -DENABLE_icubmod_embObjMotionControl=ON \
-    -DENABLE_icubmod_embObjMultiEnc=ON \
-    -DENABLE_icubmod_embObjPSC=ON \
-    -DENABLE_icubmod_embObjSkin=ON \
-    -DENABLE_icubmod_embObjStrain=ON \
-    -DENABLE_icubmod_parametricCalibrator=ON \
-    -DENABLE_icubmod_parametricCalibratorEth=ON \
-    -DICUBMAIN_COMPILE_SIMULATORS=OFF \
-    -DENABLE_icubmod_gazecontrollerclient=ON && \
-    make -j11
-ENV ICUB_ROOT=$robotology_install_folder/icub-main
-ENV ICUB_DIR=$robotology_install_folder/icub-main/build
+
+# # ROS2 Installation (part2)
+# USER user1
+# RUN sudo rosdep fix-permissions && rosdep update
+
+# # Set ENV
+# USER user1
+# RUN mkdir /home/user1/robotology
+# ENV robotology_install_user user1
+# ENV user1_home /home/$robotology_install_user
+# ENV robotology_install_folder $user1_home/robotology
+
+# # Build ycm
+# USER $robotology_install_user
+# WORKDIR $robotology_install_folder
+# RUN git clone https://github.com/robotology/ycm.git -b master
+# RUN cd ycm && mkdir build && cd build && \
+#     cmake .. \
+#     -DCMAKE_BUILD_TYPE=Release && \
+#     make -j11
+# ENV YCM_DIR=/home/user1/robotology/ycm/build
+
+# # Build YARP
+# USER $robotology_install_user
+# WORKDIR $robotology_install_folder
+# RUN git clone https://github.com/robotology/yarp.git -b master
+# RUN cd yarp && mkdir build && cd build && \
+#     cmake .. \
+#     -DCMAKE_BUILD_TYPE=Release \
+#     -DYARP_COMPILE_libYARP_math=ON \
+#     -DYARP_COMPILE_GUIS=ON \
+#     -DYARP_COMPILE_DEVICE_PLUGINS=ON \
+#     -DENABLE_yarpcar_mjpeg=ON \
+#     -DENABLE_yarpcar_human=ON \
+#     -DENABLE_yarpcar_segmentationimage=ON \
+#     -DENABLE_yarpcar_portmonitor=ON \
+#     -DENABLE_yarpmod_portaudio=ON \
+#     -DENABLE_yarpmod_portaudioPlayer=ON \
+#     -DENABLE_yarpmod_portaudioRecorder=ON \
+#     -DENABLE_yarpmod_fakeBattery=ON  \
+#     -DENABLE_yarpmod_controlboardwrapper2=ON \
+#     -DENABLE_yarpmod_laserFromDepth=ON \
+#     -DENABLE_yarpmod_laserFromExternalPort=ON \
+#     -DENABLE_yarpmod_laserFromDepth=ON \
+#     -DENABLE_yarpmod_laserFromPointCloud=ON \
+#     -DENABLE_yarpmod_laserFromRosTopic=ON \
+#     -DENABLE_yarppm_soundfilter_resample=ON \
+#     -DENABLE_yarppm_bottle_compression_zlib=ON \
+#     -DENABLE_yarppm_depthimage_compression_zlib=ON \
+#     -DENABLE_yarppm_image_compression_ffmpeg=ON \
+#     -DENABLE_yarppm_depthimage_to_mono=ON \
+#     -DENABLE_yarppm_depthimage_to_rgb=ON && \
+#     make -j11
+# ENV YARP_ROOT=$robotology_install_folder/yarp
+# ENV YARP_DIR=$robotology_install_folder/yarp/build
+
+# # YARP bindings
+# USER $robotology_install_user
+# WORKDIR $robotology_install_folder
+# RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTHON=ON && make -j11
+
+# # Install YARP completion
+# RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
+
+# # Build icub-firmware-shared
+# USER $robotology_install_user
+# WORKDIR $robotology_install_folder
+# RUN git clone https://github.com/robotology/icub-firmware-shared -b devel
+# RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+# ENV icub_firmware_shared_ROOT=$robotology_install_folder/icub-firmware-shared
+# ENV icub_firmware_shared_DIR=$robotology_install_folder/icub-firmware-shared/build
+
+# # Build icub-main
+# USER $robotology_install_user
+# WORKDIR $robotology_install_folder
+# RUN git clone https://github.com/robotology/icub-main.git -b devel
+# RUN cd icub-main && mkdir build && cd build && \
+#     cmake .. \
+#     -DCMAKE_BUILD_TYPE=Release \
+#     -DENABLE_icubmod_cartesiancontrollerserver=ON \
+#     -DENABLE_icubmod_cartesiancontrollerclient=ON \
+#     -DENABLE_icubmod_embObjAnalogSensor=ON \
+#     -DENABLE_icubmod_embObjFTsensor=ON \
+#     -DENABLE_icubmod_embObjIMU=ON \
+#     -DENABLE_icubmod_embObjInertials=ON \
+#     -DENABLE_icubmod_embObjMais=ON \
+#     -DENABLE_icubmod_embObjMotionControl=ON \
+#     -DENABLE_icubmod_embObjMultiEnc=ON \
+#     -DENABLE_icubmod_embObjPSC=ON \
+#     -DENABLE_icubmod_embObjSkin=ON \
+#     -DENABLE_icubmod_embObjStrain=ON \
+#     -DENABLE_icubmod_parametricCalibrator=ON \
+#     -DENABLE_icubmod_parametricCalibratorEth=ON \
+#     -DICUBMAIN_COMPILE_SIMULATORS=OFF \
+#     -DENABLE_icubmod_gazecontrollerclient=ON && \
+#     make -j11
+# ENV ICUB_ROOT=$robotology_install_folder/icub-main
+# ENV ICUB_DIR=$robotology_install_folder/icub-main/build
 
 # # Build robots-configuration devel
 # USER $robotology_install_user
