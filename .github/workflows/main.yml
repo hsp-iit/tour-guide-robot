@@ -65,7 +65,7 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Building development dummy image"
-          sudo docker build -t elandini84/r1images:dummy_devel .
+          sudo docker build --build-arg ros_distro=iron -t elandini84/r1images:dummy_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable dummy image"
           sudo docker build -t elandini84/r1images:dummy_stable .
