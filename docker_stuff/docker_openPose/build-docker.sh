@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 # Set default values
 source ../docker_mng_vars.sh
