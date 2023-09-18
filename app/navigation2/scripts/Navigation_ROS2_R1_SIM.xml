@@ -6,6 +6,13 @@
    <!-- modules -->
 
    <module>
+      <name>ros2_launch.sh</name>
+      <parameters>/usr/local/src/hsp/tour-guide-robot/app/navigation2/launch/robot_state_publisher.launch.py use_sim_time:=true</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
       <name>ros2</name>
       <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
