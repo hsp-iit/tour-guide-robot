@@ -53,7 +53,11 @@ RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
 RUN cd $user1_home/openpose && \
     mkdir build && \
     cd ./build && \
-    cmake .. -DDOWNLOAD_HAND_MODEL=OFF -DUSE_CUDNN=OFF && \
+    # Right now the following does not work. 
+    # https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/2233
+    # You have to download the weights manually
+    # cmake .. -DDOWNLOAD_HAND_MODEL=OFF -DUSE_CUDNN=OFF && \
+    cmake .. -DDOWNLOAD_HAND_MODEL=OFF -DDOWNLOAD_BODY_25_MODEL=OFF -DDOWNLOAD_FACE_MODEL=OFF -DUSE_CUDNN=OFF && \
     make -j11
 ENV openpose_ROOT=$user1_home/openpose
 
