@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     dummy
+YarpMapData dummy.ppm
+RosMapData  dummy.yaml
