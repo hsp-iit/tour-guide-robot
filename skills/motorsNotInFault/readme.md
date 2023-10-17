@@ -1,1 +1,1 @@
-# This action asks the goal to PoiManager and it sends to the navigation 
+## This condition checks if the robot motors are in fault
