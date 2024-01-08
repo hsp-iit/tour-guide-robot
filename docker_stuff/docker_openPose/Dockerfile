@@ -24,9 +24,14 @@ RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 
 # Install yarp dependencies
-RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
-RUN apt-get update && apt-get install -y icub-common libopencv-dev && sudo rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libode8 libace-dev libboost-filesystem-dev libboost-system-dev \
+    libboost-thread-dev libc6 python3 libgsl0-dev libncurses5-dev libsdl1.2-dev subversion git gfortran \
+    libxmu-dev libode-dev wget unzip qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5svg5 \
+    libqt5opengl5-dev libopencv-dev freeglut3-dev libtinyxml-dev libblas-dev coinor-libipopt-dev \
+    liblapack-dev libmumps-dev qml-module-qtmultimedia qml-module-qtquick-dialogs qml-module-qtquick-controls \
+    qml-module-qt-labs-settings libqcustomplot-dev qml-module-qt-labs-folderlistmodel libedit-dev \
+    libeigen3-dev libjpeg-dev libsimbody-dev libxml2-dev libjs-underscore portaudio19-dev libgtkmm-2.4-dev \
+    libi2c-dev libv4l-dev
 
 # Create user: user1
 USER root
@@ -53,7 +58,7 @@ RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose && \
 RUN cd $user1_home/openpose && \
     mkdir build && \
     cd ./build && \
-    # Right now the following does not work. 
+    # Right now the following does not work.
     # https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/2233
     # You have to download the weights manually
     # cmake .. -DDOWNLOAD_HAND_MODEL=OFF -DUSE_CUDNN=OFF && \
@@ -75,7 +80,7 @@ ENV YCM_DIR=/home/user1/robotology/ycm/build
 # Build YARP
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/yarp.git -b master
+RUN git clone https://github.com/robotology/yarp.git -b yarp-3.9
 RUN cd yarp && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \

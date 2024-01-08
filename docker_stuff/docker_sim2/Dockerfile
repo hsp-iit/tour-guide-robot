@@ -3,13 +3,14 @@ FROM $base_img
 LABEL maintainer="Ettore Landini"
 
 ARG ros_distro
+ARG yarp_branch="master"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_UPDATED_ON=28_09_2022
 
 # Install essentials
-RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release \
+RUN apt-get update && apt-get install -y apt software-properties-common sudo psmisc lsb-release \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
@@ -33,9 +34,14 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-$ros_distro-d
     python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init && rm -rf /var/lib/apt/lists/*
 
 # Install yarp dependencies
-RUN echo "deb http://www.icub.org/ubuntu `lsb_release -cs` contrib/science" > /etc/apt/sources.list.d/icub.list
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 57A5ACB6110576A6
-RUN apt-get update && apt-get install -y icub-common libopencv-dev && sudo rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libode8 libace-dev libboost-filesystem-dev libboost-system-dev \
+    libboost-thread-dev libc6 python3 libgsl0-dev libncurses5-dev libsdl1.2-dev subversion git gfortran \
+    libxmu-dev libode-dev wget unzip qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5svg5 \
+    libqt5opengl5-dev libopencv-dev freeglut3-dev libtinyxml-dev libblas-dev coinor-libipopt-dev \
+    liblapack-dev libmumps-dev qml-module-qtmultimedia qml-module-qtquick-dialogs qml-module-qtquick-controls \
+    qml-module-qt-labs-settings libqcustomplot-dev qml-module-qt-labs-folderlistmodel libedit-dev \
+    libeigen3-dev libjpeg-dev libsimbody-dev libxml2-dev libjs-underscore portaudio19-dev libgtkmm-2.4-dev \
+    libi2c-dev libv4l-dev
 
 # Create user: user1
 USER root
@@ -70,7 +76,7 @@ ENV YCM_DIR=/home/user1/robotology/ycm/build
 # Build YARP
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/yarp.git -b master
+RUN git clone https://github.com/robotology/yarp.git -b $yarp_branch
 RUN cd yarp && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
