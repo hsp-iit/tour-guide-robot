@@ -1,5 +1,5 @@
 # *************************************************************************************************************************************************************
-# This software and all the related documentation that are transmitted as a final report constitute Foregrund of the Research Agreement between IIT and Konica 
+# This software and all the related documentation that are transmitted as a final report constitute Foregrund of the Research Agreement between IIT and Konica
 # and their use and exploitation are subject to the limitations contained therein.
 # *************************************************************************************************************************************************************
 
@@ -19,7 +19,7 @@ source_group("Source Files" FILES ${folder_source})
 source_group("Header Files" FILES ${folder_header})
 
 find_package( OpenCV REQUIRED )
-find_package(YARP REQUIRED COMPONENTS sig cv dev os math rosmsg)
+find_package(YARP REQUIRED COMPONENTS sig cv dev os math)
 include_directories(${OpenCV_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS})
 add_executable(${PROJECT_NAME} ${folder_source} ${folder_header})
 #add_executable(${PROJECT_NAME} ${folder_source})
