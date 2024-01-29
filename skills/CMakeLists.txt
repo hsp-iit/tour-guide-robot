@@ -7,7 +7,7 @@
 
 add_subdirectory(atPoI_condition)
 add_subdirectory(goToPoI_action)
-add_subdirectory(robotNotLost)
+#add_subdirectory(robotNotLost)
 add_subdirectory(goalAvailable)
 add_subdirectory(waitGoalAvailability)
 add_subdirectory(batteryCharged)
