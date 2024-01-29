@@ -42,9 +42,9 @@ jobs:
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
     - name: Restart docker daemon
       run: sudo systemctl restart docker
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Login to DockerHub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -75,54 +75,54 @@ jobs:
        fi
 
 
-  build-r1OpenPose:
-    runs-on: ubuntu-latest
+#   build-r1OpenPose:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Extract branch name
-      shell: bash
-      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      id: extract_branch
-    - name: Info
-      run: |
-       echo "Event type: ${{github.event_name}}"
-    - name: Change docker to experimental mode
-      run: |
-       sudo rm -rf /etc/docker/daemon.json
-       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart docker daemon
-      run: sudo systemctl restart docker
-    - uses: actions/checkout@v3
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the openPose Docker image
-      working-directory: docker_stuff/docker_openPose/
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development tour openPose image"
-          sudo docker build --build-arg ros_distro=${{steps.extract_branch.outputs.branch}} --tag elandini84/r1images:r1OpenPose_devel .
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable tour openPose image"
-          sudo docker build --build-arg ros_distro=${{steps.extract_branch.outputs.branch}} --tag elandini84/r1images:r1OpenPose_stable .
-       else
-          echo "Failure!"
-          exit 1
-       fi
-    - name: Push r1OpenPose image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing r1OpenPose development image"
-          docker push elandini84/r1images:r1OpenPose_devel
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing r1OpenPose stable image"
-          docker push elandini84/r1images:r1OpenPose_stable
-       else
-          echo "Failure!"
-          exit 1
-       fi
+#     steps:
+#     - name: Extract branch name
+#       shell: bash
+#       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+#       id: extract_branch
+#     - name: Info
+#       run: |
+#        echo "Event type: ${{github.event_name}}"
+#     - name: Change docker to experimental mode
+#       run: |
+#        sudo rm -rf /etc/docker/daemon.json
+#        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
+#     - name: Restart docker daemon
+#       run: sudo systemctl restart docker
+#     - uses: actions/checkout@v4
+#     - name: Login to DockerHub
+#       uses: docker/login-action@v3
+#       with:
+#         username: ${{ secrets.DOCKERHUB_USERNAME }}
+#         password: ${{ secrets.DOCKERHUB_TOKEN }}
+#     - name: Build the openPose Docker image
+#       working-directory: docker_stuff/docker_openPose/
+#       run: |
+#        if [ ${{ github.event_name }} == 'schedule' ]; then
+#           echo "Building development tour openPose image"
+#           sudo docker build --build-arg ros_distro=${{steps.extract_branch.outputs.branch}} --tag elandini84/r1images:r1OpenPose_devel .
+#        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+#           echo "Building stable tour openPose image"
+#           sudo docker build --build-arg ros_distro=${{steps.extract_branch.outputs.branch}} --tag elandini84/r1images:r1OpenPose_stable .
+#        else
+#           echo "Failure!"
+#           exit 1
+#        fi
+#     - name: Push r1OpenPose image
+#       run: |
+#        if [ ${{ github.event_name }} == 'schedule' ]; then
+#           echo "Pushing r1OpenPose development image"
+#           docker push elandini84/r1images:r1OpenPose_devel
+#        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+#           echo "Pushing r1OpenPose stable image"
+#           docker push elandini84/r1images:r1OpenPose_stable
+#        else
+#           echo "Failure!"
+#           exit 1
+#        fi
 
 
   build-tour-docker-sim:
@@ -160,9 +160,9 @@ jobs:
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
     - name: Restart docker daemon
       run: sudo systemctl restart docker
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Login to DockerHub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
