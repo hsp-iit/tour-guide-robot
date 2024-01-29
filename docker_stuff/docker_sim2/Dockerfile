@@ -171,7 +171,7 @@ ENV GazeboYARPPlugins_DIR=$robotology_install_folder/gazebo-yarp-plugins/build
 # CER
 USER $robotology_install_user
 WORKDIR $robotology_install_folder
-RUN git clone https://github.com/robotology/cer.git -b devel
+RUN git clone https://github.com/elandini84/cer.git -b fix/compatibility/yarp_master
 RUN cd cer && mkdir build && cd build && cmake .. \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DENABLE_cermod_cerDoubleLidar=ON \
