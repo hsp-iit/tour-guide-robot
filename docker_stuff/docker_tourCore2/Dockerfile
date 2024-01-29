@@ -235,19 +235,6 @@ RUN git clone https://github.com/elandini84/yarp-web-teleop.git
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $ros_distro
 RUN /bin/bash -c "source /opt/ros/$ros_distro/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON; make -j11"
 
-# GOOGLE
-RUN git clone --recursive -b v1.51.0 https://github.com/grpc/grpc.git
-RUN cd grpc && mkdir build && \
-    cd build && cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release \
-    -DgRPC_SSL_PROVIDER=package -DgRPC_ZLIB_PROVIDER=package && sudo make -j11 install && sudo ldconfig
-#RUN cd && git clone https://github.com/googleapis/googleapis.git && cd googleapis && git checkout f78745822aadedb3c165d51372732d672b634db2 && sudo make -j11
-RUN cd && git clone https://github.com/googleapis/googleapis.git
-RUN cd googleapis && sudo make -j11
-RUN cd && git clone https://github.com/robotology/speech.git
-RUN cd speech && mkdir build && cd build && \
-    cmake .. -DBUILD_GOOGLE_SPEECH=ON -Dgoogleapis_INCLUDE_DIR=/home/user1/googleapis/gens && sudo make -j11 install
-ENV GOOGLE_APPLICATION_CREDENTIALS=/home/user1/hsp_google.json
-
 # R1 NETWORK CONFIG
 RUN yarp conf 192.168.100.10 10000
 
