@@ -16,14 +16,12 @@ AudioProcessor::AudioProcessor(int vadFrequency,
                                int vadSampleLength,
                                int vadAggressiveness,
                                int bufferSize,
-                               std::string filteredAudioPortOutName,
-                               std::shared_ptr<IAudioProcessorMicrophoneCloser> microphoneManager):
+                               std::string filteredAudioPortOutName):
                                m_vadFrequency(vadFrequency),
                                m_vadSampleLength(vadSampleLength),
                                m_vadAggressiveness(vadAggressiveness),
                                m_bufferSize(bufferSize),
-                               m_filteredAudioPortOutName(filteredAudioPortOutName),
-                               m_microphoneManager(microphoneManager){
+                               m_filteredAudioPortOutName(filteredAudioPortOutName){
 }
 
 
@@ -124,7 +122,7 @@ void AudioProcessor::processAudio(yarp::sig::Sound& inputSound){
             }
         }
     } else {
-        yCDebug(VADAUDIOPROCESSOR) << "cannot split samples into packets.";
+        yCDebug(VADAUDIOPROCESSOR) << "cannot split samples into packets. " << sampleSecondsLength;
     }
     m_soundToProcess.pop_front();
 }
@@ -194,13 +192,11 @@ void AudioProcessor::openMicrophone() {
 
 
 void AudioProcessor::closeMicrophone() {
-    m_microphoneManager->closeMicrophone();
     m_microphoneOpen = false;
 }
 
 
 void AudioProcessor::sendSound() {
-    closeMicrophone();
     m_soundDetected = false;
     m_paddingCurrentSize = 0;
     int numberOfSamplesPerPacket = m_vadSampleLength * (m_vadFrequency / 1000);

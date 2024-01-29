@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "AudioProcessorCreator.h"
-#include "MicrophoneStatusCallback.h"
 
 YARP_LOG_COMPONENT(VADAUDIOPROCESSORCREATOR, "behavior_tour_robot.voiceActivationDetection.AudioProcessorCreator", yarp::os::Log::TraceType)
 
@@ -28,19 +27,6 @@ bool AudioProcessorCreator::configure(yarp::os::ResourceFinder &rf)
                                                   "The name of the input port for the synchronization rpc port.")
                                              .asString();
 
-    m_headSynchronizerClientName = "/vad/HeadSynchronizer/thrift:c";
-
-    if (!m_headSynchronizer.yarp().attachAsClient(m_pHeadSynchronizerClient))
-    {
-        yCWarning(VADAUDIOPROCESSORCREATOR) << "Error! Cannot attach the port as a client";
-        return false;
-    }
-
-    if (!m_pHeadSynchronizerClient.open(m_headSynchronizerClientName))
-    {
-        yCWarning(VADAUDIOPROCESSORCREATOR) << "Error! Cannot open YARP port";
-        return false;
-    }
 
     // I think this is not needed
     if (!rf.check("period", "refresh period of the rf module"))
@@ -94,26 +80,15 @@ bool AudioProcessorCreator::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    if (!m_microphoneStatusPort.open(microphonePortIn))
-    {
-        yCError(VADAUDIOPROCESSORCREATOR) << "cannot open port" << microphonePortIn;
-        return false;
-    }
-    m_microphoneStatusCallback = std::make_shared<MicrophoneStatusCallback>(synchronizationRpcPort);
     m_audioProcessor = std::make_shared<AudioProcessor>(m_vadFrequency,
                                                         m_vadSampleLength,
                                                         m_vadAggressiveness,
                                                         m_bufferSize,
-                                                        filteredAudioPortOutName,
-                                                        m_microphoneStatusCallback);
+                                                        filteredAudioPortOutName);
 
-    m_microphoneStatusCallback->addMicrophoneOpener(m_audioProcessor);
-    m_microphoneStatusCallback->init();
     m_audioCallback = std::make_unique<AudioCallback>(m_audioProcessor);
     m_audioPort.useCallback(*m_audioCallback);
-    m_microphoneStatusPort.useCallback(*m_microphoneStatusCallback);
     m_audioProcessor->start();
-    m_headSynchronizer.startHearing();
     yCInfo(VADAUDIOPROCESSORCREATOR) << "Started";
     return true;
 }

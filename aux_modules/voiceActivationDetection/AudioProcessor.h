@@ -30,8 +30,7 @@ public:
                    int vadSampleLength,
                    int vadAggressiveness,
                    int bufferSize,
-                   std::string filteredAudioPortOutName,
-                   std::shared_ptr<IAudioProcessorMicrophoneCloser> microphoneManager);
+                   std::string filteredAudioPortOutName);
     void addSound(yarp::sig::Sound&& sound) override;
 
     [[noreturn]] void run() override;
@@ -53,7 +52,6 @@ private:
     std::string m_filteredAudioPortOutName;
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
     bool m_microphoneOpen{false};
-    std::shared_ptr<IAudioProcessorMicrophoneCloser> m_microphoneManager;
     std::deque<yarp::sig::Sound> m_soundToProcess;
 
     void processAudio(yarp::sig::Sound& inputSound);

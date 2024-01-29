@@ -20,13 +20,15 @@ target_sources(${AUX_NAME}
     main.cpp
     AudioProcessor.h
     AudioProcessor.cpp
-    MicrophoneStatusCallback.h
-    MicrophoneStatusCallback.cpp
     AudioProcessorCreator.h
     AudioProcessorCreator.cpp
     AudioCallback.cpp
     AudioCallback.h
 )
+
+find_package(YARP COMPONENTS os dev REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
 
 target_sources(${AUX_NAME}
   PRIVATE
@@ -38,6 +40,6 @@ target_link_libraries(${AUX_NAME}
     YARP::YARP_dev
     YARP::YARP_init
     PkgConfig::libfvad
-    headSynchronizerRPC
     )
+    
 install(TARGETS ${AUX_NAME} DESTINATION bin)

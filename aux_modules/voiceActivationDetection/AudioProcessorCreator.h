@@ -9,8 +9,6 @@
 #include "AudioProcessor.h"
 #include "Interfaces/IAudioProcessorMicrophoneCloser.h"
 #include "AudioCallback.h"
-#include "MicrophoneStatusCallback.h"
-#include "headSynchronizerRPC.h"
 
 // Other frequencies do not seem to work well
 
@@ -32,11 +30,9 @@ private:
     std::unique_ptr<AudioCallback> m_audioCallback;
     std::shared_ptr<AudioProcessor> m_audioProcessor;
     std::mutex m_mutex; /** Internal mutex. **/
-    std::shared_ptr<MicrophoneStatusCallback> m_microphoneStatusCallback;
 
     std::string m_headSynchronizerClientName;
     yarp::os::Port m_pHeadSynchronizerClient;
-    headSynchronizerRPC m_headSynchronizer;
 
 public:
     bool configure(yarp::os::ResourceFinder &rf) override;
