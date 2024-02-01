@@ -74,17 +74,22 @@ Detector::Detector(int vadFrequency,
 void Detector::onRead(yarp::sig::Sound& soundReceived) {
     std::lock_guard<std::mutex> lock(m_mutex);
     
-    size_t num_samples = soundReceived.getSamples();
-    
-    for (size_t i = 0; i < num_samples; i++)
+    if (m_runInference)
     {
-        m_soundBuffer[i] = soundReceived.get(i);
-        ++m_fillCount;
-        if (m_fillCount == m_vadSampleLength) {
-            processPacket(m_soundBuffer);
-            m_fillCount = 0;
-        }
-    }   
+        size_t num_samples = soundReceived.getSamples();
+    
+        for (size_t i = 0; i < num_samples; i++)
+        {
+            m_soundBuffer[i] = soundReceived.get(i);
+            ++m_fillCount;
+            if (m_fillCount == m_vadSampleLength) {
+                processPacket(m_soundBuffer);
+                m_fillCount = 0;
+            }
+        } 
+    }
+    
+      
 }
 
 

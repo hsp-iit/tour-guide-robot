@@ -80,11 +80,17 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
+    
+    m_rpcPort.open("/vad/rpc");
+
     m_audioProcessor = std::make_shared<Detector>(m_vadFrequency,
                                                     m_vadSampleLength,
                                                     m_vadAggressiveness,
                                                     m_bufferSize,
                                                     "/vad/audio:o");
+
+    m_rpc = std::make_unique<VADServer>(m_audioProcessor);
+    m_rpc->yarp().attachAsServer(m_rpcPort);
 
     m_audioPort.useCallback(*m_audioProcessor);
     yCInfo(VADAUDIOPROCESSORCREATOR) << "Started";
