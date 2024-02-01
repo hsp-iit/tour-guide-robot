@@ -1,4 +1,4 @@
-image: test_map.pgm
+image: r1_small_office.pgm
 mode: trinary
 resolution: 0.05
 origin: [-1.28, -5.37, 0]
