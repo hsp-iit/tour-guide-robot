@@ -4,7 +4,7 @@
 # All Rights Reserved.                                                         #
 #                                                                              #
 ################################################################################
-
+project(voiceActivationDetection)
 set(AUX_NAME voiceActivationDetection)
 add_executable(${AUX_NAME})
 target_include_directories(${AUX_NAME}
@@ -14,16 +14,11 @@ target_include_directories(${AUX_NAME}
 )
 target_sources(${AUX_NAME}
   PRIVATE
-    Interfaces/IAudioProcessorFeeder.h
-    Interfaces/IAudioProcessorMicrophoneCloser.h
-    Interfaces/IAudioProcessorMicrophoneOpener.h
     main.cpp
-    AudioProcessor.h
-    AudioProcessor.cpp
-    AudioProcessorCreator.h
-    AudioProcessorCreator.cpp
-    AudioCallback.cpp
-    AudioCallback.h
+    Detector.h
+    Detector.cpp
+    VoiceActivationDetectionModule.h
+    VoiceActivationDetectionModule.cpp
 )
 
 find_package(YARP COMPONENTS os dev REQUIRED)
@@ -41,5 +36,3 @@ target_link_libraries(${AUX_NAME}
     YARP::YARP_init
     PkgConfig::libfvad
     )
-    
-install(TARGETS ${AUX_NAME} DESTINATION bin)

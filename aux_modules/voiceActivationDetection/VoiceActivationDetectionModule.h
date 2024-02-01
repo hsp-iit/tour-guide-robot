@@ -6,13 +6,11 @@
 
 #include <yarp/os/RFModule.h>
 #include <yarp/dev/AudioRecorderStatus.h>
-#include "AudioProcessor.h"
-#include "Interfaces/IAudioProcessorMicrophoneCloser.h"
-#include "AudioCallback.h"
+#include "Detector.h"
 
 // Other frequencies do not seem to work well
 
-class AudioProcessorCreator : public yarp::os::RFModule
+class VoiceActivationDetectionModule : public yarp::os::RFModule
 {
 private:
     static constexpr int VAD_FREQUENCY_DEFAULT = 16000;
@@ -23,16 +21,11 @@ private:
     int m_vadFrequency{VAD_FREQUENCY_DEFAULT};
     int m_vadSampleLength{VAD_SAMPLE_LENGTH_DEFAULT};
     int m_vadAggressiveness{VAD_AGGRESSIVENESS_DEFAULT};
-    yarp::os::BufferedPort<yarp::os::Bottle> m_microphoneStatusPort; /** The input port for receiving the microphone status. **/
     yarp::os::BufferedPort<yarp::sig::Sound> m_audioPort;            /** The input port for receiving the microphone input. **/
     double m_period{PERIOD_DEFAULT};                                 /** The module period. **/
     int m_bufferSize{8};
-    std::unique_ptr<AudioCallback> m_audioCallback;
-    std::shared_ptr<AudioProcessor> m_audioProcessor;
+    std::shared_ptr<Detector> m_audioProcessor;
     std::mutex m_mutex; /** Internal mutex. **/
-
-    std::string m_headSynchronizerClientName;
-    yarp::os::Port m_pHeadSynchronizerClient;
 
 public:
     bool configure(yarp::os::ResourceFinder &rf) override;

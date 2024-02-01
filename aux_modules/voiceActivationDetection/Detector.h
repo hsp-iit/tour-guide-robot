@@ -8,7 +8,6 @@
 #include <yarp/sig/Sound.h>
 #include <yarp/os/TypedReaderCallback.h>
 #include <yarp/os/LogStream.h>
-#include "Interfaces/IAudioProcessorMicrophoneCloser.h"
 
 #include <functional>
 #include <cmath>
@@ -16,35 +15,28 @@
 #include <memory>
 
 #include <mutex>
-#include <deque>
 #include <fvad.h>
 #include <yarp/os/BufferedPort.h>
-#include <Interfaces/IAudioProcessorFeeder.h>
-#include <Interfaces/IAudioProcessorMicrophoneOpener.h>
 
-// if put here it is used also by main.cpp
-
-class AudioProcessor: public yarp::os::Thread, public IAudioProcessorFeeder, public IAudioProcessorMicrophoneOpener{
+class Detector: public yarp::os::TypedReaderCallback<yarp::sig::Sound> {
 public:
-    AudioProcessor(int vadFrequency,
+    Detector(int vadFrequency,
                    int vadSampleLength,
                    int vadAggressiveness,
                    int bufferSize,
                    std::string filteredAudioPortOutName);
-    void addSound(yarp::sig::Sound&& sound) override;
+    using TypedReaderCallback<yarp::sig::Sound>::onRead;
+    void onRead(yarp::sig::Sound& soundReceived) override;
 
-    [[noreturn]] void run() override;
-    bool threadInit() override;
-    void threadRelease() override;
-    void openMicrophone() override;
 
 private:
-
     int m_vadFrequency;
     int m_vadSampleLength;
     int m_vadAggressiveness;
     Fvad * m_fvadObject {nullptr}; /** The voice activity detection object. **/
     std::deque<std::shared_ptr<std::vector<int16_t>>> m_soundToSend; /** Internal sound buffer. **/
+    std::vector<int16_t> m_soundBuffer;
+    int m_fillCount; // keep tracks of up to what index the buffer is full
     std::mutex m_mutex; /** Internal mutex. **/
     int m_bufferSize;
     int m_paddingCurrentSize{0};
@@ -54,8 +46,7 @@ private:
     bool m_microphoneOpen{false};
     std::deque<yarp::sig::Sound> m_soundToProcess;
 
-    void processAudio(yarp::sig::Sound& inputSound);
-    void processPacket(std::shared_ptr<std::vector<int16_t>> copiedSound);
+    void processPacket(std::vector<int16_t> copiedSound);
     void sendSound();
     void clearVector();
     void closeMicrophone();

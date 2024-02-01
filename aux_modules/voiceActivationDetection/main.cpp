@@ -5,7 +5,7 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/ResourceFinder.h>
 
-#include "AudioProcessorCreator.h"
+#include "VoiceActivationDetectionModule.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     rf.setVerbose(true);
     rf.configure(argc, argv);
 
-    AudioProcessorCreator speechModule;
+    VoiceActivationDetectionModule speechModule;
 
     return speechModule.runModule(rf);
 }
