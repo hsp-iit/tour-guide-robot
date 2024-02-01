@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     r1_small_office
+YarpMapData r1_small_office.ppm
+RosMapData  r1_small_office.yaml
