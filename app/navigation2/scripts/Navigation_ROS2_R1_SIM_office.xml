@@ -1,0 +1,94 @@
+<application>
+   <name>Navigation_ROS2_R1_SIM</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>ros2_launch.sh</name>
+      <parameters>/usr/local/src/hsp/tour-guide-robot/app/navigation2/launch/robot_state_publisher.launch.py use_sim_time:=true</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>baseControl2</name>
+      <parameters>--context baseControl2_SIM --from cer_baseControl2_ros2.ini --skip_robot_interface_check</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>./set_navigation_position_sim.sh</name>
+      <parameters></parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from pointCloudCreator_sim.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from lidar_compressed_sim.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from mapServer.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch amcl.launch.py use_sim_time:=true</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from localizationROS2.ini --init_map r1_small_office</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch navigation.launch.py use_sim_time:=true params_file:=/home/user1/tour-guide-robot/app/navigation2/conf/nav2_params.yaml</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>headObstaclesScanner</name>
+      <parameters>--GENERAL::robot SIM_CER_ROBOT --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>rviz2</name>
+      <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
+      <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
+      <node>console</node>
+   </module>
+
+   <!-- connections -->
+
+</application>

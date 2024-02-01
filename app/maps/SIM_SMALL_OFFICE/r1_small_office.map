@@ -3,5 +3,5 @@
 #it points to ROS occupancy grid (optional)
 
 MapName     r1_small_office
-YarpMapData r1_small_office.ppm
+YarpMapData r1_small_office.pgm
 RosMapData  r1_small_office.yaml
