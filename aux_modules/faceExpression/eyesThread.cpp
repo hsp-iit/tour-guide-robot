@@ -107,7 +107,9 @@ bool EyesThread::threadInit()
 
     // Copy eyes
     ((Mat)blinkEye[indexes[0]]).copyTo(faceRest(cv::Rect(leftEye_x,  leftEye_y,  eyeWidth, eyeHeight)));
-    ((Mat)blinkEye[indexes[0]]).copyTo(faceRest(cv::Rect(rightEye_x, rightEye_y, eyeWidth, eyeHeight)));
+    cv::Mat flippedEye;
+    cv::flip(blinkEye[indexes[index]], flippedEye, 1); // flipping the right eye on its vertical axis
+    flippedEye.copyTo(faceRest(cv::Rect(rightEye_x, rightEye_y, eyeWidth, eyeHeight)));
     // Add nose
     noseBar.copyTo(faceRest(cv::Rect(noseBar0_x, noseBar0_y, noseBar.cols, noseBar.rows)));
 
@@ -188,7 +190,9 @@ bool EyesThread::updateBlink(int index)
 
     // Copy eyes
     ((Mat)blinkEye[indexes[index]]).copyTo(m_face(cv::Rect(leftEye_x,  leftEye_y,  eyeWidth, eyeHeight)));
-    ((Mat)blinkEye[indexes[index]]).copyTo(m_face(cv::Rect(rightEye_x, rightEye_y, eyeWidth, eyeHeight)));
+    cv::Mat flippedEye;
+    cv::flip(blinkEye[indexes[index]], flippedEye, 1); // flipping the right eye on its vertical axis
+    flippedEye.copyTo(m_face(cv::Rect(rightEye_x, rightEye_y, eyeWidth, eyeHeight)));
 
     // Add nose
     noseBar.copyTo(m_face(cv::Rect(noseBar0_x, noseBar0_y, noseBar.cols, noseBar.rows)));
