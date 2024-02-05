@@ -43,3 +43,5 @@ target_link_libraries(${AUX_NAME}
     PkgConfig::libfvad
     VADMsgs
     )
+
+install(TARGETS ${AUX_NAME} DESTINATION bin)

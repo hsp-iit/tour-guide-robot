@@ -27,7 +27,7 @@ public:
                    std::string filteredAudioPortOutName);
     using TypedReaderCallback<yarp::sig::Sound>::onRead;
     void onRead(yarp::sig::Sound& soundReceived) override;
-    bool m_runInference = false;
+    bool m_runInference = true;
 
 
 private:
@@ -35,10 +35,9 @@ private:
     int m_vadSampleLength;
     int m_vadAggressiveness;
     Fvad * m_fvadObject {nullptr}; /** The voice activity detection object. **/
-    std::deque<std::shared_ptr<std::vector<int16_t>>> m_soundToSend; /** Internal sound buffer. **/
-    std::vector<int16_t> m_soundBuffer;
-    int m_fillCount; // keep tracks of up to what index the buffer is full
-    std::mutex m_mutex; /** Internal mutex. **/
+    std::deque<std::vector<int16_t>> m_soundToSend; /** Internal sound buffer. **/
+    std::vector<int16_t> m_currentSoundBuffer;
+    int m_fillCount; // keep track of up to what index the buffer is full
     int m_bufferSize;
     int m_paddingCurrentSize{0};
     bool m_soundDetected{false};
@@ -47,11 +46,8 @@ private:
     bool m_microphoneOpen{false};
     std::deque<yarp::sig::Sound> m_soundToProcess;
 
-    void processPacket(std::vector<int16_t> copiedSound);
+    void processPacket();
     void sendSound();
-    void clearVector();
-    void closeMicrophone();
-    std::shared_ptr<std::vector<int16_t>> createVector();
 };
 
 #endif //BEHAVIOR_TOUR_ROBOT_AUDIOPROCESSOR_H

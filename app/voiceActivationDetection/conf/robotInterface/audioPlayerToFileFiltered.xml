@@ -11,6 +11,12 @@ SPDX-License-Identifier: BSD-3-Clause
                 <param extern-name="toFileFiltered_base_samples" name="samples">
                     1323000
                 </param>
+                <param extern-name="toFileFiltered_base_rate" name="rate">
+                    16000
+                </param>
+                <param extern-name="toFileFiltered_base_channels" name="channels">
+                    1
+                </param>
             </group>
             <param extern-name="toFileFiltered_fileName" name="file_name">
                 filtered.wav

@@ -8,8 +8,14 @@ SPDX-License-Identifier: BSD-3-Clause
     <devices>
         <device name="toFileOrigPlay" type="audioToFileDevice">
             <group name="AUDIO_BASE">
-                <param extern-name="toFileOrig_base_samples" name="samples">
+                <param extern-name="toFileFiltered_base_samples" name="samples">
                     1323000
+                </param>
+                <param extern-name="toFileFiltered_base_rate" name="rate">
+                    16000
+                </param>
+                <param extern-name="toFileFiltered_base_channels" name="channels">
+                    1
                 </param>
             </group>
             <param extern-name="toFileOrig_fileName" name="file_name">
@@ -25,7 +31,7 @@ SPDX-License-Identifier: BSD-3-Clause
                 true
             </param>
             <param extern-name="toFileOrig_playback_network_buffer_size" name="playback_network_buffer_size">
-                0.1
+                0.01
             </param>
             <param extern-name="toFileOrig_name" name="name">
                 /original

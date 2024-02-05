@@ -64,15 +64,15 @@ Detector::Detector(int vadFrequency,
         yCError(VADAUDIOPROCESSOR) << "cannot open port" << m_filteredAudioPortOutName;
     }
 
-    // m_vadSampleLength = (m_vadSampleLength / 1000) * m_vadSampleLength; // from time to number of samples
-    m_vadSampleLength = 320; // hard coding for debugging
-    m_soundBuffer = std::vector<int16_t>(m_vadSampleLength, 0);
+    m_vadSampleLength = m_vadSampleLength * (m_vadFrequency / 1000); // from time to number of samples
+    std::cout << m_vadSampleLength << std::endl;
+    m_currentSoundBuffer = std::vector<int16_t>(m_vadSampleLength, 0);
     m_fillCount = 0;
 }
 
 
 void Detector::onRead(yarp::sig::Sound& soundReceived) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    size_t num_samples = soundReceived.getSamples();
     
     if (m_runInference)
     {
@@ -80,20 +80,18 @@ void Detector::onRead(yarp::sig::Sound& soundReceived) {
     
         for (size_t i = 0; i < num_samples; i++)
         {
-            m_soundBuffer[i] = soundReceived.get(i);
+            m_currentSoundBuffer.at(m_fillCount) = soundReceived.get(i);
             ++m_fillCount;
-            if (m_fillCount == m_vadSampleLength) {
-                processPacket(m_soundBuffer);
+            if (m_fillCount == m_vadSampleLength-1) {
+                processPacket();
                 m_fillCount = 0;
             }
         } 
-    }
-    
-      
+    } 
 }
 
 
-void Detector::processPacket(std::vector<int16_t> copiedSound) {
+void Detector::processPacket() {
     /*
     * Calculates a VAD decision for an audio frame.
     *
@@ -105,76 +103,46 @@ void Detector::processPacket(std::vector<int16_t> copiedSound) {
     *                        0 - (non-active Voice),
     *                       -1 - (invalid frame length).
     */
-    // the vector is const so it doesn't modify copied sound
-    int isTalking = fvad_process(m_fvadObject, copiedSound.data(), copiedSound.size());
-    //better use cout since it doesn't pass through the network and it is a callback
+    int isTalking = fvad_process(m_fvadObject, m_currentSoundBuffer.data(), m_currentSoundBuffer.size());
 
     if (isTalking < 0)
     {
         yCWarning(VADAUDIOPROCESSOR) << "Invalid frame length.";
-        // if (m_soundDetected) {
-        //     sendSound();
-        // }
-        // else {
-        //     clearVector();
-        // }
     } else if (isTalking == 0) {
-        // not talking, but taking padding in front and at the end of buffersize
-        // if(m_soundDetected) {
-        //     if (m_paddingCurrentSize < m_bufferSize) {
-        //         m_paddingCurrentSize++;
-        //         m_soundToSend.push_back(copiedSound);
-        //     }
-        //     else {
-        //         sendSound();
-        //     }
-        // }
-        // else {
-        //     if (m_soundToSend.size() == m_bufferSize) {
-        //         m_soundToSend.pop_front();
-        //     }
-
-        //     m_soundToSend.push_back(copiedSound);
-        // }
-        yCDebug(VADAUDIOPROCESSOR) << "No voice detected";    
+        yCDebug(VADAUDIOPROCESSOR) << "No voice detected"; 
+        if (m_soundDetected)
+        {
+            // yCDebug(VADAUDIOPROCESSOR) << "Sending existing sounds";
+            sendSound();
+            m_soundToSend.clear();
+            m_soundDetected = false;
+        }   
     } else {
-        // m_soundToSend.push_back(copiedSound);
-        // if (!m_soundDetected){
-        //     yCDebug(VADAUDIOPROCESSOR) << "started detecting voice activity";
-        // }
-        // m_soundDetected = true;
-        // m_paddingCurrentSize = 0;
-        yCDebug(VADAUDIOPROCESSOR) << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> voice detected";    
+        yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";
+        m_soundDetected = true;
+        m_soundToSend.push_back(m_currentSoundBuffer);
     }
 }
-
-
-void Detector::closeMicrophone() {
-    m_microphoneOpen = false;
-}
-
 
 void Detector::sendSound() {
     m_soundDetected = false;
     m_paddingCurrentSize = 0;
     int numberOfSamplesPerPacket = m_vadSampleLength * (m_vadFrequency / 1000);
+    int numberOfPackets = m_soundToSend.size();
 
     yarp::sig::Sound& soundToSend = m_filteredAudioOutputPort.prepare();
-    yCDebug(VADAUDIOPROCESSOR) << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> sound detected, sending on the port";
+    yCDebug(VADAUDIOPROCESSOR) << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> sending recorded voice sound of " << numberOfPackets * m_currentSoundBuffer.size() <<   " samples";
 
-    soundToSend.resize(m_soundToSend.size() * numberOfSamplesPerPacket);
+    soundToSend.resize(m_currentSoundBuffer.size() * numberOfPackets);
     soundToSend.setFrequency(m_vadFrequency);
-    for (size_t packet = 0; packet < m_soundToSend.size(); packet++)
+    for (size_t p = 0; p < numberOfPackets; ++p)
     {
-        for(size_t index = 0; index < numberOfSamplesPerPacket; index++) {
-            soundToSend.set((*(m_soundToSend[packet]))[index], (packet * numberOfSamplesPerPacket) + index);
+        for (size_t i = 0; i < m_currentSoundBuffer.size(); i++)
+        {
+            soundToSend.set(m_soundToSend[p].at(i), i + (p * m_currentSoundBuffer.size()));
         }
     }
+    
     m_filteredAudioOutputPort.write();
-    clearVector();
 }
 
-
-void Detector::clearVector() {
-    m_soundToSend.clear();
-}
