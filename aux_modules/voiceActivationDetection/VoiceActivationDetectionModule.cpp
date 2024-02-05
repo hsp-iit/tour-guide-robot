@@ -104,8 +104,8 @@ double VoiceActivationDetectionModule::getPeriod()
 
 bool VoiceActivationDetectionModule::close()
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
     m_audioPort.close();
+    m_rpcPort.close();
     yCInfo(VADAUDIOPROCESSORCREATOR) << "Closing";
     return true;
 }

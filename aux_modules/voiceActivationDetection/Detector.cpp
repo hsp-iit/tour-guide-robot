@@ -65,7 +65,6 @@ Detector::Detector(int vadFrequency,
     }
 
     m_vadSampleLength = m_vadSampleLength * (m_vadFrequency / 1000); // from time to number of samples
-    std::cout << m_vadSampleLength << std::endl;
     m_currentSoundBuffer = std::vector<int16_t>(m_vadSampleLength, 0);
     m_fillCount = 0;
 }
@@ -108,14 +107,14 @@ void Detector::processPacket() {
     if (isTalking < 0)
     {
         yCWarning(VADAUDIOPROCESSOR) << "Invalid frame length.";
-    } else if (isTalking == 0) {
-        yCDebug(VADAUDIOPROCESSOR) << "No voice detected"; 
+    } else if (isTalking == 0) { 
         if (m_soundDetected)
         {
-            // yCDebug(VADAUDIOPROCESSOR) << "Sending existing sounds";
+            yCDebug(VADAUDIOPROCESSOR) << "End of of speech";
             sendSound();
             m_soundToSend.clear();
             m_soundDetected = false;
+            m_runInference = false; // stop detecting voice activity until wake work is invoked
         }   
     } else {
         yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";
