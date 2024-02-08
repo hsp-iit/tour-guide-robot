@@ -18,6 +18,7 @@ target_include_directories(${AUX_NAME}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    /home/user1/share/wake-word-det/messages/build/WakeMsgs
 )
 target_sources(${AUX_NAME}
   PRIVATE
@@ -42,6 +43,7 @@ target_link_libraries(${AUX_NAME}
     YARP::YARP_init
     PkgConfig::libfvad
     VADMsgs
+    /home/user1/share/wake-word-det/messages/build/libWakeMsgs.a
     )
 
 install(TARGETS ${AUX_NAME} DESTINATION bin)

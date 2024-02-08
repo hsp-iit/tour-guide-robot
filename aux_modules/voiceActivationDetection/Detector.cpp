@@ -67,26 +67,26 @@ Detector::Detector(int vadFrequency,
     m_vadSampleLength = m_vadSampleLength * (m_vadFrequency / 1000); // from time to number of samples
     m_currentSoundBuffer = std::vector<int16_t>(m_vadSampleLength, 0);
     m_fillCount = 0;
+
+    m_rpcClientPort.open("/vad/rpc:o");
+    m_rpcClient.yarp().attachAsClient(m_rpcClientPort);
 }
 
 
 void Detector::onRead(yarp::sig::Sound& soundReceived) {
     size_t num_samples = soundReceived.getSamples();
-    
-    if (m_runInference)
+    std::cout << soundReceived.toString() << std::endl;
+
+    for (size_t i = 0; i < num_samples; i++)
     {
-        size_t num_samples = soundReceived.getSamples();
-    
-        for (size_t i = 0; i < num_samples; i++)
-        {
-            m_currentSoundBuffer.at(m_fillCount) = soundReceived.get(i);
-            ++m_fillCount;
-            if (m_fillCount == m_vadSampleLength-1) {
-                processPacket();
-                m_fillCount = 0;
-            }
-        } 
+        m_currentSoundBuffer.at(m_fillCount) = soundReceived.get(i);
+        ++m_fillCount;
+        if (m_fillCount == m_vadSampleLength-1) {
+            processPacket();
+            m_fillCount = 0;
+        }
     } 
+    
 }
 
 
@@ -110,11 +110,16 @@ void Detector::processPacket() {
     } else if (isTalking == 0) { 
         if (m_soundDetected)
         {
-            yCDebug(VADAUDIOPROCESSOR) << "End of of speech";
-            sendSound();
-            m_soundToSend.clear();
-            m_soundDetected = false;
-            m_runInference = false; // stop detecting voice activity until wake work is invoked
+            ++m_gapCounter;
+            if (m_gapCounter > m_gapAllowance)
+            {
+                yCDebug(VADAUDIOPROCESSOR) << "End of of speech";
+                sendSound();
+                m_soundToSend.clear();
+                m_soundDetected = false;
+                m_runInference = false; // stop detecting voice activity until wake work is invoked
+                m_rpcClient.stop();
+            }
         }   
     } else {
         yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";

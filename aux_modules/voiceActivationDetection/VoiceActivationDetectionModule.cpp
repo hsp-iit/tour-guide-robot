@@ -8,8 +8,6 @@ YARP_LOG_COMPONENT(VADAUDIOPROCESSORCREATOR, "behavior_tour_robot.voiceActivatio
 
 bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
-
     // std::string filteredAudioPortOutName = rf.check("filtered_audio_output_port_name",
     //                                                 yarp::os::Value("/vad/audio:o"),
     //                                                 "The name of the output port for the filtered audio.")

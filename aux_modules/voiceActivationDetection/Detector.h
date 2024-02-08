@@ -8,6 +8,7 @@
 #include <yarp/sig/Sound.h>
 #include <yarp/os/TypedReaderCallback.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/RpcClient.h>
 
 #include <functional>
 #include <cmath>
@@ -17,6 +18,7 @@
 #include <mutex>
 #include <fvad.h>
 #include <yarp/os/BufferedPort.h>
+#include "WakeMsgs.h"
 
 class Detector: public yarp::os::TypedReaderCallback<yarp::sig::Sound> {
 public:
@@ -45,6 +47,11 @@ private:
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
     bool m_microphoneOpen{false};
     std::deque<yarp::sig::Sound> m_soundToProcess;
+    int m_gapAllowance = 0;
+    int m_gapCounter = 25;
+
+    yarp::os::RpcClient m_rpcClientPort;
+    WakeMsgs m_rpcClient;
 
     void processPacket();
     void sendSound();

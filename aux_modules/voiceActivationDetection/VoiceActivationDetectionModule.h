@@ -17,13 +17,12 @@ private:
     static constexpr int VAD_FREQUENCY_DEFAULT = 16000;
     static constexpr int VAD_SAMPLE_LENGTH_DEFAULT = 20; // millisecond
     static constexpr int VAD_AGGRESSIVENESS_DEFAULT = 3;
-    static constexpr int PERIOD_DEFAULT = 1;
 
     int m_vadFrequency{VAD_FREQUENCY_DEFAULT};
     int m_vadSampleLength{VAD_SAMPLE_LENGTH_DEFAULT};
     int m_vadAggressiveness{VAD_AGGRESSIVENESS_DEFAULT};
     yarp::os::BufferedPort<yarp::sig::Sound> m_audioPort;            /** The input port for receiving the microphone input. **/
-    double m_period{PERIOD_DEFAULT};                                 /** The module period. **/
+    double m_period{0.032};                                 /** The module period. **/
     int m_bufferSize{8};
     std::shared_ptr<Detector> m_audioProcessor;
     std::mutex m_mutex; /** Internal mutex. **/
