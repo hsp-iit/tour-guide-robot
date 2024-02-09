@@ -13,6 +13,7 @@ add_subdirectory(google)
 add_subdirectory(navigation2)
 add_subdirectory(openPoseStuff)
 add_subdirectory(tourManager)
+add_subdirectory(speechPipeline)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2006-2021 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="audioRecAutoDev" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="portAutoRec" type="portaudioRecorder">
+            <group name="AUDIO_BASE">
+                <param extern-name="autoRec_base_rate" name="rate">
+                    44100
+                </param>
+                <param extern-name="autoRec_base_samples" name="samples">
+                    17640
+                </param>
+                <param extern-name="autoRec_base_channels" name="channels">
+                    1
+                </param>
+            </group>
+        </device>
+
+        <device name="audioAutoRecWrap" type="AudioRecorderWrapper">
+            <param extern-name="autoRec_start" name="start">
+                true
+            </param>
+            <param extern-name="autoRec_min_samples_over_network" name="min_samples_over_network">
+                8820
+            </param>
+            <param extern-name="autoRec_max_samples_over_network" name="max_samples_over_network">
+                8820
+            </param>
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdeviceaudoautorec">
+                        portAutoRec
+                    </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+    </devices>
+</robot>

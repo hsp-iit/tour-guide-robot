@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  SPDX-FileCopyrightText: 2023-2023 Istituto Italiano di Tecnologia (IIT)
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+
+<robot name="test" build="2" portprefix="test" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="dev1" type="audioFromFileDevice">
+            <group name="AUDIO_BASE">
+                <param name="rate"> 16000 </param>
+                <param name="samples"> 180000 </param>
+                <param name="channels"> 1  </param>
+            </group>
+            <param extern-name="input_audio_file" name="file_name"> default.wav </param>
+            <param name="reset_on_stop"> true </param>
+        </device>
+
+        <device name="dev2" type="audioRecorder_nws_yarp">
+            <param name="min_samples_over_network"> 3200 </param>
+            <param name="max_samples_over_network"> 3200 </param>
+            <param name="max_samples_timeout"> 0.1 </param>
+            <param name="start"> 1 </param>
+            <param name="send_sound_on_stop"> 0 </param>
+
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdevice"> dev1 </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+
+    </devices>
+</robot>
