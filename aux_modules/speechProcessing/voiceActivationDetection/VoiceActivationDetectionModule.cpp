@@ -79,7 +79,7 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
     }
 
     
-    m_rpcPort.open("/vad/rpc");
+    m_rpcPort.open("/vad/rpc:i");
 
     m_audioProcessor = std::make_shared<Detector>(m_vadFrequency,
                                                     m_vadSampleLength,

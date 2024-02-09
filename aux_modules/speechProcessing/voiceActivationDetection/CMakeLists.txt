@@ -9,16 +9,15 @@ set(AUX_NAME voiceActivationDetection)
 add_executable(${AUX_NAME})
 
 find_package(YARP COMPONENTS os dev REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
-
-add_subdirectory(messages)
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
 
 target_include_directories(${AUX_NAME}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    /home/user1/share/wake-word-det/messages/build/WakeMsgs
+    $<TARGET_PROPERTY:VADMsgs,INTERFACE_INCLUDE_DIRECTORIES>
+    $<TARGET_PROPERTY:WakeMsgs,INTERFACE_INCLUDE_DIRECTORIES>
 )
 target_sources(${AUX_NAME}
   PRIVATE
@@ -43,7 +42,7 @@ target_link_libraries(${AUX_NAME}
     YARP::YARP_init
     PkgConfig::libfvad
     VADMsgs
-    /home/user1/share/wake-word-det/messages/build/libWakeMsgs.a
+    WakeMsgs
     )
 
 install(TARGETS ${AUX_NAME} DESTINATION bin)
