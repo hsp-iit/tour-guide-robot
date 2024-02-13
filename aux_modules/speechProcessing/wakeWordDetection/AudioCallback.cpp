@@ -76,12 +76,6 @@ AudioCallback::AudioCallback(std::string &rpcPortName){
 }
 
 void AudioCallback::onRead(yarp::sig::Sound &soundReceived) {
-    size_t num_samples = soundReceived.getSamples();
-
-    int slice = pv_porcupine_frame_length();
-    int16_t audioFrame[slice];
-    int slice_counter = 0;
-
     if (m_currentlyStreaming)
     {
         yarp::sig::Sound& soundToSend = m_audioOut.prepare();
@@ -89,32 +83,61 @@ void AudioCallback::onRead(yarp::sig::Sound &soundReceived) {
         m_audioOut.write();
     }
     else {
-        for (size_t i = 0; i < num_samples; i++)
-        {
-            audioFrame[slice_counter] = soundReceived.get(i);
-            ++slice_counter;
-            if (slice_counter == slice)
-            {
-                int32_t keyword_index = -1;
-                pv_status_t status = pv_porcupine_process(m_porcupine, audioFrame, &keyword_index);
+        processFrame(soundReceived);
+    }    
+}
 
-                auto porcupine_status = pv_status_to_string(status);
+void AudioCallback::processFrame(yarp::sig::Sound &soundReceived) {
+    size_t num_samples = soundReceived.getSamples();
 
-                if (keyword_index != -1) {
-                    std::cout <<  "keyword detected!!!!!!!!!!!" << std::endl;
-                    // yarp::sig::Sound& soundToSend = m_audioOut.prepare();
-                    // soundToSend = soundReceived;
-                    // m_audioOut.write();
-                    m_currentlyStreaming = true;
-                }
-                else {
-                    std::cout <<  "no keyword :(" << std::endl;
-                }
+    int slice = pv_porcupine_frame_length();
+    int16_t audioFrame[slice];
+    int slice_counter = 0;
 
-                slice_counter = 0;
+    bool sendRemainingSlices = false; // once wake word is detected stop inferring, just accumulate
+    std::vector<int16_t> remainingSamples;
+    int remainingSamplesIdx = 0;
+
+    for (size_t i = 0; i < num_samples; i++) {
+        //accumulate all remaining samples for sending
+        if (sendRemainingSlices) {
+            remainingSamples.at(remainingSamplesIdx) = soundReceived.get(i);
+            ++remainingSamplesIdx;
+            continue;
+        }
+        
+        audioFrame[slice_counter] = soundReceived.get(i);
+        ++slice_counter;
+        
+        if (slice_counter == slice && !sendRemainingSlices) {
+            int32_t keyword_index = -1;
+            pv_status_t status = pv_porcupine_process(m_porcupine, audioFrame, &keyword_index);
+
+            auto porcupine_status = pv_status_to_string(status);
+
+            if (keyword_index != -1) {
+                std::cout <<  "keyword detected!!!!!!!!!!!" << std::endl;
+                m_currentlyStreaming = true;
+                sendRemainingSlices = true;
+                remainingSamples.resize(num_samples - i - 1);
             }
-            
+            // else {
+            //     std::cout <<  "no keyword :(" << std::endl;
+            // }
+
+            slice_counter = 0;
         }
     }
-     
+
+    // send any remaining slices after the wake word detected
+    if (sendRemainingSlices && remainingSamples.size() > 0) {
+        yarp::sig::Sound& soundToSend = m_audioOut.prepare();
+        soundToSend.setFrequency(16000);
+        soundToSend.resize(remainingSamples.size());
+        for (size_t i = 0; i < remainingSamples.size(); i++)
+        {
+            soundToSend.set(remainingSamples.at(i), i);
+        }
+        m_audioOut.write();
+    }
 }

@@ -27,7 +27,9 @@ private:
     pv_porcupine_t *m_porcupine = NULL;
 
     std::string m_audioOutName = "/wake/audio:o";
-    yarp::os::BufferedPort<yarp::sig::Sound> m_audioOut; // pass audio to VAD from here to avoid out of syn errors 
+    yarp::os::BufferedPort<yarp::sig::Sound> m_audioOut; // pass audio to VAD from here to avoid out of sync errors
+
+    void processFrame(yarp::sig::Sound &soundReceived);
 };
 
 #endif
