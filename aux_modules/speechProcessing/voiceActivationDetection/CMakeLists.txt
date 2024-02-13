@@ -7,11 +7,6 @@
 project(voiceActivationDetection)
 set(AUX_NAME voiceActivationDetection)
 add_executable(${AUX_NAME})
-
-find_package(YARP COMPONENTS os dev REQUIRED)
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
-
 target_include_directories(${AUX_NAME}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -37,9 +32,7 @@ target_sources(${AUX_NAME}
 
 target_link_libraries(${AUX_NAME}
   PRIVATE
-    YARP::YARP_os
-    YARP::YARP_dev
-    YARP::YARP_init
+    ${YARP_LIBRARIES}
     PkgConfig::libfvad
     VADMsgs
     WakeMsgs

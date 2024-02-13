@@ -1,8 +1,6 @@
 set(MODULE_NAME wakeWordDetection)
 add_executable(${MODULE_NAME})
 
-find_package(YARP COMPONENTS os dev REQUIRED)
-
 target_include_directories(${MODULE_NAME}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -26,9 +24,7 @@ target_sources(${MODULE_NAME}
 
 target_link_libraries(${MODULE_NAME}
   PRIVATE
-    YARP::YARP_os
-    YARP::YARP_dev
-    YARP::YARP_init
+    ${YARP_LIBRARIES}
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86_64/libpv_porcupine.so
     VADMsgs
     WakeMsgs
