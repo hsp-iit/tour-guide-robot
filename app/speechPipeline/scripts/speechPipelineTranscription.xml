@@ -1,5 +1,5 @@
 <application>
-  <name>speechPipelineAudioFile</name>
+  <name>speechPipelineTrancription</name>
 
   <dependencies>
   </dependencies>
@@ -7,14 +7,13 @@
   <!-- recording audio from microphone -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context speechPipeline --from audioRecorderFromFile.ini --input_audio_file /home/user1/share/r1_test2.wav</parameters>
-    <node>console</node>
+    <parameters>--config micAudio.xml</parameters>
+    <node>r1-torso</node>
   </module>
 
-  <!-- saving the filtered audio received from the port to filtered.wav -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context speechPipeline --from audioPlayerToFileFiltered.ini</parameters>
+    <parameters>--context speechPipeline --from audioTranscribe.ini</parameters>
     <node>console</node>
   </module>
 
@@ -40,7 +39,7 @@
 
   <connection>
     <from>/vad/audio:o</from>
-    <to>/filtered/audio:i</to>
+    <to>/speechTranscription_nws/sound:i</to>
     <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
   </connection>
 
