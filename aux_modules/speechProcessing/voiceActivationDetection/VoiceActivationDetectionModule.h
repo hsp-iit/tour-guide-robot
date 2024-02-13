@@ -16,7 +16,7 @@ class VoiceActivationDetectionModule : public yarp::os::RFModule
 private:
     static constexpr int VAD_FREQUENCY_DEFAULT = 16000;
     static constexpr int VAD_SAMPLE_LENGTH_DEFAULT = 20; // millisecond
-    static constexpr int VAD_AGGRESSIVENESS_DEFAULT = 3;
+    static constexpr int VAD_AGGRESSIVENESS_DEFAULT = 1;
 
     int m_vadFrequency{VAD_FREQUENCY_DEFAULT};
     int m_vadSampleLength{VAD_SAMPLE_LENGTH_DEFAULT};

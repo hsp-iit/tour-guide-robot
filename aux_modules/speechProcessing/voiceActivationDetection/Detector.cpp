@@ -75,7 +75,6 @@ Detector::Detector(int vadFrequency,
 
 void Detector::onRead(yarp::sig::Sound& soundReceived) {
     size_t num_samples = soundReceived.getSamples();
-    std::cout << soundReceived.toString() << std::endl;
 
     for (size_t i = 0; i < num_samples; i++)
     {
@@ -125,6 +124,7 @@ void Detector::processPacket() {
         yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";
         m_soundDetected = true;
         m_soundToSend.push_back(m_currentSoundBuffer);
+        m_gapCounter = 0;
     }
 }
 

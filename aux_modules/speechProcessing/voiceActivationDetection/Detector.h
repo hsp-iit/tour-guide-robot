@@ -47,8 +47,8 @@ private:
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
     bool m_microphoneOpen{false};
     std::deque<yarp::sig::Sound> m_soundToProcess;
-    int m_gapAllowance = 0;
-    int m_gapCounter = 25;
+    int m_gapAllowance = 34;
+    int m_gapCounter = 0;
 
     yarp::os::RpcClient m_rpcClientPort;
     WakeMsgs m_rpcClient;
