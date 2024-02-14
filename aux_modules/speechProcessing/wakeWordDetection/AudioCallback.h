@@ -7,6 +7,7 @@
 #include <yarp/os/BufferedPort.h>
 
 #include <memory>
+#include <deque>
 #include <string>
 
 #include "VADMsgs.h"
@@ -25,6 +26,12 @@ private:
     VADMsgs m_rpcClient;
     
     pv_porcupine_t *m_porcupine = NULL;
+
+    int m_frameSize;
+    std::vector<int16_t> m_curreAudioFrame;
+    int m_sampleCounter = 0;
+
+    std::deque<std::vector<int16_t>> back;
 
     std::string m_audioOutName = "/wake/audio:o";
     yarp::os::BufferedPort<yarp::sig::Sound> m_audioOut; // pass audio to VAD from here to avoid out of sync errors

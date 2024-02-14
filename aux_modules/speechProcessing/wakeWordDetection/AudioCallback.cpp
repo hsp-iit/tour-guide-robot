@@ -72,6 +72,9 @@ AudioCallback::AudioCallback(std::string &rpcPortName){
     pv_status_t porcupine_status = pv_porcupine_init(access_key, model_path, 1, &keyword_path, &sensitivity, &m_porcupine);
     auto model_status = pv_status_to_string(porcupine_status);
 
+    m_frameSize = pv_porcupine_frame_length();
+    m_curreAudioFrame.resize(m_frameSize);
+
     std::cout << "Model status: " << model_status << std::endl;
 }
 
@@ -90,28 +93,24 @@ void AudioCallback::onRead(yarp::sig::Sound &soundReceived) {
 void AudioCallback::processFrame(yarp::sig::Sound &soundReceived) {
     size_t num_samples = soundReceived.getSamples();
 
-    int slice = pv_porcupine_frame_length();
-    int16_t audioFrame[slice];
-    int slice_counter = 0;
-
     bool sendRemainingSlices = false; // once wake word is detected stop inferring, just accumulate
     std::vector<int16_t> remainingSamples;
-    int remainingSamplesIdx = 0;
+    int remainingSamplesIdx = m_frameSize;
 
     for (size_t i = 0; i < num_samples; i++) {
-        //accumulate all remaining samples for sending
+        // accumulate all remaining samples for sending after keyword detector
         if (sendRemainingSlices) {
             remainingSamples.at(remainingSamplesIdx) = soundReceived.get(i);
             ++remainingSamplesIdx;
             continue;
         }
         
-        audioFrame[slice_counter] = soundReceived.get(i);
-        ++slice_counter;
+        m_curreAudioFrame.at(m_sampleCounter) = soundReceived.get(i);
+        ++m_sampleCounter;
         
-        if (slice_counter == slice && !sendRemainingSlices) {
+        if (m_sampleCounter == m_frameSize) {
             int32_t keyword_index = -1;
-            pv_status_t status = pv_porcupine_process(m_porcupine, audioFrame, &keyword_index);
+            pv_status_t status = pv_porcupine_process(m_porcupine, m_curreAudioFrame.data(), &keyword_index);
 
             auto porcupine_status = pv_status_to_string(status);
 
@@ -119,13 +118,29 @@ void AudioCallback::processFrame(yarp::sig::Sound &soundReceived) {
                 std::cout <<  "keyword detected!!!!!!!!!!!" << std::endl;
                 m_currentlyStreaming = true;
                 sendRemainingSlices = true;
-                remainingSamples.resize(num_samples - i - 1);
-            }
-            // else {
-            //     std::cout <<  "no keyword :(" << std::endl;
-            // }
 
-            slice_counter = 0;
+                // get a few previous frames prior to detection to compensate for latency
+                remainingSamplesIdx = m_frameSize * back.size();
+                remainingSamples.resize((m_frameSize * back.size()) + num_samples - i - 1, 999);
+                for (size_t v = 0; v < back.size(); v++)
+                {
+                    auto vec = back[v];
+                    std::copy(vec.begin(), vec.end(), remainingSamples.begin() + (v * m_frameSize));
+                }
+                std::cout << remainingSamples.size() << std::endl;
+            }
+            else {
+                std::cout <<  "no keyword :(" << std::endl;
+            }
+
+            back.push_back(m_curreAudioFrame);
+            if (back.size() > 3)
+            {
+                back.pop_front();
+            }
+            
+
+            m_sampleCounter = 0; // start filling audio frame buffere again
         }
     }
 
