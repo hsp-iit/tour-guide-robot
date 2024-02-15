@@ -1,62 +1,9 @@
 #include "AudioCallback.h"
-// #include "pv_recorder.h"
 
 #include <iostream>
 #include <vector>
 #include <dlfcn.h>
 
-
-static void *open_dl(const char *dl_path) {
-
-#if defined(_WIN32) || defined(_WIN64)
-
-    return LoadLibrary(dl_path);
-
-#else
-
-    return dlopen(dl_path, RTLD_NOW);
-
-#endif
-}
-
-static void *load_symbol(void *handle, const char *symbol) {
-
-#if defined(_WIN32) || defined(_WIN64)
-
-    return GetProcAddress((HMODULE) handle, symbol);
-
-#else
-
-    return dlsym(handle, symbol);
-
-#endif
-}
-
-static void close_dl(void *handle) {
-
-#if defined(_WIN32) || defined(_WIN64)
-
-    FreeLibrary((HMODULE) handle);
-
-#else
-
-    dlclose(handle);
-
-#endif
-}
-
-static void print_dl_error(const char *message) {
-
-#if defined(_WIN32) || defined(_WIN64)
-
-    fprintf(stderr, "%s with code '%lu'.\n", message, GetLastError());
-
-#else
-
-    fprintf(stderr, "%s with '%s'.\n", message, dlerror());
-
-#endif
-}
 
 AudioCallback::AudioCallback(std::string &rpcPortName){
     auto access_key = "E3HSLWAlzc76SFsflAy+9NSJotzp4u1VQIKU63sdiyc9CzqQL8HRDg==";
@@ -73,7 +20,7 @@ AudioCallback::AudioCallback(std::string &rpcPortName){
     auto model_status = pv_status_to_string(porcupine_status);
 
     m_frameSize = pv_porcupine_frame_length();
-    m_curreAudioFrame.resize(m_frameSize);
+    m_currentAudioSliceBuffer.resize(m_frameSize);
 
     std::cout << "Model status: " << model_status << std::endl;
 }
@@ -91,68 +38,74 @@ void AudioCallback::onRead(yarp::sig::Sound &soundReceived) {
 }
 
 void AudioCallback::processFrame(yarp::sig::Sound &soundReceived) {
-    size_t num_samples = soundReceived.getSamples();
-
-    bool sendRemainingSlices = false; // once wake word is detected stop inferring, just accumulate
-    std::vector<int16_t> remainingSamples;
-    int remainingSamplesIdx = m_frameSize;
+    const size_t num_samples = soundReceived.getSamples();
+    
+    int remainingSamplesBufferIdx = 0;
 
     for (size_t i = 0; i < num_samples; i++) {
-        // accumulate all remaining samples for sending after keyword detector
-        if (sendRemainingSlices) {
-            remainingSamples.at(remainingSamplesIdx) = soundReceived.get(i);
-            ++remainingSamplesIdx;
+        // accumulate all remaining samples for sending after keyword detected
+        if (m_currentlyStreaming) {
+            m_remainingSamplesBuffer.at(remainingSamplesBufferIdx) = soundReceived.get(i);
+            ++remainingSamplesBufferIdx;
             continue;
         }
         
-        m_curreAudioFrame.at(m_sampleCounter) = soundReceived.get(i);
+        m_currentAudioSliceBuffer.at(m_sampleCounter) = soundReceived.get(i);
         ++m_sampleCounter;
         
         if (m_sampleCounter == m_frameSize) {
-            int32_t keyword_index = -1;
-            pv_status_t status = pv_porcupine_process(m_porcupine, m_curreAudioFrame.data(), &keyword_index);
-
-            auto porcupine_status = pv_status_to_string(status);
-
-            if (keyword_index != -1) {
-                std::cout <<  "keyword detected!!!!!!!!!!!" << std::endl;
-                m_currentlyStreaming = true;
-                sendRemainingSlices = true;
-
-                // get a few previous frames prior to detection to compensate for latency
-                remainingSamplesIdx = m_frameSize * back.size();
-                remainingSamples.resize((m_frameSize * back.size()) + num_samples - i - 1, 999);
-                for (size_t v = 0; v < back.size(); v++)
-                {
-                    auto vec = back[v];
-                    std::copy(vec.begin(), vec.end(), remainingSamples.begin() + (v * m_frameSize));
-                }
-                std::cout << remainingSamples.size() << std::endl;
-            }
-            else {
-                std::cout <<  "no keyword :(" << std::endl;
-            }
-
-            back.push_back(m_curreAudioFrame);
-            if (back.size() > 3)
-            {
-                back.pop_front();
-            }
-            
-
-            m_sampleCounter = 0; // start filling audio frame buffere again
+            m_currentlyStreaming = processSliceOfFrame(num_samples, i, remainingSamplesBufferIdx);
+            m_sampleCounter = 0; // start filling audio slice buffer from start again
         }
     }
 
     // send any remaining slices after the wake word detected
-    if (sendRemainingSlices && remainingSamples.size() > 0) {
-        yarp::sig::Sound& soundToSend = m_audioOut.prepare();
-        soundToSend.setFrequency(16000);
-        soundToSend.resize(remainingSamples.size());
-        for (size_t i = 0; i < remainingSamples.size(); i++)
-        {
-            soundToSend.set(remainingSamples.at(i), i);
-        }
-        m_audioOut.write();
+    if (m_currentlyStreaming && m_remainingSamplesBuffer.size() > 0) {
+        sendRemainingSamples();
     }
+}
+
+bool AudioCallback::processSliceOfFrame(const size_t &numSamplesInFrame, int currentSampleIdx, int &remainingSamplesBufferIdx) {
+    int32_t keyword_index = -1;
+    pv_status_t status = pv_porcupine_process(m_porcupine, m_currentAudioSliceBuffer.data(), &keyword_index);
+
+    auto porcupine_status = pv_status_to_string(status);
+
+    bool keyWordDetected = false;
+    if (keyword_index != -1) {
+        std::cout <<  "keyword detected!!!!!!!!!!!" << std::endl;
+        keyWordDetected = true;
+
+        // resize buffer to contain a few previous slices of audio + have space for all remaining samples in the current audioframe
+        remainingSamplesBufferIdx = m_frameSize * m_previousAudioBuffer.size();
+        m_remainingSamplesBuffer.resize((m_frameSize * m_previousAudioBuffer.size()) + numSamplesInFrame - currentSampleIdx - 1, 999);
+        for (size_t v = 0; v < m_previousAudioBuffer.size(); v++)
+        {
+            auto vec = m_previousAudioBuffer[v];
+            std::copy(vec.begin(), vec.end(), m_remainingSamplesBuffer.begin() + (v * m_frameSize));
+        }
+        std::cout << m_remainingSamplesBuffer.size() << std::endl;
+    }
+    else {
+        std::cout <<  "no keyword :(" << std::endl;
+    }
+
+    m_previousAudioBuffer.push_back(m_currentAudioSliceBuffer);
+    if (m_previousAudioBuffer.size() > 5)
+    {
+        m_previousAudioBuffer.pop_front();
+    }
+
+    return keyWordDetected;
+}
+
+void AudioCallback::sendRemainingSamples() {
+    yarp::sig::Sound& soundToSend = m_audioOut.prepare();
+    soundToSend.setFrequency(16000);
+    soundToSend.resize(m_remainingSamplesBuffer.size());
+    for (size_t i = 0; i < m_remainingSamplesBuffer.size(); i++)
+    {
+        soundToSend.set(m_remainingSamplesBuffer.at(i), i);
+    }
+    m_audioOut.write();
 }
