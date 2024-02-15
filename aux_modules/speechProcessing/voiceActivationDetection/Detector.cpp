@@ -80,7 +80,7 @@ void Detector::onRead(yarp::sig::Sound& soundReceived) {
     {
         m_currentSoundBuffer.at(m_fillCount) = soundReceived.get(i);
         ++m_fillCount;
-        if (m_fillCount == m_vadSampleLength-1) {
+        if (m_fillCount == m_vadSampleLength) {
             processPacket();
             m_fillCount = 0;
         }
