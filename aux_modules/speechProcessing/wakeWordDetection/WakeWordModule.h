@@ -33,16 +33,9 @@
 
 class WakeWordModule : public yarp::os::RFModule
 {
-    std::string m_rpcClientPortName = "/wake/rpc:o";
-
-public:
-    // PARAMETERS
-
-    // devices default parameters
-    std::string m_portNameIn = "/wake/audio:i";
-    yarp::os::BufferedPort<yarp::sig::Sound> m_audioPort; // input port for audio
-    std::shared_ptr<AudioCallback> m_callback = std::make_shared<AudioCallback>(m_rpcClientPortName);
-
+private:
+    std::shared_ptr<AudioCallback> m_callback;
+    yarp::os::BufferedPort<yarp::sig::Sound> m_audioPortIn;
     std::unique_ptr<WakeServer> m_rpcServer;
     yarp::os::RpcServer m_rpcPort;
 

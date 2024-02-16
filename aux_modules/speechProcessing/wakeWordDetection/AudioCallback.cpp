@@ -5,18 +5,16 @@
 #include <dlfcn.h>
 
 
-AudioCallback::AudioCallback(std::string &rpcPortName){
-    auto access_key = "E3HSLWAlzc76SFsflAy+9NSJotzp4u1VQIKU63sdiyc9CzqQL8HRDg==";
-    auto model_path = "/home/user1/share/porcupine/lib/common/porcupine_params.pv";
-    auto keyword_path = "/home/user1/share/porcupine_playground/hey-r-one_en_linux_v3_0_0.ppn";
-    float sensitivity = 0.5;
+AudioCallback::AudioCallback(const std::string audioOutName,
+                            const std::string accessKey,
+                            const std::string modelPath,
+                            const std::string keywordPath,
+                            const float sensitivity) {
+    auto keywords = keywordPath.c_str(); // can be an array of c_str
 
-    m_rpcClientPort.open(rpcPortName);
-    m_rpcClient.yarp().attachAsClient(m_rpcClientPort);
-
-    m_audioOut.open(m_audioOutName);
+    m_audioOut.open(audioOutName);
     
-    pv_status_t porcupine_status = pv_porcupine_init(access_key, model_path, 1, &keyword_path, &sensitivity, &m_porcupine);
+    pv_status_t porcupine_status = pv_porcupine_init(accessKey.c_str(), modelPath.c_str(), 1, &keywords, &sensitivity, &m_porcupine);
     auto model_status = pv_status_to_string(porcupine_status);
 
     m_frameSize = pv_porcupine_frame_length();

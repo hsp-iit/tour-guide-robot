@@ -26,7 +26,8 @@ public:
                    int vadSampleLength,
                    int vadAggressiveness,
                    int bufferSize,
-                   std::string filteredAudioPortOutName);
+                   std::string filteredAudioPortOutName,
+                   std::string wakeWordClientPort);
     using TypedReaderCallback<yarp::sig::Sound>::onRead;
     void onRead(yarp::sig::Sound& soundReceived) override;
     bool m_runInference = false;

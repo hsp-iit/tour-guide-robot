@@ -13,16 +13,15 @@
 YARP_LOG_COMPONENT(VADAUDIOPROCESSOR, "behavior_tour_robot.voiceActivationDetection.AudioProcessor", yarp::os::Log::TraceType)
 
 Detector::Detector(int vadFrequency,
-                               int vadSampleLength,
-                               int vadAggressiveness,
-                               int bufferSize,
-                               std::string filteredAudioPortOutName):
-                               m_vadFrequency(vadFrequency),
-                               m_vadSampleLength(vadSampleLength),
-                               m_vadAggressiveness(vadAggressiveness),
-                               m_bufferSize(bufferSize),
-                               m_filteredAudioPortOutName(filteredAudioPortOutName){
-
+                    int vadSampleLength,
+                    int vadAggressiveness,
+                    int bufferSize,
+                    std::string filteredAudioPortOutName,
+                    std::string wakeWordClientPort):
+                    m_vadFrequency(vadFrequency),
+                    m_vadSampleLength(vadSampleLength),
+                    m_vadAggressiveness(vadAggressiveness),
+                    m_bufferSize(bufferSize) {
     m_fvadObject = fvad_new();
     if (!m_fvadObject)
     {
@@ -60,16 +59,18 @@ Detector::Detector(int vadFrequency,
         yCError(VADAUDIOPROCESSOR) << "Unsupported input frequency.";
     }
 
-    if (!m_filteredAudioOutputPort.open(m_filteredAudioPortOutName)){
-        yCError(VADAUDIOPROCESSOR) << "cannot open port" << m_filteredAudioPortOutName;
+    if (!m_filteredAudioOutputPort.open(filteredAudioPortOutName)){
+        yCError(VADAUDIOPROCESSOR) << "cannot open port" << filteredAudioPortOutName;
     }
+
+    if (!m_rpcClientPort.open(wakeWordClientPort)){
+        yCError(VADAUDIOPROCESSOR) << "cannot open port" << wakeWordClientPort;
+    }
+    m_rpcClient.yarp().attachAsClient(m_rpcClientPort);
 
     m_vadSampleLength = m_vadSampleLength * (m_vadFrequency / 1000); // from time to number of samples
     m_currentSoundBuffer = std::vector<int16_t>(m_vadSampleLength, 0);
     m_fillCount = 0;
-
-    m_rpcClientPort.open("/vad/rpc:o");
-    m_rpcClient.yarp().attachAsClient(m_rpcClientPort);
 }
 
 
@@ -116,7 +117,6 @@ void Detector::processPacket() {
                 sendSound();
                 m_soundToSend.clear();
                 m_soundDetected = false;
-                m_runInference = false; // stop detecting voice activity until wake work is invoked
                 m_rpcClient.stop();
             }
         }   

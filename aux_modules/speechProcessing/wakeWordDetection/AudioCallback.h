@@ -15,16 +15,18 @@
 
 class AudioCallback: public yarp::os::TypedReaderCallback<yarp::sig::Sound> {
 public:
-    AudioCallback(std::string &rpcPortName);
+    AudioCallback(const std::string audioOutName,
+                    const std::string accessKey,
+                    const std::string modelPath,
+                    const std::string keywordPath,
+                    const float sensitivity);
+
     using TypedReaderCallback<yarp::sig::Sound>::onRead;
     void onRead(yarp::sig::Sound& soundReceived) override;
     bool m_currentlyStreaming = false; // stream until VAD reports that its done detecting voice
 
 
-private:
-    yarp::os::RpcClient m_rpcClientPort;
-    VADMsgs m_rpcClient;
-    
+private:    
     pv_porcupine_t *m_porcupine = NULL;
 
     int m_frameSize;
@@ -36,7 +38,6 @@ private:
     bool m_sendRemainingSamples = false;
     std::vector<int16_t> m_remainingSamplesBuffer; // once wake word is detected gather all the following samples to send
 
-    std::string m_audioOutName = "/wake/audio:o";
     yarp::os::BufferedPort<yarp::sig::Sound> m_audioOut;
 
     void processFrame(yarp::sig::Sound &soundReceived);
