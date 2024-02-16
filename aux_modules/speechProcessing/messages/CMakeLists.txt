@@ -1,2 +1,1 @@
-add_subdirectory(vadMsgs)
 add_subdirectory(wakeWordMsgs)

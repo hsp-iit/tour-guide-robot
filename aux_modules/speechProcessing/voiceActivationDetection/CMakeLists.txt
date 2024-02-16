@@ -11,7 +11,6 @@ target_include_directories(${AUX_NAME}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    $<TARGET_PROPERTY:VADMsgs,INTERFACE_INCLUDE_DIRECTORIES>
     $<TARGET_PROPERTY:WakeMsgs,INTERFACE_INCLUDE_DIRECTORIES>
 )
 target_sources(${AUX_NAME}
@@ -19,8 +18,6 @@ target_sources(${AUX_NAME}
     main.cpp
     Detector.h
     Detector.cpp
-    VADServer.h
-    VADServer.cpp
     VoiceActivationDetectionModule.h
     VoiceActivationDetectionModule.cpp
 )
@@ -34,8 +31,6 @@ target_link_libraries(${AUX_NAME}
   PRIVATE
     ${YARP_LIBRARIES}
     PkgConfig::libfvad
-    VADMsgs
-    WakeMsgs
-    )
+    WakeMsgs)
 
 install(TARGETS ${AUX_NAME} DESTINATION bin)

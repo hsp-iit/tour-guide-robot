@@ -10,7 +10,6 @@
 #include <deque>
 #include <string>
 
-#include "VADMsgs.h"
 #include "pv_porcupine.h"
 
 class AudioCallback: public yarp::os::TypedReaderCallback<yarp::sig::Sound> {

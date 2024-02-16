@@ -6,7 +6,6 @@ target_include_directories(${MODULE_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    $<TARGET_PROPERTY:VADMsgs,INTERFACE_INCLUDE_DIRECTORIES>
     $<TARGET_PROPERTY:WakeMsgs,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
@@ -26,8 +25,6 @@ target_link_libraries(${MODULE_NAME}
   PRIVATE
     ${YARP_LIBRARIES}
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86_64/libpv_porcupine.so
-    VADMsgs
-    WakeMsgs
-    )
+    WakeMsgs)
     
 install(TARGETS ${MODULE_NAME} DESTINATION bin)

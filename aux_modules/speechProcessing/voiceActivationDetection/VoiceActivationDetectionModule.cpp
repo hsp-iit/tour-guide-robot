@@ -70,17 +70,12 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
     }
 
     
-    m_rpcPort.open("/vad/rpc:i");
-
     m_audioProcessor = std::make_shared<Detector>(m_vadFrequency,
                                                     m_vadSampleLength,
                                                     m_vadAggressiveness,
                                                     m_bufferSize,
                                                     filteredAudioPortOutName,
                                                     wakeWordClientPort);
-
-    m_rpc = std::make_unique<VADServer>(m_audioProcessor);
-    m_rpc->yarp().attachAsServer(m_rpcPort);
 
     m_audioPort.useCallback(*m_audioProcessor);
     yCInfo(VADAUDIOPROCESSORCREATOR) << "Started";
@@ -95,7 +90,6 @@ double VoiceActivationDetectionModule::getPeriod()
 bool VoiceActivationDetectionModule::close()
 {
     m_audioPort.close();
-    m_rpcPort.close();
     yCInfo(VADAUDIOPROCESSORCREATOR) << "Closing";
     return true;
 }

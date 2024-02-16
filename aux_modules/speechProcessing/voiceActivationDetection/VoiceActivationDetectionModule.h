@@ -7,7 +7,6 @@
 #include <yarp/os/RFModule.h>
 #include <yarp/dev/AudioRecorderStatus.h>
 #include "Detector.h"
-#include "VADServer.h"
 
 // Other frequencies do not seem to work well
 
@@ -26,9 +25,6 @@ private:
     int m_bufferSize{8};
     std::shared_ptr<Detector> m_audioProcessor;
     std::mutex m_mutex; /** Internal mutex. **/
-
-    yarp::os::RpcServer m_rpcPort;
-    std::unique_ptr<VADServer> m_rpc;
 
 public:
     bool configure(yarp::os::ResourceFinder &rf) override;
