@@ -25,7 +25,8 @@ public:
     Detector(int vadFrequency,
                    int vadSampleLength,
                    int vadAggressiveness,
-                   int bufferSize,
+                   int gapAllowance,
+                   int minSoundSize,
                    std::string filteredAudioPortOutName,
                    std::string wakeWordClientPort);
     using TypedReaderCallback<yarp::sig::Sound>::onRead;
@@ -39,8 +40,6 @@ private:
     std::deque<std::vector<int16_t>> m_soundToSend; /** Internal sound buffer. **/
     std::vector<int16_t> m_currentSoundBuffer;
     int m_fillCount; // keep track of up to what index the buffer is full
-    int m_bufferSize;
-    int m_paddingCurrentSize{0};
     bool m_soundDetected{false};
     std::string m_filteredAudioPortOutName;
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
@@ -48,6 +47,7 @@ private:
     std::deque<yarp::sig::Sound> m_soundToProcess;
     int m_gapAllowance = 34;
     int m_gapCounter = 0;
+    int m_minSoundSize = 0; // how many extra packets to pad, can help with transcription
 
     yarp::os::RpcClient m_rpcClientPort;
     WakeMsgs m_rpcClient;

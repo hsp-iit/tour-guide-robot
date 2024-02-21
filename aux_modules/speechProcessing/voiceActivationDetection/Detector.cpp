@@ -15,13 +15,15 @@ YARP_LOG_COMPONENT(VADAUDIOPROCESSOR, "behavior_tour_robot.voiceActivationDetect
 Detector::Detector(int vadFrequency,
                     int vadSampleLength,
                     int vadAggressiveness,
-                    int bufferSize,
+                    int gapAllowance,
+                    int minSoundSize,
                     std::string filteredAudioPortOutName,
                     std::string wakeWordClientPort):
                     m_vadFrequency(vadFrequency),
                     m_vadSampleLength(vadSampleLength),
                     m_vadAggressiveness(vadAggressiveness),
-                    m_bufferSize(bufferSize) {
+                    m_gapAllowance(gapAllowance),
+                    m_minSoundSize(minSoundSize) {
     m_fvadObject = fvad_new();
     if (!m_fvadObject)
     {
@@ -129,22 +131,29 @@ void Detector::processPacket() {
 }
 
 void Detector::sendSound() {
-    m_soundDetected = false;
-    m_paddingCurrentSize = 0;
     int numberOfSamplesPerPacket = m_vadSampleLength * (m_vadFrequency / 1000);
-    int numberOfPackets = m_soundToSend.size();
+    int packetsWithSound = m_soundToSend.size();
 
     yarp::sig::Sound& soundToSend = m_filteredAudioOutputPort.prepare();
-    yCDebug(VADAUDIOPROCESSOR) << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> sending recorded voice sound of " << numberOfPackets * m_currentSoundBuffer.size() <<   " samples";
+    yCDebug(VADAUDIOPROCESSOR) << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> sending recorded voice sound";
 
-    soundToSend.resize(m_currentSoundBuffer.size() * numberOfPackets);
+
+    int totalPackets = packetsWithSound < m_minSoundSize ? m_minSoundSize : packetsWithSound;
+    int numSamples = m_currentSoundBuffer.size() * totalPackets;
+    soundToSend.resize(numSamples);
     soundToSend.setFrequency(m_vadFrequency);
-    for (size_t p = 0; p < numberOfPackets; ++p)
+    for (size_t p = 0; p < packetsWithSound; ++p)
     {
         for (size_t i = 0; i < m_currentSoundBuffer.size(); i++)
         {
             soundToSend.set(m_soundToSend[p].at(i), i + (p * m_currentSoundBuffer.size()));
         }
+    }
+
+    // padding to minimum size
+    for (size_t i = packetsWithSound * m_currentSoundBuffer.size(); i < numSamples; i++)
+    {
+        soundToSend.set(0, i);
     }
     
     m_filteredAudioOutputPort.write();
