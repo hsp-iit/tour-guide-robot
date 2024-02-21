@@ -58,7 +58,7 @@
 
    <module>
       <name>ros2</name>
-      <parameters>launch navigation.launch.py use_sim_time:=true 'params_file:=$(env TOUR_GUIDE_ROBOT_SOURCE_DIR)/app/navigation2/conf/nav2_unknown_params.yaml'</parameters>
+      <parameters>launch navigation.launch.py use_sim_time:=true params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/nav2_unknown_params.yaml</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
