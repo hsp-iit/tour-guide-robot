@@ -215,6 +215,7 @@ ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:/home/user1/robotology/yarp/bindings/build/lib/python3/
 ENV YARP_CLOCK=/clock
+ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=/home/user1/tour-guide-robot
 #ENV CYCLONEDDS_URI=/home/user1/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
 
 # Manage yarp port
