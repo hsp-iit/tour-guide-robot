@@ -8,7 +8,7 @@
    <module>
       <name>ros2</name>
       <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -21,7 +21,7 @@
    <module>
       <name>./set_navigation_position_sim.sh</name>
       <parameters></parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
       <node>console</node>
    </module>
 
@@ -46,7 +46,7 @@
    <module>
       <name>ros2</name>
       <parameters>launch amcl.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -58,8 +58,8 @@
 
    <module>
       <name>ros2</name>
-      <parameters>launch navigation.launch.py use_sim_time:=true params_file:=/home/user1/tour-guide-robot/app/navigation2/conf/nav2_unknown_params.yaml</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <parameters>launch navigation.launch.py use_sim_time:=true 'params_file:=$(env TOUR_GUIDE_ROBOT_SOURCE_DIR)/app/navigation2/conf/nav2_unknown_params.yaml'</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -78,7 +78,7 @@
    <module>
       <name>rviz2</name>
       <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/</workdir>
       <node>console</node>
    </module>
 
