@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 
-#ifndef BEHAVIOR_TOUR_ROBOT_AUDIOPROCESSOR_H
-#define BEHAVIOR_TOUR_ROBOT_AUDIOPROCESSOR_H
+#ifndef DETECTOR_H
+#define DETECTOR_H
 
 #include <yarp/sig/Sound.h>
 #include <yarp/os/TypedReaderCallback.h>
@@ -43,7 +43,6 @@ private:
     bool m_soundDetected{false};
     std::string m_filteredAudioPortOutName;
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
-    bool m_microphoneOpen{false};
     std::deque<yarp::sig::Sound> m_soundToProcess;
     int m_gapAllowance = 34;
     int m_gapCounter = 0;
@@ -56,4 +55,4 @@ private:
     void sendSound();
 };
 
-#endif //BEHAVIOR_TOUR_ROBOT_AUDIOPROCESSOR_H
+#endif

@@ -39,13 +39,9 @@ private:
     std::unique_ptr<WakeServer> m_rpcServer;
     yarp::os::RpcServer m_rpcPort;
 
-    double m_period = 0.032;
-
     bool configure(yarp::os::ResourceFinder &rf) override;
     bool close() override;
     bool updateModule() override;
-
-    std::mutex m_mutex;
 };
 
 #endif

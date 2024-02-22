@@ -55,11 +55,6 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
     return true;
 }
 
-// double WakeWordModule::getPeriod()
-// {
-//     return m_period;
-// }
-
 bool WakeWordModule::close()
 {
     m_audioPortIn.close();

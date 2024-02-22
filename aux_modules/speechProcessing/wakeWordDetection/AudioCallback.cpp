@@ -103,7 +103,6 @@ bool AudioCallback::processSliceOfFrame(const size_t &numSamplesInFrame, int cur
             auto vec = m_previousAudioBuffer[v];
             std::copy(vec.begin(), vec.end(), m_remainingSamplesBuffer.begin() + (v * m_frameSize));
         }
-        std::cout << m_remainingSamplesBuffer.size() << std::endl;
     }
 
     m_previousAudioBuffer.push_back(m_currentAudioSliceBuffer);
