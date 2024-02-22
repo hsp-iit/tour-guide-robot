@@ -1,4 +1,4 @@
 service WakeMsgs
 {
-  bool stop();
+  void stop();
 }

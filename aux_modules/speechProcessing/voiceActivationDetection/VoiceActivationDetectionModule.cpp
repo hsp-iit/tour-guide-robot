@@ -79,7 +79,7 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
     }
 
     
-    m_audioProcessor = std::make_shared<Detector>(m_vadFrequency,
+    m_audioProcessor = std::make_unique<Detector>(m_vadFrequency,
                                                     m_vadSampleLength,
                                                     m_vadAggressiveness,
                                                     m_vadGapAllowance,
@@ -90,11 +90,6 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
     m_audioPort.useCallback(*m_audioProcessor);
     yCInfo(VADAUDIOPROCESSORCREATOR) << "Started";
     return true;
-}
-
-double VoiceActivationDetectionModule::getPeriod()
-{
-    return m_period;
 }
 
 bool VoiceActivationDetectionModule::close()

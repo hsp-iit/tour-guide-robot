@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <vector>
-#include <dlfcn.h>
+
+YARP_LOG_COMPONENT(WAKEWORDDETECTOR, "tour_guide_robot.speech.wakeWordDetection.AudioCallback", yarp::os::Log::TraceType);
 
 
 AudioCallback::AudioCallback(const std::string audioOutName,
@@ -10,17 +11,37 @@ AudioCallback::AudioCallback(const std::string audioOutName,
                             const std::string modelPath,
                             const std::string keywordPath,
                             const float sensitivity) {
-    auto keywords = keywordPath.c_str(); // can be an array of c_str
-
     m_audioOut.open(audioOutName);
     
+    const char *keywords = keywordPath.c_str();
     pv_status_t porcupine_status = pv_porcupine_init(accessKey.c_str(), modelPath.c_str(), 1, &keywords, &sensitivity, &m_porcupine);
-    auto model_status = pv_status_to_string(porcupine_status);
+    std::string model_status = pv_status_to_string(porcupine_status);
 
     m_frameSize = pv_porcupine_frame_length();
     m_currentAudioSliceBuffer.resize(m_frameSize);
 
-    std::cout << "Model status: " << model_status << std::endl;
+    if (porcupine_status != PV_STATUS_SUCCESS) {
+        yCError(WAKEWORDDETECTOR) << "Model failed ot initialise with " << model_status;
+        
+        char **message_stack = NULL;
+        int32_t message_stack_depth = 0;
+        pv_status_t error_status = pv_get_error_stack(&message_stack, &message_stack_depth);
+        if (error_status != PV_STATUS_SUCCESS) {
+            yCError(WAKEWORDDETECTOR) <<  "Unable to get Porcupine error state with", pv_status_to_string(error_status);
+            exit(1);
+        }
+
+        if (message_stack_depth > 0) {
+            printPorcupineErrorMessage(message_stack, message_stack_depth);
+        } else {
+            yCError(WAKEWORDDETECTOR) << "No error stack received";
+        }
+
+        pv_free_error_stack(message_stack);
+        exit(1);
+    }
+
+    yCDebug(WAKEWORDDETECTOR) << "Model Loaded successfully";
 }
 
 void AudioCallback::onRead(yarp::sig::Sound &soundReceived) {
@@ -53,7 +74,7 @@ void AudioCallback::processFrame(yarp::sig::Sound &soundReceived) {
         
         if (m_sampleCounter == m_frameSize) {
             m_currentlyStreaming = processSliceOfFrame(num_samples, i, remainingSamplesBufferIdx);
-            m_sampleCounter = 0; // start filling audio slice buffer from start again
+            m_sampleCounter = 0;
         }
     }
 
@@ -71,7 +92,7 @@ bool AudioCallback::processSliceOfFrame(const size_t &numSamplesInFrame, int cur
 
     bool keyWordDetected = false;
     if (keyword_index != -1) {
-        std::cout <<  "keyword detected!!!!!!!!!!!" << std::endl;
+        yCDebug(WAKEWORDDETECTOR) <<  "keyword detected!!!!!!!!!!!";
         keyWordDetected = true;
 
         // resize buffer to contain a few previous slices of audio + have space for all remaining samples in the current audioframe
@@ -83,9 +104,6 @@ bool AudioCallback::processSliceOfFrame(const size_t &numSamplesInFrame, int cur
             std::copy(vec.begin(), vec.end(), m_remainingSamplesBuffer.begin() + (v * m_frameSize));
         }
         std::cout << m_remainingSamplesBuffer.size() << std::endl;
-    }
-    else {
-        std::cout <<  "no keyword :(" << std::endl;
     }
 
     m_previousAudioBuffer.push_back(m_currentAudioSliceBuffer);
@@ -99,11 +117,17 @@ bool AudioCallback::processSliceOfFrame(const size_t &numSamplesInFrame, int cur
 
 void AudioCallback::sendRemainingSamples() {
     yarp::sig::Sound& soundToSend = m_audioOut.prepare();
-    soundToSend.setFrequency(16000);
+    soundToSend.setFrequency(FREQUENCY);
     soundToSend.resize(m_remainingSamplesBuffer.size());
     for (size_t i = 0; i < m_remainingSamplesBuffer.size(); i++)
     {
         soundToSend.set(m_remainingSamplesBuffer.at(i), i);
     }
     m_audioOut.write();
+}
+
+void AudioCallback::printPorcupineErrorMessage(char **messageStack, int32_t messageStackDepth) {
+    for (int32_t i = 0; i < messageStackDepth; i++) {
+        yCError(WAKEWORDDETECTOR) << messageStack[i];
+    }
 }

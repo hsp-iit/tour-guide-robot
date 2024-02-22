@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+YARP_LOG_COMPONENT(WAKEWORDMODULE, "tour_guide_robot.speech.wakeWordDetection.WakeWordModule", yarp::os::Log::TraceType);
+
 bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
     std::string audioPortOutName = rf.check("filtered_audio_output_port_name",
                                                     yarp::os::Value("/wake/audio:o"),
@@ -10,11 +12,7 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
 
     std::string audioPortInName = rf.check("audio_input_port_name", yarp::os::Value("/wake/audio:i"),
                                        "The name of the input port for the audio.")
-                                  .asString();
-
-    // std::string vadClientPort = rf.check("wake_wrod_client_port_name", yarp::os::Value("/wake/rpc:o"),
-    //                                         "Name of rpc port to inform wake detector when audio clip is done")
-    //                                    .asString();
+                                  .asString();;
 
     std::string wakeWordServerPort = rf.check("vad_server_port_name", yarp::os::Value("/wake/rpc:i"),
                                                   "Name of the input port to stop streaming")
@@ -40,14 +38,14 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
 
     if (!m_audioPortIn.open(audioPortInName))
     {
-        std::cout << "cannot open port " << audioPortInName;
+        yCDebug(WAKEWORDMODULE) << "Cannot open port " << audioPortInName;
         return false;
     } 
     m_audioPortIn.useCallback(*m_callback);
 
     if (!m_rpcPort.open(wakeWordServerPort))
     {
-        std::cout << "cannot open port " << wakeWordServerPort;
+        yCDebug(WAKEWORDMODULE) << "Cannot open port " << wakeWordServerPort;
         return false;
     } 
     m_rpcServer = std::make_unique<WakeServer>(m_callback);
@@ -57,15 +55,14 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
     return true;
 }
 
-double WakeWordModule::getPeriod()
-{
-    return m_period;
-}
+// double WakeWordModule::getPeriod()
+// {
+//     return m_period;
+// }
 
 bool WakeWordModule::close()
 {
     m_audioPortIn.close();
-    std::cout << "Closing wake word port" << std::endl;
     return true;
 }
 

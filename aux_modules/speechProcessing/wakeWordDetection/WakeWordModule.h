@@ -43,12 +43,9 @@ private:
 
     bool configure(yarp::os::ResourceFinder &rf) override;
     bool close() override;
-    double getPeriod() override;
     bool updateModule() override;
 
     std::mutex m_mutex;
-
-    //std::unique_ptr<AudioCallback> m_audioCallback;
 };
 
 #endif

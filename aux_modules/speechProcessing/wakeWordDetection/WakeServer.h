@@ -9,5 +9,5 @@ class WakeServer : public WakeMsgs
  
 public:
     WakeServer(std::shared_ptr<AudioCallback> audioCallback);
-    bool stop() override;
+    void stop() override;
 };

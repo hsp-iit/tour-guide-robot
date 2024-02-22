@@ -4,7 +4,6 @@
 
 WakeServer::WakeServer(std::shared_ptr<AudioCallback> audioCallback) : m_detector(audioCallback) {}
 
-bool WakeServer::stop() {
+void WakeServer::stop() {
     m_detector->m_currentlyStreaming = false;
-    return true;
 }
