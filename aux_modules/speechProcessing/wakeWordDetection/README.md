@@ -1,6 +1,9 @@
-# wake-word-det
-Wake word detection for YARP
+# Wake Word Detection
+Wake word detection with YARP and Pocupine.
 
-Get lib and include from https://github.com/Picovoice/porcupine/tree/master
+Uses Porupine from Picovoice which expects an audio input samples at 16k Hz.
+Will stream audio out to a YARP port as soon as the keyword is detected and will continue to do so until it receives a message to stop.
 
-Everything hardcoded in AudioCallback.cpp
+Add lib and include from https://github.com/Picovoice/porcupine/tree/master to this directory.
+
+You will need you own access key and keyword file which you can obtain by creating an account at https://picovoice.ai/.
