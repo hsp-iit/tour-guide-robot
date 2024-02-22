@@ -8,7 +8,7 @@
    <module>
       <name>yarprobotinterface</name>
       <parameters></parameters>
-      <workdir>/home/user1/robotology/robots-configuration/R1SN003/</workdir>
+      <workdir>$ENV{ROBOT_CODE}/robots-configuration/R1SN003/</workdir>
       <node>r1-base</node>
    </module>
 
