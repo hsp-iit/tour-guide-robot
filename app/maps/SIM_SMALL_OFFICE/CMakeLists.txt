@@ -5,10 +5,6 @@
 #                                                                              #
 ################################################################################
 
-set(appname maps)
+file(GLOB map_office ${CMAKE_CURRENT_SOURCE_DIR}/*.*)
 
-file(GLOB maps ${CMAKE_CURRENT_SOURCE_DIR}/*.*)
-
-yarp_install(FILES ${maps}    DESTINATION ${TOUR-GUIDE-ROBOT_CONTEXTS_INSTALL_DIR}/maps)
-
-add_subdirectory(SIM_SMALL_OFFICE)
+yarp_install(FILES ${map_office}    DESTINATION ${TOUR-GUIDE-ROBOT_CONTEXTS_INSTALL_DIR}/maps/SIM_SMALL_OFFICE)
