@@ -1,5 +1,7 @@
 
 .vscode/
 .history/
-build/
+build*/
+install*/
+log*/
 __pycache__/
