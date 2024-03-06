@@ -1,0 +1,7 @@
+add_subdirectory(messages)
+add_subdirectory(wakeWordDetection)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
+if(${libfvad_FOUND})
+    add_subdirectory(voiceActivationDetection)
+endif()

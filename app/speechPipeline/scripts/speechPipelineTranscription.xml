@@ -1,0 +1,58 @@
+<application>
+  <name>speechPipelineTrancription</name>
+
+  <dependencies>
+  </dependencies>
+
+  <!-- recording audio from microphone -->
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--config micAudio.xml</parameters>
+    <node>r1-torso</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context speechPipeline --from audioTranscribe.ini</parameters>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>voiceActivationDetection</name>
+    <parameters></parameters>
+    <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
+    <node>console</node>
+  </module>
+
+  <module>
+    <name>wakeWordDetection</name>
+    <parameters></parameters>
+    <environment>YARP_LOG_PROCESS_LABEL=WAKE-WORD</environment>
+    <node>console</node>
+  </module>
+
+  <connection>
+    <from>/wake/audio:o</from>
+    <to>/vad/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/vad/audio:o</from>
+    <to>/speechTranscription_nws/sound:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/vad/rpc:o</from>
+    <to>/wake/rpc:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioRecorder_nws/audio:o</from>
+    <to>/wake/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+</application>

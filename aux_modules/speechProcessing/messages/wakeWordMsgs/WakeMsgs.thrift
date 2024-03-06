@@ -1,0 +1,4 @@
+service WakeMsgs
+{
+  void stop();
+}

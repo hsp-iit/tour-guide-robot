@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  SPDX-FileCopyrightText: 2023-2023 Istituto Italiano di Tecnologia (IIT)
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+
+<robot name="test" build="2" portprefix="test" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="dev1" type="whisperSpeechTranscription" >
+            <param extern-name="model" name="model"> /home/user1/yarp-device-speechTranscription-whisper/build/share/WhisperTranscribe/contexts/whisperTranscribe_demo/ggml-base.en.bin/ggml-base.en.bin </param>
+        </device>
+
+        <device name="dev2" type="speechTranscription_nws_yarp">
+            <param name="name">  /speechTranscription_nws </param>
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdevice"> dev1 </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+    </devices>
+</robot>
