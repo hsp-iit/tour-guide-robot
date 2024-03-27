@@ -25,8 +25,8 @@ Examples:
 User: Can you tell me more about you?
 Agent: ("explain", "r1")
 
-User: What can you tell me about this museum
-Agent: ("explain", "artist")
+User: How old are you?
+Agent: ("explain", "r1_age")
 
 User: Can you tell me something about CONVINCE?
 Agent: ("explain", "project")
