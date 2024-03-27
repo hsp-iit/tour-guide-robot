@@ -12,7 +12,7 @@ SPDX-License-Identifier: BSD-3-Clause
         </device>
         <device name="LLM_nws" type="LLM_nws_yarp">
             <param extern-name="LLMNwsYarp_name" name="name">
-                /LLM_nws/rpc
+                /poi_chat/LLM_nws/rpc
             </param>
             <action phase="startup" level="5" type="attach">
                 <paramlist name="networks">
