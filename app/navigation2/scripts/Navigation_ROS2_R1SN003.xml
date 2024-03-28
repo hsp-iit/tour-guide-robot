@@ -53,7 +53,7 @@
    <module>
       <name>joystickCtrl</name>
       <parameters>--context navigation2 --from joystick_cer_linux_high_speed_stratus.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
-      <node>r1-base</node>
+      <node>r1-torso</node>
    </module>
 
    <module>
