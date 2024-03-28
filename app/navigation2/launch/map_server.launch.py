@@ -8,6 +8,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    tourFolder = os.environ.get('TOUR_GUIDE_ROBOT_SOURCE_DIR')
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -18,7 +19,7 @@ def generate_launch_description():
             package='nav2_map_server',
             executable='map_server',
             parameters=[
-                {'yaml_filename': '/home/user1/tour-guide-robot/app/maps/gam_sim_real.yaml'}]
+                {'yaml_filename': tourFolder+'/app/maps/gam_sim_real.yaml'}]
         ),
         Node(
             package='nav2_lifecycle_manager',

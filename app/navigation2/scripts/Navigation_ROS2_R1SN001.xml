@@ -8,7 +8,7 @@
    <module>
       <name>yarprobotinterface</name>
       <parameters></parameters>
-      <workdir>/home/user1/robotology/robots-configuration/R1SN001</workdir>
+      <workdir>$ENV{ROBOT_CODE}/robots-configuration/R1SN001</workdir>
       <node>r1-base</node>
    </module>
 
@@ -34,7 +34,7 @@
    <module>
       <name>ros2</name>
       <parameters>launch robot_state_publisher.launch.py</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
 
@@ -53,7 +53,7 @@
    <module>
       <name>./set_navigation_position_001.sh</name>
       <parameters></parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
       <node>console</node>
    </module>
 
@@ -66,7 +66,7 @@
    <module>
       <name>ros2</name>
       <parameters>launch amcl.launch.py</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
 
@@ -79,7 +79,7 @@
    <module>
       <name>ros2</name>
       <parameters>launch navigation.launch.py</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -104,7 +104,7 @@
    <module>
       <name>rviz2</name>
       <parameters>-d r1_visualizer.rviz</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/</workdir>
       <node>console</node>
    </module>
 
