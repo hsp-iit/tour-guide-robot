@@ -14,6 +14,7 @@ add_subdirectory(navigation2)
 add_subdirectory(openPoseStuff)
 add_subdirectory(tourManager)
 add_subdirectory(speechPipeline)
+add_subdirectory(llmTest)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 
