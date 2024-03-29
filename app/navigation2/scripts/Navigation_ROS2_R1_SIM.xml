@@ -8,14 +8,14 @@
    <module>
       <name>ros2_launch.sh</name>
       <parameters>/usr/local/src/hsp/tour-guide-robot/app/navigation2/launch/robot_state_publisher.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
       <node>console</node>
    </module>
 
    <module>
       <name>ros2</name>
       <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -28,7 +28,7 @@
    <module>
       <name>./set_navigation_position_sim.sh</name>
       <parameters></parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
       <node>console</node>
    </module>
 
@@ -53,7 +53,7 @@
    <module>
       <name>ros2</name>
       <parameters>launch amcl.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -66,14 +66,14 @@
    <module>
       <name>ros2</name>
       <parameters>launch navigation.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
    <module>
       <name>ros2</name>
-      <parameters>launch costmap_filter_info.launch.py params_file:=../conf/gam_sim_real_keepout_params.yaml mask:=../../maps/gam_sim_real_keepout_mask.yaml use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
+      <parameters>launch costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/gam_sim_real_keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/gam_sim_real_keepout_mask.yaml use_sim_time:=true</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
@@ -92,7 +92,7 @@
    <module>
       <name>rviz2</name>
       <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/conf/</workdir>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/</workdir>
       <node>console</node>
    </module>
 
