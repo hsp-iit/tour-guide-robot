@@ -11,6 +11,7 @@ The allowed topics for the requests are:
 2) Art piece (allowed variations are painting, statue, sculpture, vase) - Formatted value = art_piece
 3) Historical period (allowed variations are period, epoch, artistic period) - Formatted value = historical_period
 4) Technique (no allowed variations) - Formatted value - technique
+5) Question list (available variations are what can I ask, valid questions, available info, allowed questions) - Formatted value = questions
 
 If the sentence is in another language, first translate it in English and then format it. Do not add additional parenthesis or double quotes.
 Always accept sentences in other languages. Do not ask to speak in English.

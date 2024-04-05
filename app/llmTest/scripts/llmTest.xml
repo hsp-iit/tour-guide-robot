@@ -31,5 +31,29 @@
     <node>console-llm</node>
   </module>
 
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context llmTest --from casoratiChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context llmTest --from casoratiStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context llmTest --from liciniChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context llmTest --from liciniStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
 
 </application>
