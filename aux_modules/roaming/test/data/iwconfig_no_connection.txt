@@ -1,0 +1,5 @@
+wlp0s20f3  IEEE 802.11  ESSID:off/any  
+          Mode:Managed  Access Point: Not-Associated   Tx-Power=off   
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Power Management:on
+          

@@ -6,6 +6,7 @@ set(BTState OFF CACHE BOOL OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(ENABLE_TESTS OFF CACHE BOOL OFF)
 
 option(BASE_INCOHERENT_TO_FAULT "if enabled, the bt_motorsNotInFault module will consider a fault every pair of different controle modes for the robot base wheels motors" OFF)
 if(BASE_INCOHERENT_TO_FAULT)
