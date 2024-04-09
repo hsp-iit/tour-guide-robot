@@ -1,5 +1,5 @@
 <application>
-  <name>LLM_Test</name>
+  <name>LLM_Test_reference</name>
 
 
   <dependencies>
@@ -7,30 +7,6 @@
 
 
   <!-- Modules -->
-  <module>
-    <name>yarprobotinterface</name>
-    <parameters>--context llmTest --from welcomeChat.ini</parameters>
-    <node>console-llm</node>
-  </module>
-
-  <module>
-    <name>LLMStream</name>
-    <parameters>--context llmTest --from welcomeStream.ini</parameters>
-    <node>console-llm</node>
-  </module>
-
-  <module>
-    <name>yarprobotinterface</name>
-    <parameters>--context llmTest --from poiChat.ini</parameters>
-    <node>console-llm</node>
-  </module>
-
-  <module>
-    <name>LLMStream</name>
-    <parameters>--context llmTest --from poiStream.ini</parameters>
-    <node>console-llm</node>
-  </module>
-
   <module>
     <name>yarprobotinterface</name>
     <parameters>--context llmTest --from casoratiChat.ini</parameters>

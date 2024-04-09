@@ -1,0 +1,20 @@
+<application>
+  <name>LLM_Test_complete</name>
+
+
+  <dependencies>
+  </dependencies>
+
+
+  <!-- Applications -->
+  <application>
+    <name>LLM_Test_commands</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>LLM_Test_reference</name>
+    <prefix></prefix>
+  </application>
+
+</application>
