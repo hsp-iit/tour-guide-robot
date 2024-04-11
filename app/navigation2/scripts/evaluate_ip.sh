@@ -1,5 +1,5 @@
 #!/bin/bash
-current_ip=$(ifconfig | grep 192.168.100. | awk '{print $2}')
+current_ip=$(ifconfig | grep 192.168.10 | awk '{print $2}')
 echo $current_ip
 if [ $current_ip = "192.168.100.10" ];
 then
