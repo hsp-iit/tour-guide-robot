@@ -56,20 +56,20 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
 
     if (!rf.check("vad_gap_allowance", "vad_gap_allowance"))
     {
-        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'buffer_size' parameter of " << VAD_GAP_ALLOWANCE_DEFAULT;
+        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'vad_gap_allowance' parameter of " << VAD_GAP_ALLOWANCE_DEFAULT;
     }
     else
     {
-        m_vadGapAllowance = rf.find("buffer_size").asInt32();
+        m_vadGapAllowance = rf.find("vad_gap_allowance").asInt32();
     }
 
     if (!rf.check("vad_min_sound_out_size", "vad_min_sound_out_size"))
     {
-        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'buffer_size' parameter of " << VAD_MIN_SOUND_OUT_SIZE_DEFAULT;
+        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'vad_min_sound_out_size' parameter of " << VAD_MIN_SOUND_OUT_SIZE_DEFAULT;
     }
     else
     {
-        m_minSoundOutSize = rf.find("buffer_size").asInt32();
+        m_minSoundOutSize = rf.find("vad_min_sound_out_size").asInt32();
     }
 
     if (!m_audioPort.open(audioPortIn))
