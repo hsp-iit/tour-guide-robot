@@ -1,0 +1,125 @@
+<application>
+   <name>Navigation_Madama_ROS2_R1SN003</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters></parameters>
+      <workdir>$ENV{ROBOT_CODE}/robots-configuration/R1SN003/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from realsense2_remote.ini</parameters>
+      <node>r1-torso</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from pointCloudCreator.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from lidar_compressed.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch robot_state_publisher.launch.py</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <!-- Frame for external realsense -->
+   <module>
+      <name>ros2</name>
+      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>baseControl2</name>
+      <parameters>--context baseControl2 --from baseCtrl_cer_ros2.ini --skip_robot_interface_check</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>joystickCtrl</name>
+      <parameters>--context navigation2 --from joystick_cer_linux_high_speed_stratus.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
+      <node>r1-torso</node>
+   </module>
+
+   <module>
+      <name>./set_navigation_position.sh</name>
+      <parameters></parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from mapServer.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch amcl.launch.py</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from localizationROS2.ini --init_map madama3</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2</name>
+      <parameters>launch navigation.launch.py</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+
+      <name>ros2</name>
+      <parameters>launch launch/costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>headObstaclesScanner</name>
+      <parameters>--GENERAL::robot cer --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+      <node>r1-base</node>
+   </module>
+
+   <module>
+      <name>rviz2</name>
+      <parameters>-d r1_visualizer.rviz</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/</workdir>
+      <node>console</node>
+   </module>
+
+   <!-- connections -->
+   <connection>
+      <from>/joystickCtrl:o</from>
+      <to>/baseControl/input/joystick/data:i</to>
+      <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
+   </connection>
+</application>

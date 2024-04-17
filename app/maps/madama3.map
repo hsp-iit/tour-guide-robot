@@ -1,0 +1,7 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     madama3
+YarpMapData madama3.ppm
+RosMapData  madama3.yaml
