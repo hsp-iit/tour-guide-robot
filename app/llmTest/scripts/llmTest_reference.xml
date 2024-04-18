@@ -31,5 +31,17 @@
     <node>console-llm</node>
   </module>
 
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context llmTest --from madamaChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context llmTest --from madamaStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
 
 </application>
