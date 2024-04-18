@@ -7,7 +7,7 @@ if [ -z "${CER_SIM_ROOT_DIR}" ]; then
             echo "Cer-sim directory not found"
             echo "If you have cer-sim cloned on your machine, please set the CER_SIM_ROOT_DIR manually."
             echo "Otherwise you can clone it by running the following command:"
-            echo "git clone https://github.com/robotology/cer-sim.git in a directory of your choice"
+            echo "git clone https://github.com/robotology/cer-sim.git in a directory of your choice and try again"
         fi
     elif [ -d "${ROBOT_CODE}/cer-sim" ]; then
         echo "Setting CER_SIM_ROOT_DIR to ${ROBOT_CODE}/cer-sim"
@@ -28,6 +28,7 @@ if [ -z "${TOUR_GUIDE_ROBOT_SOURCE_DIR}" ]; then
             if [ -d "~/robotology/tour-guide-robot" ]; then
                 echo "Setting TOUR_GUIDE_ROBOT_SOURCE_DIR to ~/robotology/tour-guide-robot"
                 echo "export TOUR_GUIDE_ROBOT_SOURCE_DIR=~/robotology/tour-guide-robot" >> ~/.bashrc
+                echo "export YARP_DATA_DIRS=${YARP_DATA_DIRS}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot" >> ~/.bashrc
             else
                 echo "Tour-guide-robot directory not found"
                 echo "If you have tour-guide-robot cloned on your machine, please set the TOUR_GUIDE_ROBOT_SOURCE_DIR manually."
@@ -38,6 +39,7 @@ if [ -z "${TOUR_GUIDE_ROBOT_SOURCE_DIR}" ]; then
             if [ -d "${ROBOT_CODE}/tour-guide-robot" ]; then
                 echo "Setting TOUR_GUIDE_ROBOT_SOURCE_DIR to ${ROBOT_CODE}/tour-guide-robot"
                 echo "export TOUR_GUIDE_ROBOT_SOURCE_DIR=${ROBOT_CODE}/tour-guide-robot" >> ~/.bashrc
+                echo "export YARP_DATA_DIRS=${YARP_DATA_DIRS}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot" >> ~/.bashrc
             else
                 echo "Tour-guide-robot directory not found"
                 echo "If you have tour-guide-robot cloned on your machine, please set the TOUR_GUIDE_ROBOT_SOURCE_DIR manually."
@@ -48,6 +50,7 @@ if [ -z "${TOUR_GUIDE_ROBOT_SOURCE_DIR}" ]; then
     else
         echo "Setting TOUR_GUIDE_ROBOT_SOURCE_DIR to ${HSP_CODE}/tour-guide-robot"
         echo "export TOUR_GUIDE_ROBOT_SOURCE_DIR=${HSP_CODE}/tour-guide-robot" >> ~/.bash_profile
+        echo "export YARP_DATA_DIRS=${YARP_DATA_DIRS}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot" >> ~/.bashrc
     fi
 else
     echo "The env is already set to: ${TOUR_GUIDE_ROBOT_SOURCE_DIR}"
