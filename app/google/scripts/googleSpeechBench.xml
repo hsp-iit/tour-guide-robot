@@ -1,0 +1,43 @@
+<application>
+    <name>Google_speech_test_bench</name>
+
+    <dependencies>
+    </dependencies>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context google --from googleTranscription.ini</parameters>
+        <node>console-llm</node>
+    </module>
+    
+    <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context google --from googleSynthesizer.ini</parameters>
+      <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context speechPipeline --from micAudio.ini</parameters>
+        <node>r1-torso</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context speechPipeline --from audioPlayer.ini</parameters>
+        <node>r1-face</node>
+    </module>
+
+    <connection>
+        <from>/audioRecorder_nws/audio:o</from>
+        <to>/wake/audio:i</to>
+        <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+    </connection>
+
+    <connection>
+      <from>/googleSpeechSynthesis/sound:o</from>
+      <to>/audioPlayerWrapper/audio:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+
+</application>
