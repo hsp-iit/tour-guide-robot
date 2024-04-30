@@ -33,6 +33,18 @@
 
   <module>
     <name>yarprobotinterface</name>
+    <parameters>--context llmTest --from poiMadamaChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context llmTest --from poiMadamaStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
     <parameters>--context llmTest --from dummyChat.ini</parameters>
     <node>console-llm</node>
   </module>
