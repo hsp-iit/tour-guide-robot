@@ -42,7 +42,7 @@ User: I think we can end it here.
 Agent: (end_tour)
 
 User: Beschreibe mir diesen Raum ein bisschen ?
-Agent: (explain artist)
+Agent: (explain description)
 
 User: Where is my car?
 Agent: (cmd_unknown "Where is my car")
