@@ -19,50 +19,45 @@ Correct answer (example 1): I don't have information about Leonardo's house
 Correct answer (example 2): I don't know anything about Leonardo's house.
 
 Your actual "reference text":
-"The official residence of the two Madame Reali starting in the 1640s, the castle was renovated various times.
-The decoration of the royal apartment of Marie Jeanne Baptiste of Savoy-Nemours engaged numerous artists with
-different decorative models and styles whereas the main hall, installed between 1713 and 1714, celebrates, in the
-transition from Duchy to Kingdom, King Vittorio Amedeo II. Palazzo Madama was bombed during World War II air raids
-on August 13, 1943.
-The life of the castle through the centuries, an anthology of history and architecture styles spanning different eras.
-From the city's old fortress, built to incorporate both towers of the ancient Roman gate, up to its renovation with
-a majestic facade and its transformation into a Palace and institutional residence.
-
-12th century – "Arnaldus" and the "Maestro di Rivalta Torinese"
-The activity of artists in Piedmont during the 12th century is documented by the works on display on the moat level of
-the Museum. These include "Arnaldus," who signed a fragment from Oulx in Valle di Susa, and the anonymous
-"Maestro di Rivalta Torinese," also engaged in the Sacra di San Michele and on two column capitals with figures.
-The predilection of Romanesque sculptors for scenes with figures is expressed in works with different functions,
-like the portal lunettes, baptismal fonts, stoups, and reliefs intended for places of worship: several examples of this
-production can be admired along the itinerary inside the Medieval Lapidarium.
-
-Final years of the 14th century – Layout of the 14th-century Castle
-The information contained in the logbooks of the treasurer gives an idea of how the building must have appeared:
-two entrances, the Fibellona and the Pusterla gate, to the north toward the Bishop’s Palace
-(today the site of Palazzo Reale); the towers host prisoners and on the ground floor around the courtyard, which
-seems to be equipped with a portico, are the kitchen, banquet hall, already mentioned by Filippo d’Acaia, and the
-lower rooms. There are also two mills and a large garden. On the upper floor are the bedrooms and the
-“de Bon Droit room.” Magistri are present here and would become important figures in 15th-century worksites:
-Jacobus de Berno, Hugonetus de Altessano, Andrea de Thaurino, and Oddonino Meliaudo.
-
-Late 15th century – Toward the Renaissance
-Today, the Museum room dedicated to Ludovico of Savoy-Acaia exhibits the artistic developments in Piedmont over
-the centuries, starting from the Middle Ages to the late 1400s. This crucial moment, witness to the passage
-toward the Renaissance, is testified by emblematic paintings like those by Antoine de Lonhy (in the picture),
-a painter from Burgundy who was active in Piedmont, Giovanni Martino Spanzotti fromCasale Monferrato, his
-student Defendente Ferrari, and Gaudenzio Ferrari.
-
-1595 – Gallery of Princely Collections
-The painting that depicts the Infanta of Spain Catalina Micaela, who wed Carlo Emanuele I in 1585, offers
-an interesting view of the background: the window reveals a glimpse of the east façade of the castle and of
-the gallery that joins it to the Ducal Palace, intended to host the princely collections. For many years this
-work was presented as a portrait of Maria of Savoy, the illegitimate daughter of Emanuele Filiberto, and its
-correct identification is due to a comparison with other portraits, in which the features of the duchess
-present an unquestionable resemblance.
-
-Mid-17th century – The ''Round Gabinetto''
-This small and precious space, located inside the northwest Roman tower, is a central place for the
-apartment installed in the mid-17th century for the first Madama Reale of Savoy, Marie Christine of France.
-Today the walls display a considerable selection of portraits of the Savoy family and the most notable figures
-at court, which narrate the fashions and faces of the past.
+"The history of Palazzo Madama dates back to Roman times when it opened up to one of the ancient entrances of the city. After the fall of the Roman
+Empire, the structures declined, and only traces remain of the fortifications. During the late 11th century, the gate area was used for control and
+fiscal matters. In the 12th century, artists such as Arnaldus and the Maestro di Rivalta Torinese were engaged in the Sacra di San Michele and produced
+works with different functions. In the Middle Ages, the Roman arches were closed off, and Porta Fibellona was built to defend the city.
+In 1297, the castle was chosen as a military and diplomatic seat, and in 1298, it was identified with the lord's power, even though it occupied a
+place on the margins of the town toward the Po River.
+In the 14th century, the Castello di Porta Fibellona underwent various renovations and embellishments, including interventions to improve private living
+spaces. The logbooks of the treasurer mention new interventions to the ceiling of the magna sala castri nova, the kitchen, the latrines, and
+the staircase leading above the grand hall. There are also mentions of new doors and windows being added to the four towers and a terracotta portico
+being built. The castle was used to house guests, including the king, who was housed in the castle while other members of his entourage were hosted
+elsewhere. There were also various renovations and embellishments carried out during the mid-14th century, and the castle did not undergo any important
+changes in the final quarter of the century.
+The castle of Turin underwent several interventions and refurbishments throughout the 15th century, ordered by different lords.
+These interventions included building new towers, a spiral staircase, a new chapel, and extending the walled enclosure.
+The castle also had a garden, vegetable patch, and falconry. The castle was refurbished and regained its prestige in the late 15th century with
+the help of Amedeo IX and his wife Yolande of France. The late 15th century witnessed a transition towards the Renaissance, which is reflected in
+the artistic developments in Piedmont over the centuries.
+The castle of Acaia played an important role in the history of the House of Savoy during the late 16th century.
+In 1585, the castle's grand hall was the setting for the marriage between Carlo Emanuele I and Catherine of Austria, with the play "Pastor fido"
+by Giambattista Guarini being performed. The Citadel, built by Francesco Paciotto for Emanuele Filiberto, shifted the defense center from the castle,
+which became a permanent residence for the family. The reigning duke moved into the new palace built by Emanuele Filiberto as a suitable location
+for himself and his wife, the royal princess of France, Marguerite of Valois. In 1587, the castle apartments were refurbished to host princes and
+ambassadors for the baptism of the first two children of Carlo Emanuele I, Filippo Emanuele and Vittorio Emanuele, as the Ducal Palace was still
+under construction. Celebrations were held in the grand hall of the ancient fortress of the Acaia, while the piazza hosted a joust and a carousel.
+The gallery that joins the castle to the Ducal Palace was intended to host the princely collections and is depicted in a painting of the Infanta of
+Spain Catalina Micaela, who wed Carlo Emanuele I in 1585.
+The text provides a historical overview of different events that took place in Piazza Castello, Turin in the 17th century.
+These events include the meeting between Carlo Emanuele I and the King of France, the refurbishments made by Madama Christine of France,
+the Salone degli Svizzeri, the marriage of Adelaide of Savoy to Ferdinand of Bavaria, the marriage of Margherita to Ranuccio II Farnese,
+the marriage of Carlo Emanuele II to Marie Jeanne Baptiste Nemours, the second Madama Reale, funeral procession of Carlo Emanuele II,
+the Room of Flowers, and the display of the Shroud of Turin for the wedding of Vittorio Amedeo II to Anne d'Orléans.
+Palazzo Madama, the royal residence in Turin, Italy, was once known for its lavish furnishings and sumptuous treasures collected by Marie Jeanne Baptiste.
+However, after her death, the palace was looted and the inventoried objects were dispersed. Over the years, the palace has attracted the admiration
+of many visitors, including Carl Ludwig von Pöllnitz, Charles-Nicholas Cochin, and astronomer Joseph-Jérôme Lalande. The palace's grand hall, façade,
+and staircase were particularly praised for their magnificence. During the French occupation, the palace was again looted for its precious objects
+collected over generations.
+The Museo Civico d'Arte Antica in Turin received donations and purchases of various objects and artworks during the late 1800s,
+including a ceremonial paddle from Austral Islands, a clock from Claudius Innocentius du Paquier manufacture, a Ginori sculpture of Faun,
+a marble slab from the ancient Church of San Salvatore, a Book of Hours by Simon Marmion, Mesoamerican art from Calpini donation, a portrait
+of Catalina Micaela of Austria, and an illuminated Bible from a Bolognese miniaturist. The museum also received donations from directors Emanuele
+Tapparelli d’Azeglio and Vittorio Avondo.
 "
