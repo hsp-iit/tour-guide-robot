@@ -62,6 +62,12 @@ bool EarsThread::threadInit()
         return false;
     }
 
+   if (m_audioStatusPort.open("/"+ m_moduleName+"/earsAudioStatus:i")==false)
+    {
+        yError() << "Cannot open port";
+        return false;
+    }
+
     // Create a Mat for maximum bar size
     m_earBar.create(earBar1_maxLen, barWidth, CV_8UC3);
     m_earBar.setTo(m_earsDefaultColor);
@@ -75,7 +81,7 @@ bool EarsThread::threadInit()
 
 void EarsThread::run()
 {
-    lock_guard<mutex> lg(recursive_mutex);
+    lock_guard<recursive_mutex> lg(m_methods_mutex);
 
     if (m_drawEnable == false)
     {
@@ -85,34 +91,25 @@ void EarsThread::run()
 
     float percentage = 0.5;
 
-    yarp::sig::Sound* Rstatus = m_audioRecPort.read(false);
-    if (Rstatus)
+    yarp::dev::AudioRecorderStatus *rec_status = m_audioStatusPort.read(false);
+    if (rec_status)
     {
-        if(Rstatus->getSamples()>0){
-            m_audioIsRecording=true;
-        }
-        else{
-            m_audioIsRecording=false;
-        }
-        
+        m_micIsEnabled = rec_status->enabled; //&& rec_status->current_buffer_size > 0;
+        //yInfo() << rec_status->current_buffer_size;
+    //    yInfo() << m_micIsEnabled;
     }
 
-    if(m_doBars || m_audioIsRecording)
-    {   
-        if(Rstatus){
-            auto vec= Rstatus->getChannel(0);
-            auto max=*std::max_element(vec.begin(),vec.end());
-            yInfo()<<max.get();
-            if(max.get()<0){
-                yError()<<"negative value received";
-            }
-            else{
-                percentage = (float)max.get() / 32800;
-                updateBars(percentage);
-            }
-            
+    yarp::sig::Sound* data_audio = m_audioRecPort.read(false);
+    if(m_doBars)
+    {
+        if(data_audio){
+            auto vec= data_audio->getChannel(0);
+      	    short int max_val = *std::max_element(vec.begin(),vec.end());
+//            max_val = 30000;
+            percentage = fabs((float)max_val / 32800);
+            updateBars(percentage);
+            yInfo() << percentage;
         }
-        
     }
     else
     {
@@ -128,9 +125,18 @@ bool EarsThread::updateBars(float percentage)
     earBar0_len = earBar0_minLen + (earBar0_maxLen - earBar0_minLen) *  percentage;
     earBar1_len = earBar1_minLen + (earBar1_maxLen - earBar1_minLen) *  percentage;
 
+    if(m_micIsEnabled==false){
+        m_earBar.setTo(Scalar(0,0,255));
+        percentage=0.5;
+    }
+    else
+    {
+       m_earBar.setTo(m_earsDefaultColor);
+    }
     if(percentage>0.85){
         m_earBar.setTo(Scalar(255,0,0));
     }
+
 
     // Reset bars to black
     m_blackBar(Rect(0, 0, barWidth, 32)).copyTo  (m_face(cv::Rect(earBarL0_x,  0, barWidth, 32)));
@@ -156,23 +162,22 @@ void EarsThread::threadRelease()
 
 void EarsThread::resetToDefault()
 {
-    lock_guard<mutex> lg(recursive_mutex);
-    m_doBars = false;
-    m_audioIsRecording = false;
+    lock_guard<recursive_mutex> lg(m_methods_mutex);
+    m_doBars = true;
     m_earBar.setTo(m_earsDefaultColor);
     updateBars(0.5);
 }
 
 void EarsThread::setColor(float vr, float vg, float vb)
 {
-    lock_guard<mutex> lg(recursive_mutex);
+    lock_guard<recursive_mutex> lg(m_methods_mutex);
     m_earsCurrentColor = Scalar(vr, vg, vb);
     m_earBar.setTo(m_earsCurrentColor);
 }
 
 void EarsThread::clearWithBlack()
 {
-    lock_guard<mutex> lg(recursive_mutex);
+    lock_guard<recursive_mutex> lg(m_methods_mutex);
     lock_guard<mutex> faceguard(m_drawing_mutex);
     m_blackBar(Rect(0, 0, barWidth, 32)).copyTo(m_face(cv::Rect(earBarL0_x, 0, barWidth, 32)));
     m_blackBar(Rect(0, 0, barWidth, 32)).copyTo(m_face(cv::Rect(earBarL1_x, 0, barWidth, 32)));

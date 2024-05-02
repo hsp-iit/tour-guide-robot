@@ -27,6 +27,7 @@ public:
 private:
     yarp::os::ResourceFinder& m_rf;
     yarp::os::BufferedPort<yarp::sig::Sound > m_audioRecPort;
+    yarp::os::BufferedPort<yarp::dev::AudioRecorderStatus> m_audioStatusPort;
     std::mutex&             m_drawing_mutex;
     std::recursive_mutex    m_methods_mutex;
     std::string             m_imagePath;
@@ -40,8 +41,8 @@ private:
     cv::Scalar              m_earsCurrentColor = cv::Scalar(0, 128, 0);
 
     bool m_doBars = false;
-    bool m_audioIsRecording = false;
     bool m_drawEnable = true;
+    bool m_micIsEnabled = false;
 
     // Offset values for placing stuff and size
     int barWidth = 1;
