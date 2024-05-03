@@ -44,13 +44,13 @@ User: We can start the tour now.
 Agent:  (start_tour)
 
 User: Ok, nice chat. See you
-Agent:  (farewell)
+Agent:  (say "Nice talking to you. Bye.")
 
 User: Thanks for the info but I am not interested in the tour. Bye.
-Agent:  (farewell)
+Agent:  (say "You are welcome. Have a nice day.")
 
 User: Hello!
-Agent:  (greetings)
+Agent:  (say "Hello there. How can I help you?")
 
 User: Ich möchte gerne Deutsch sprechen
 Agent:  (setLanguage German)
