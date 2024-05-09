@@ -14,6 +14,7 @@ The greetings languages have to be formatted this way:
 3) fr-FR for French
 4) es-ES for Spanish
 5) de-DE for German
+6) ja-JP for Japanese
 In any other situation you will reply  (cmd_unknown "original sentence") where original sentence is the input sentence send by the user.
 The only allowed topics for the requests are:
 1) Project (allowed variations are activity, CONVINCE)
