@@ -197,7 +197,7 @@ ENV yarp-device-rpLidar_DIR=${robotology_install_folder}/yarp-device-rplidar/bui
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/icub-contrib-common.git
-RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && sudo make -j11 install
+RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
 ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/lib
 ENV ICUBcontrib_SHARE=${robotology_install_folder}/iCubContrib/share/ICUBcontrib
 
