@@ -8,6 +8,7 @@
 add_subdirectory(headSynchronizer)
 add_subdirectory(voiceActivationDetection)
 add_subdirectory(maps)
+add_subdirectory(maps_convince_cris)
 add_subdirectory(btStructure)
 add_subdirectory(google)
 add_subdirectory(navigation2)
