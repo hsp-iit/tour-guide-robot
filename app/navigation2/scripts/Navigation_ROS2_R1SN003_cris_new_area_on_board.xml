@@ -20,7 +20,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from pointCloudCreator.ini</parameters>
+      <parameters>--context navigation2 --from pointCloudCreator_nws_ros2.ini</parameters>
       <node>console-peopledet-remote</node>
    </module>
 
@@ -65,7 +65,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from mapServer.ini</parameters>
+      <parameters>--context navigation2 --mapserver_mapcollectioncontext maps_convince_cris --from mapServer.ini</parameters>
       <node>r1-base</node>
    </module>
 
