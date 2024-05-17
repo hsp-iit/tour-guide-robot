@@ -9,6 +9,18 @@
   <!-- Modules -->
   <module>
     <name>yarprobotinterface</name>
+    <parameters>--context llmTest --from crisWelcomeChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context llmTest --from crisWelcomeStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
     <parameters>--context llmTest --from welcomeChat.ini</parameters>
     <node>console-llm</node>
   </module>
