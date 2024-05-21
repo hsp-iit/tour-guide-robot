@@ -1,0 +1,12 @@
+<cluster name="R1SN001" user="r1-user">
+
+<nameserver namespace="/root" node="r1-base"> </nameserver>
+
+<!-- specify nodes, if you want to enable display on desktop please specify which desktop to use
+this is usually the value of the DISPLAY variable when logged on -->
+<node>r1laptop3</node>
+<node>r1-base</node>
+<node>r1-torso1</node>
+<node>r1-torso2</node>
+
+</cluster>
