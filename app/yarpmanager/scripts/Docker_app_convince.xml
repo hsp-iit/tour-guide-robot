@@ -1,0 +1,36 @@
+<application>
+   <name>Docker_app_convince</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>docker</name>
+      <parameters>run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --name base_bt /image_name:tag</parameters>
+      <workdir></workdir>
+      <node>r1-base-host</node>
+   </module>
+
+   <module>
+      <name>docker</name>
+      <parameters>exec base_bt yarp run --server /r1-base --log</parameters>
+      <workdir></workdir>
+      <node>r1-base-host</node>
+   </module>
+
+   <module>
+      <name>docker</name>
+      <parameters>docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -v ${HOME}/.config/yarp:/home/yarp-user/.config/yarp -v ${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json -v ${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env -e QT_X11_NO_MITSHM=1 --name nlp_tools elandini84/nlp_tools:gccpp_v2.22_llm_aux</parameters>
+      <workdir></workdir>
+      <node>iiticublap293</node>
+   </module>
+
+   <module>
+      <name>docker</name>
+      <parameters>exec nlp_tools yarp run --server /console-llm --log</parameters>
+      <workdir></workdir>
+      <node>iiticublap293</node>
+   </module>
+
+</application>
