@@ -7,30 +7,51 @@
 
    <module>
       <name>docker</name>
-      <parameters>run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --name base_bt /image_name:tag</parameters>
+      <parameters>run --rm --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --name btconsole ste93/convince:laboratory-tour-latest yarp run --server /r1-base --log</parameters>
       <workdir></workdir>
       <node>r1-base-host</node>
    </module>
 
    <module>
       <name>docker</name>
-      <parameters>exec base_bt yarp run --server /r1-base --log</parameters>
+      <parameters>exec btconsole yarp run --server /bt --log</parameters>
       <workdir></workdir>
       <node>r1-base-host</node>
    </module>
 
    <module>
       <name>docker</name>
-      <parameters>docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -v ${HOME}/.config/yarp:/home/yarp-user/.config/yarp -v ${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json -v ${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env -e QT_X11_NO_MITSHM=1 --name nlp_tools elandini84/nlp_tools:gccpp_v2.22_llm_aux</parameters>
+      <parameters>exec btconsole yarp run --server /console-peopledet --log</parameters>
+      <workdir></workdir>
+      <node>r1-base-host</node>
+   </module>
+
+   <module>
+      <name>docker</name>
+      <parameters>run --rm --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /etc/hosts:/etc/hosts -v /home/r1-user/.config/yarp:/home/yarp-user/.config/yarp -v /home/r1-user/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json -v /home/r1-user/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env -e QT_X11_NO_MITSHM=1 --name nlp_tools elandini84/nlp_tools:gccpp_v2.22_llm_aux yarp run --server /console-llm --log</parameters>
       <workdir></workdir>
       <node>iiticublap293</node>
    </module>
 
    <module>
       <name>docker</name>
-      <parameters>exec nlp_tools yarp run --server /console-llm --log</parameters>
+      <parameters>run --rm --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --name bt ste93/convince:laboratory-tour-latest yarp run --server /console --log</parameters>
       <workdir></workdir>
       <node>iiticublap293</node>
+   </module>
+
+   <module>
+      <name>docker</name>
+      <parameters>run --rm --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/r1-user/.env/hsp-speech-interaction-dev-ad51a35ee0ea.json:/home/user1/hsp_google.json -e QT_X11_NO_MITSHM=1 --gpus all ste93/r1images:tourCore2_cuda.11.7.1-cudnn8_iron_devel yarp run --server /console-peopledet-remote --log</parameters>
+      <workdir></workdir>
+      <node>iiticublap292</node>
+   </module>
+
+   <module>
+      <name>docker</name>
+      <parameters>run --rm --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/r1-user/.config/yarp:/root/.config/yarp -e QT_X11_NO_MITSHM=1 --gpus all rtmpose:latest yarp run --server /console-rtm --log</parameters>
+      <workdir></workdir>
+      <node>iiticublap292</node>
    </module>
 
 </application>
