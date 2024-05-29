@@ -252,6 +252,7 @@ RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
 RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo "source ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
+RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
 RUN chmod +x /home/user1/.entrypoint.sh
 WORKDIR ${user1_home}
 RUN sudo updatedb

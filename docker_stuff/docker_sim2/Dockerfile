@@ -246,9 +246,10 @@ ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
 RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.bash
 RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.entrypoint.bash
+RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
 RUN chmod +x /home/user1/.entrypoint.sh
-ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
 
 WORKDIR ${user1_home}/tour-guide-robot
 RUN sudo updatedb
+ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
 CMD ["bash"]
