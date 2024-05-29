@@ -204,8 +204,6 @@ USER ${robotology_install_user}
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
-RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.bashrc
-RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
@@ -239,10 +237,15 @@ RUN yarp conf 172.17.0.1 10000
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
-    ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
-    ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
+ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Set ROS2 environment
+RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.bash
+RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.entrypoint.bash
+ENTRYPOINT [ "/home/user1/.entrypoint.bash" ]
 
 WORKDIR ${user1_home}/tour-guide-robot
 RUN sudo updatedb

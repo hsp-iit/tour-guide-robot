@@ -204,8 +204,6 @@ ENV ICUBcontrib_SHARE=${robotology_install_folder}/iCubContrib/share/ICUBcontrib
 # Set environmental variables
 USER ${robotology_install_user}
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
-RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.bashrc
-RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV PATH=$PATH:${YARP_DIR}/bin:${navigation_DIR}/bin:${CER_DIR}/bin:${ICUB_DIR}/bin:${ICUB_DIR}:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/icub-main/build:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV ROBOT_CODE=${robotology_install_folder}
@@ -227,7 +225,7 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros
 
 # Groot and BT dependencies
 RUN sudo apt-get update && sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && \
-    cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
+cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/BehaviorTree/Groot.git
@@ -245,13 +243,16 @@ RUN yarp conf 192.168.100.10 10000
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
-    ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
-    ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
+ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-RUN echo "source ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.bashrc
+RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo "source ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
 WORKDIR ${user1_home}
 RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
+ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
 CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
