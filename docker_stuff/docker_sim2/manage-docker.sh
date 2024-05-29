@@ -176,7 +176,7 @@ else
     sudo xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -e ROS_DOMAIN_ID=${ROS_DOMAIN_ID} -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
-    elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
+    elif [[ $RUN_WITH_GPU == "false" ]]; then
         sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -e ROS_DOMAIN_ID=${ROS_DOMAIN_ID} -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
     else
         echo "ERROR: You cannot run a nVidia based image without gpu support"
