@@ -32,8 +32,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch robot_state_publisher.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>robot_state_publisher.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
@@ -64,8 +64,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch amcl.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>amcl.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
@@ -77,8 +77,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch navigation.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>navigation.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
