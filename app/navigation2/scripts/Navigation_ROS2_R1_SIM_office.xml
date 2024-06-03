@@ -7,14 +7,7 @@
 
    <module>
       <name>ros2_launch.sh</name>
-      <parameters>/usr/local/src/hsp/tour-guide-robot/app/navigation2/launch/robot_state_publisher.launch.py use_sim_time:=true</parameters>
-      <workdir>/home/user1/tour-guide-robot/app/navigation2/scripts/</workdir>
-      <node>console</node>
-   </module>
-
-   <module>
-      <name>ros2</name>
-      <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
+      <parameters>robot_state_publisher.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
@@ -51,8 +44,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch amcl.launch.py use_sim_time:=true</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>amcl.launch.py use_sim_time:=true</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
@@ -64,8 +57,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch navigation.launch.py use_sim_time:=true params_file:=/home/user1/tour-guide-robot/app/navigation2/conf/nav2_params.yaml</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>navigation.launch.py use_sim_time:=true params_file:=/home/user1/tour-guide-robot/app/navigation2/conf/nav2_params.yaml</parameters>
       <workdir>/home/user1/tour-guide-robot/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
