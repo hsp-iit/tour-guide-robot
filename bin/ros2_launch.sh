@@ -7,17 +7,17 @@
 
 
 _term() {
-	echo "Got SIGTERM"
+	echo "Cleaning up the process"
 	kill -2 -${group}
 }
 
-if [ "$#" -lt 2 ]
+if [ "$#" -lt 1 ]
 then
-	echo "Usage ros2_launch.sh <package> <launch_file> <args>"
+	echo "Usage ros2_launch.sh [package] <launch_file> [args]"
 	exit -1
 fi
 
-trap _term SIGTERM
+trap _term SIGTERM SIGINT
 
 setsid ros2 launch $@ --noninteractive &
 
