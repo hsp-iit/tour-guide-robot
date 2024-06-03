@@ -204,14 +204,12 @@ USER ${robotology_install_user}
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
-RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.bashrc
-RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.bashrc
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:$user1_home/tour-guide-robot/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2
 ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
 ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib
 ENV GAZEBO_MODEL_PATH=${robotology_install_folder}/cer-sim/gazebo/
@@ -239,11 +237,19 @@ RUN yarp conf 172.17.0.1 10000
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
-    ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
-    ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
+ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Set ROS2 environment
+RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
+RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
+RUN chmod +x /home/user1/.entrypoint.sh
 
 WORKDIR ${user1_home}/tour-guide-robot
 RUN sudo updatedb
+ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
 CMD ["bash"]
