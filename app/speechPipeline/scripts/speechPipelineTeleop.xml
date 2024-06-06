@@ -1,0 +1,58 @@
+<application>
+    <name>Speech_Pipeline_teleop</name>
+
+    <dependencies>
+    </dependencies>
+
+    <!-- MODULES -->
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--config micAudio.xml</parameters>
+        <workdir>/home/r1-user</workdir>
+        <node>r1-torso</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context vadModule --from audioPlayer.ini</parameters>
+        <node>r1-face</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface </name>
+        <parameters>--context headSynchronizer --from faceDisplay.ini</parameters>
+        <node>r1-face</node>
+    </module>
+
+    <module>
+        <name>faceExpressionImage5GTour</name>
+        <parameters></parameters>
+        <node>r1-face</node>
+    </module>
+
+    <!-- CONNECTIONS -->
+    <connection>
+        <from>/audioRecorder_nws/status:o</from>
+        <to>/faceExpressionImage/earsAudioStatus:i</to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/faceExpressionImage/image:o</from>
+        <to>/robot/faceDisplay/image:i</to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/audioPlayerWrapper/status:o</from>
+        <to>/faceExpressionImage/mouthAudioData:i </to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/audioRecorder_nws/audio:o</from>
+        <to>/faceExpressionImage/earsAudioData:i</to>
+        <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+    </connection>
+
+</application>
