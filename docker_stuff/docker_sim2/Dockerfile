@@ -7,7 +7,7 @@ ARG yarp_branch="master"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=28_09_2022
+ENV DOCKER_UPDATED_ON=06_06_2024
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt software-properties-common sudo psmisc lsb-release \
@@ -209,7 +209,6 @@ ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2
 ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
 ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib
 ENV GAZEBO_MODEL_PATH=${robotology_install_folder}/cer-sim/gazebo/
@@ -227,10 +226,13 @@ USER ${robotology_install_user}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros && sudo chown -R ${robotology_install_user}:${robotology_install_user} /home/${robotology_install_user}/.ros
 
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/yarp-web-teleop.git
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+
+ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop
 
 # R1 NETWORK CONFIG
 RUN yarp conf 172.17.0.1 10000

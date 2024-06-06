@@ -7,7 +7,7 @@ ARG yarp_branch="master"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=20_06_2023
+ENV DOCKER_UPDATED_ON=06_06_2024
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
@@ -209,7 +209,6 @@ ENV PATH=$PATH:${YARP_DIR}/bin:${navigation_DIR}/bin:${CER_DIR}/bin:${ICUB_DIR}/
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
 ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DIR}/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:${CER_DIR}/share/CER:${ICUBcontrib_DIR}/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-device-rplidar/build/share/yarp:${ICUBcontrib_SHARE}
 ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
@@ -234,9 +233,12 @@ RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf 
 
 # Navigation stuff
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/yarp-web-teleop.git
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
 RUN /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON; make -j11"
+
+ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
+ENV YARP_DATA_DIRS=${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DIR}/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:${CER_DIR}/share/CER:${ICUBcontrib_DIR}/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-device-rplidar/build/share/yarp:${ICUBcontrib_SHARE}:${WEB_TELEOP_DIR}/share/yarp-web-teleop
 
 # R1 NETWORK CONFIG
 RUN yarp conf 192.168.100.10 10000
