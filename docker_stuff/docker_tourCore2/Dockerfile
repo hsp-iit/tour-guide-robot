@@ -233,7 +233,7 @@ RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf 
 
 # Navigation stuff
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/yarp-web-teleop.git && mkdir build && cd build && cmake ..
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
 RUN /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=ON -DENABLE_faceExpressionImage=ON; make -j11"
 
