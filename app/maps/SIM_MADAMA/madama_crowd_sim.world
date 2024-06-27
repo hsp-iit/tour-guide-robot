@@ -7,7 +7,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>200 200</size>
+              <size>100 100</size>
             </plane>
           </geometry>
           <surface>
@@ -32,14 +32,14 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>200 200</size>
+              <size>100 100</size>
             </plane>
           </geometry>
           <material>
             <script>
               <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
+              <name>Gazebo/DarkGrey</name>
+            </script>		
           </material>
         </visual>
         <self_collide>0</self_collide>
@@ -47,7 +47,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-    <light name='sun' type='directional'>
+    <light name='sun1' type='directional'>
       <cast_shadows>1</cast_shadows>
       <pose>0 0 10 0 -0 0</pose>
       <diffuse>0.8 0.8 0.8 1</diffuse>
@@ -65,21 +65,22 @@
         <falloff>0</falloff>
       </spot>
     </light>
-    <model name='my_mesh'>
-      <pose>0 0 0 0 -0 0</pose>
+
+    <model name='madama_walls'>
+      <pose>10 -11 0 0 0 1.561</pose>
       <static>1</static>
       <link name='body'>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>madama_world.dae</uri>
+              <uri>palazzomadama.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>madama_world.dae</uri>
+              <uri>palazzomadama.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -107,7 +108,7 @@
         <uri>model://cer_no_collisions_20m</uri>
       </include>
     </model>
-
+    
     <gravity>0 0 -9.81</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type='adiabatic'/>
@@ -163,8 +164,7 @@
       </camera>
     </gui>
 
-
-<!--    agents    -->
+  <!--    agents    -->
   <!--    first room    -->
     <actor name="actor1">
       <pose>5 5 1 0 0 0</pose>
@@ -230,3 +230,6 @@
         </trajectory>
       </plugin>
     </actor>
+    
+  </world>
+</sdf>

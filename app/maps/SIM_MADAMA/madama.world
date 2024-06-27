@@ -7,7 +7,7 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>200 200</size>
+              <size>100 100</size>
             </plane>
           </geometry>
           <surface>
@@ -32,14 +32,14 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>200 200</size>
+              <size>100 100</size>
             </plane>
           </geometry>
           <material>
             <script>
               <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
+              <name>Gazebo/DarkGrey</name>
+            </script>		
           </material>
         </visual>
         <self_collide>0</self_collide>
@@ -66,40 +66,21 @@
       </spot>
     </light>
 
-    <light name='sun2' type='directional'>
-      <cast_shadows>0</cast_shadows>
-      <pose>0 0 10 0 -0 0</pose>
-      <diffuse>0.8 0.8 0.8 1</diffuse>
-      <specular>0.2 0.2 0.2 1</specular>
-      <attenuation>
-        <range>1000</range>
-        <constant>0.9</constant>
-        <linear>0.01</linear>
-        <quadratic>0.001</quadratic>
-      </attenuation>
-      <direction>0.7 -0.9 -0.9</direction>
-      <spot>
-        <inner_angle>0</inner_angle>
-        <outer_angle>0</outer_angle>
-        <falloff>0</falloff>
-      </spot>
-    </light>
-
-    <model name='my_mesh'>
-      <pose>0 0 0 0 -0 0</pose>
+    <model name='madama_walls'>
+      <pose>10 -11 0 0 0 1.561</pose>
       <static>1</static>
       <link name='body'>
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>madama_world.dae</uri>
+              <uri>palazzomadama.dae</uri>
             </mesh>
           </geometry>
         </visual>
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>madama_world.dae</uri>
+              <uri>palazzomadama.dae</uri>
             </mesh>
           </geometry>
           <surface>
