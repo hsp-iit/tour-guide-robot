@@ -47,8 +47,12 @@ bool WpaSupplicantRoaming::roam(const std::string& if_name, const std::string& s
 std::string WpaSupplicantRoaming::wpa_request(wpa_ctrl* ctrl, const std::string& cmd)
 {
     char buf[4096];
-    std::size_t cmd_reply_len;
-    wpa_ctrl_request(ctrl,cmd.c_str(),cmd.size(),buf,&cmd_reply_len,NULL);
+    std::size_t cmd_reply_len = sizeof(buf) - 1;
+    if(wpa_ctrl_request(ctrl,cmd.c_str(),cmd.size(),buf,&cmd_reply_len,NULL) != 0)
+    {
+        yError() << "Failed to send/receivce command to/from wpa_supplicant";
+        return "";
+    }
     std::string cmd_reply(buf,cmd_reply_len-1);
     return cmd_reply;
 }
