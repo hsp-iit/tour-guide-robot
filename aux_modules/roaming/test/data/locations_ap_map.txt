@@ -1,0 +1,2 @@
+area_1 X0:00:XX:X0:0X:00
+area_2 X1:0X:XX:X1:0X:00
