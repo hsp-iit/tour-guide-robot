@@ -2,7 +2,9 @@
 #include <yarp/os/LogStream.h>
 #include <math.h>
 #include <iostream>
+#include <fstream>
 #include <limits>
+#include <algorithm>
 
 RoamingServer::RoamingServer(std::string name, INetworkInteraction& inet):
     m_name{name},
@@ -13,19 +15,56 @@ RoamingServer::RoamingServer(std::string name, INetworkInteraction& inet):
 
 bool RoamingServer::configure(yarp::os::ResourceFinder &rf)
 {
+    // Return help if needed
+    if(rf.check("help") || !rf.check("loc_to_ap_map"))
+    {
+        yInfo() << "RoamingServer options:";
+        yInfo() << "\t--loc_to_ap_map: file containing location to AP map";
+        return false;
+    }
+
+    m_locations_to_ap_file_name = rf.check("loc_to_ap_map", yarp::os::Value("locations_ap_map.txt")).asString();
+    
+    // Open file
+    std::ifstream locations_to_ap_map_file(m_locations_to_ap_file_name);
+    if(!locations_to_ap_map_file.is_open())
+    {
+        yError() << "Failed to open file" << m_locations_to_ap_file_name;
+        return false;
+    }
+
+    // Configure interfaces to external services
+    configureInterfaces();
+
+    // Get ap and locations maps and list
+    const auto& [location_to_ap, ap_to_location] = getLocationAPMaps(locations_to_ap_map_file);
+    m_location_to_ap = location_to_ap;
+    m_ap_to_location = ap_to_location;
 
     m_roaming_port_name = "/" + m_name + "/ap:o";
     m_roaming_port.open(m_roaming_port_name);
 
-    configureInterfaces();
+    yDebug() << "Roaming port opened at" << m_roaming_port_name;
 
-    m_ap_list = getAPList();
+    // Get APs from map
+    try 
+    {
+        m_locations_list = getAPList();
+    }
+    catch(const std::runtime_error& e)
+    {
+        yError() << e.what();
+        return false;
+    }
+    
+    yDebug() << "APs found in map" << m_locations_list.size();
 
-    if(m_ap_list.size() == 0) {
-        yError() << "No APs found in map";
+    if(m_locations_list.size() == 0) {
+        yError() << "None of the locations defined in the mapping file are found in the map server";
         return false;
     }
 
+    // Get robot position
     m_navigation->getCurrentPosition(m_robot_position);
     m_map_name = m_robot_position.map_id;
 
@@ -161,9 +200,9 @@ const std::string RoamingServer::getBestAP() const {
         min_dist = distanceToAP(current_ap_name.value());
     }
 
-    for (const auto ap : m_ap_list) {
-        if (double dist = distanceToAP(ap) < min_dist) {
-            best_ap = ap;
+    for (const auto& [ap_mac_addr,ap_location] : m_ap_to_location) {
+        if (double dist = distanceToAP(ap_mac_addr) < min_dist) {
+            best_ap = ap_mac_addr;
             min_dist = dist;
         }
     }
@@ -193,6 +232,8 @@ bool RoamingServer::roam(const std::string &ap_name)
 const std::optional<yarp::dev::Nav2D::Map2DLocation> RoamingServer::getApPosition(const std::string &ap_name) const
 {
 
+    yDebug() << "getApPosition" << ap_name;
+
     // Get AP position from map
     std::vector<yarp::dev::Nav2D::Map2DLocation> locations;
     
@@ -202,21 +243,14 @@ const std::optional<yarp::dev::Nav2D::Map2DLocation> RoamingServer::getApPositio
         return {};
     }
 
-    std::vector<std::string> location_names;
-    m_navigation->getLocationsList(location_names);
-
-    if(location_names.size() == 0)
+    for (const auto& [ap_location,ap_mac_address] : m_location_to_ap)
     {
-        yError() << "fbrand: No locations found in map";
-        return {};
-    }
-
-    for (auto location_name : location_names)
-    {
-        if(location_name == ap_name)
+        yDebug() << "AP location" << ap_location << "AP MAC address" << ap_mac_address;
+        
+        if(ap_mac_address == ap_name)
         {
             yarp::dev::Nav2D::Map2DLocation location;
-            m_navigation->getLocation(location_name, location);
+            m_navigation->getLocation(ap_location, location);
             if(location.map_id == m_map_name)
             {
                 return location;
@@ -257,30 +291,65 @@ const std::vector<std::string> RoamingServer::getAPList() const {
     std::vector<std::string> locations;
     std::vector<std::string> aps;
 
-    // Get all APs from map
+    // Get all locations from map
+    if(!m_navigation)
+    {
+        yError() << "Navigation interface is not available";
+        throw std::runtime_error("Navigation interface is not available");
+    }
+
     m_navigation->getLocationsList(locations);
 
-    for (auto location : locations)
+    // For every location in the mapping, get the mac address and check that it's well defined
+    for (const auto& [ap_location,ap_mac_add]: m_location_to_ap)
     {
-        if(isAP(location))
+        if(std::find(locations.begin(),locations.end(),ap_location) != locations.end())
         {
-            aps.push_back(location);
+            if(this->isAP(ap_mac_add))
+            {
+                aps.push_back(ap_mac_add);
+            }
         }
     }
 
     return aps;
 }
 
-const bool RoamingServer::isAP(const std::string &location_name) const {
-    
+std::pair<LocationApMap,LocationApMap> RoamingServer::getLocationAPMaps(std::ifstream& map_file) const
+{
+    LocationApMap location_to_ap;
+    LocationApMap ap_to_location;
+
+    std::string line;
+    while (std::getline(map_file, line))
+    {
+        std::string location;
+        std::string ap;
+        std::istringstream iss(line);
+        iss >> location >> ap;
+        location_to_ap.insert_or_assign(location,ap);
+        ap_to_location.insert_or_assign(ap,location);
+    }
+
+    return {location_to_ap,ap_to_location};
+}
+
+const bool RoamingServer::isAP(const std::string &ap_name) const {
+
     bool is_ap = false;
 
+    // MAC address has 17 characters
+    if(ap_name.size() != 17)
+    {
+        return false;
+    }
+
     // If it looks like a MAC address, then it is a MAC address
-    is_ap = location_name[2] == ':';
-    is_ap = location_name[5] == ':';
-    is_ap = location_name[8] == ':';
-    is_ap = location_name[11] == ':';
-    is_ap = location_name[14] == ':';
+    is_ap = ap_name[2] == ':';
+    is_ap = ap_name[5] == ':';
+    is_ap = ap_name[8] == ':';
+    is_ap = ap_name[11] == ':';
+    is_ap = ap_name[14] == ':';
     
     return is_ap;
 }

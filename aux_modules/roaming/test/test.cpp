@@ -1,4 +1,4 @@
-#include <roaming.h>
+#include <RoamingServer.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Property.h>
 #include <yarp/os/ResourceFinder.h>
@@ -113,34 +113,41 @@ TEST_CASE("Roaming::functionalities", "[Roaming]")
     std::cout << "fbrand: robot loc x" << robot_loc.x << "\n";
     std::cout << "fbrand: robot loc y" << robot_loc.y << "\n";
 
-    std::string fake_ap_name{"X0:00:XX:X0:0X:00"}; //Just a fake MAC address
+    std::string fake_ap1_location{"area_1"}; //Just a fake MAC address
+    std::string fake_ap1_mac{"X0:00:XX:X0:0X:00"};
     yarp::dev::Nav2D::Map2DLocation ap_loc(robot_loc.map_id,1.0,0.0,0.0,"ap1");
-    m_navigation->storeLocation(fake_ap_name,ap_loc); //Just a fake MAC address
+    m_navigation->storeLocation(fake_ap1_location,ap_loc); //Just a fake MAC address
     
-    std::string fake_ap_name2{"X1:0X:XX:X1:0X:00"};
+    std::string fake_ap2_location{"area_2"};
+    std::string fake_ap2_mac{"X1:0X:XX:X1:0X:00"};
     yarp::dev::Nav2D::Map2DLocation ap2_loc(robot_loc.map_id,2.0,0.0,0.0,"ap2");
-    m_navigation->storeLocation(fake_ap_name2,ap2_loc);
+    m_navigation->storeLocation(fake_ap2_location,ap2_loc);
 
     // Instantiate the FakeNetworkInteraction to read iwconfig dump from files
     auto inet = FakeNetworkInteraction();
-    Roaming roaming("roaming",inet);
-
-    SECTION("Check roaming functionalities")
-    {
-        REQUIRE(roaming.isAP(fake_ap_name));
-    }
+    RoamingServer roaming("roaming",inet);
 
     SECTION("Configure roaming module")
     {
         yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
         REQUIRE(roaming.configure(rf));
+    }
+
+    SECTION("Check isAP")
+    {
+        yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
+        REQUIRE(roaming.configure(rf));
+        REQUIRE(roaming.isAP(fake_ap1_mac));
     }
 
     SECTION("Check AP location")
     {
         yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
         REQUIRE(roaming.configure(rf));
-        auto fake_ap_location = roaming.getApPosition(fake_ap_name);
+        auto fake_ap_location = roaming.getApPosition(fake_ap1_mac);
         REQUIRE(fake_ap_location.has_value());
         auto fake_ap_location_value = fake_ap_location.value();
         REQUIRE(fake_ap_location_value.x < 1.1);
@@ -152,14 +159,16 @@ TEST_CASE("Roaming::functionalities", "[Roaming]")
     SECTION("Check distance to AP")
     {
         yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
         REQUIRE(roaming.configure(rf));
-        REQUIRE(roaming.distanceToAP(fake_ap_name) < 1.1);
-        REQUIRE(roaming.distanceToAP(fake_ap_name) > 0.9); //float comparison
+        REQUIRE(roaming.distanceToAP(fake_ap1_mac) < 1.1);
+        REQUIRE(roaming.distanceToAP(fake_ap1_mac) > 0.9); //float comparison
     }
 
     SECTION("Check getCurrentAPName when iwconfig connected")
     {
         yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
         REQUIRE(roaming.configure(rf));
         inet.loadIwConfigDump("/workspaces/tour-guide-robot/aux_modules/roaming/test/data/iwconfig_dump_connected.txt");
         bool check{roaming.getCurrentApName() == "X1:0X:XX:X1:0X:00"};
@@ -169,6 +178,7 @@ TEST_CASE("Roaming::functionalities", "[Roaming]")
     SECTION("Check getCurrentAPName when iwconfig disconnected")
     {
         yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
         REQUIRE(roaming.configure(rf));
         inet.loadIwConfigDump("/workspaces/tour-guide-robot/aux_modules/roaming/test/data/iwconfig_no_connection.txt");
         bool check{!roaming.getCurrentApName().has_value()};
@@ -178,9 +188,10 @@ TEST_CASE("Roaming::functionalities", "[Roaming]")
     SECTION("Check getBestAp")
     {
         yarp::os::ResourceFinder rf;
+        rf.setDefault("loc_to_ap_map","/workspaces/tour-guide-robot/aux_modules/roaming/test/data/locations_ap_map.txt");
         REQUIRE(roaming.configure(rf));
         inet.loadIwConfigDump("/workspaces/tour-guide-robot/aux_modules/roaming/test/data/iwconfig_dump_connected.txt");
-        bool check{roaming.getBestAP() == fake_ap_name};
+        bool check{roaming.getBestAP() == fake_ap1_mac};
         REQUIRE(check);
     }
 

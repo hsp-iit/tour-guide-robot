@@ -1,5 +1,5 @@
 wlp0s20f3  IEEE 802.11  ESSID:"WhatsGoingOn"  
-          Mode:Managed  Frequency:5.5 GHz  Access Point: X1:0X:XX:X1:0X:00 
+          Mode:Managed  Frequency:5.5 GHz  Access Point: X1:0X:XX:X1:0X:00
           Bit Rate=866.7 Mb/s   Tx-Power=20 dBm   
           Retry short limit:7   RTS thr:off   Fragment thr:off
           Power Management:on

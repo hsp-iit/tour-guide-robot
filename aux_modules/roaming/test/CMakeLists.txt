@@ -14,8 +14,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC ../include)
 target_include_directories(${PROJECT_NAME} PUBLIC .)
 target_sources(${PROJECT_NAME} PRIVATE 
   test.cpp 
-  ../src/roaming.cpp 
+  ../src/RoamingServer.cpp
   FakeNetworkInteraction.h
-  ../include/roaming.h
+  ../include/RoamingServer.h
   ../include/INetworkInteraction.h)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${YARP_LIBRARIES} Catch2::Catch2WithMain)
