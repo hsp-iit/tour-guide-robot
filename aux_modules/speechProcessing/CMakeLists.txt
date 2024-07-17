@@ -1,5 +1,7 @@
 add_subdirectory(messages)
-add_subdirectory(wakeWordDetection)
+if(WAKE_WORD)
+    add_subdirectory(wakeWordDetection)
+endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
 if(${libfvad_FOUND})
