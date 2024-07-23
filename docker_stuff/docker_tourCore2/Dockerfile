@@ -165,7 +165,7 @@ ENV navigation_DIR=${robotology_install_folder}/navigation/build
 # CER
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/cer.git -b fix/compatibility/yarp_master
+RUN git clone https://github.com/robotology/cer.git
 RUN cd cer && mkdir build && cd build && cmake .. \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DENABLE_cermod_cerDoubleLidar=ON \
@@ -252,7 +252,7 @@ ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
 RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
-RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/local_setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo "source ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
 RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
 RUN chmod +x /home/user1/.entrypoint.sh
