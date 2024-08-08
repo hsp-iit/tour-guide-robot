@@ -108,33 +108,6 @@
       <node>console</node>
    </module>
 
-  <module>
-    <name>googleSynthesis</name>
-    <parameters>--name googleSynthesis --language it-IT --voice it-IT-Wavenet-A --playbackmode sendToPort_uncompressed</parameters>
-    <node>console</node>
-  </module>
-
-  <module>
-    <name>yarprobotinterface</name>
-    <parameters>--context vadModule --from audioPlayer.ini</parameters>
-    <node>r1-face</node>
-  </module>
-
-
-  <module>
-    <name>yarprobotinterface </name>
-    <parameters>--context headSynchronizer --from faceDisplay.ini</parameters>
-    <node>r1-face</node>
-  </module>
-
-
-  <module>
-    <name>faceExpressionImage5GTour</name>
-    <parameters></parameters>
-    <node>console</node>
-  </module>
-
-
 
    <!-- connections -->
    <connection>
@@ -142,24 +115,5 @@
       <to>/baseControl/input/joystick/data:i</to>
       <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
    </connection>
-
-  <connection>
-    <from> /googleSynthesis/sound:o</from>
-    <to>/audioPlayerWrapper/audio:i</to>
-    <protocol>fast_tcp</protocol>
-  </connection>
-
-
-  <connection>
-    <from>/audioPlayerWrapper/status:o</from>
-    <to>/faceExpressionImage/mouthAudioData:i </to>
-    <protocol>fast_tcp</protocol>
-  </connection>
-
-  <connection>
-    <from>/faceExpressionImage/image:o</from>
-    <to>/robot/faceDisplay/image:i</to>
-    <protocol>fast_tcp</protocol>
-  </connection>
 
 </application>
