@@ -17,21 +17,21 @@ jobs:
             base_image: "ubuntu:24.04",
             base_image_label: "ubuntu24.04",
          }
-         - {
-            ros2_distro: "iron",
-            base_image: "ubuntu:22.04",
-            base_image_label: "ubuntu22.04",
-         }
+         # - {
+         #    ros2_distro: "iron",
+         #    base_image: "ubuntu:22.04",
+         #    base_image_label: "ubuntu22.04",
+         # }
          # - {
          #    ros2_distro: "humble",
          #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
          #    base_image_label: "cuda.11.7.1-cudnn8",
          # }
-         - {
-            ros2_distro: "iron",
-            base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-            base_image_label: "cuda.11.7.1-cudnn8",
-         }
+         # - {
+         #    ros2_distro: "iron",
+         #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
+         #    base_image_label: "cuda.11.7.1-cudnn8",
+         # }
     steps:
     - name: Info
       run: |
