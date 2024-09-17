@@ -4,6 +4,7 @@ LABEL maintainer="Ettore Landini"
 
 ARG ros_distro
 ARG yarp_branch="master"
+ARG gazebo_pkg=ros-${ros_distro}-ros-gz
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,7 +16,7 @@ RUN apt-get update && apt-get install -y apt software-properties-common sudo psm
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install numpy bpytop
+RUN pipx install numpy bpytop
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
@@ -27,7 +28,7 @@ ENV LANG=en_US.UTF-8
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-${ros_distro}-desktop ros-${ros_distro}-navigation2 ros-${ros_distro}-nav2-bringup \
-    ros-${ros_distro}-slam-toolbox ros-${ros_distro}-test-msgs ros-${ros_distro}-gazebo-ros \
+    ros-${ros_distro}-slam-toolbox ros-${ros_distro}-test-msgs ${gazebo_pkg} \
     python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
