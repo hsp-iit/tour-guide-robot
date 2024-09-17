@@ -78,10 +78,7 @@ ENV YCM_DIR=${robotology_install_folder}/ycm/build
 # Build YARP
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/yarp.git -b $yarp_branch
-RUN echo "\n\n\n ############################################################# \n\n\n"
-RUN cd yarp && git log
-RUN echo "\n\n\n ############################################################# \n\n\n"
+RUN git clone https://github.com/robotology/yarp.git -b ${yarp_branch}
 RUN cd yarp && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
