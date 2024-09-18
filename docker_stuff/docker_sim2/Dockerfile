@@ -118,9 +118,9 @@ ENV YARP_ROOT=${robotology_install_folder}/yarp
 ENV YARP_DIR=${robotology_install_folder}/yarp/build
 
 # YARP bindings
-USER ${robotology_install_user}
-WORKDIR ${robotology_install_folder}
-RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTHON=ON && make -j11
+# USER ${robotology_install_user}
+# WORKDIR ${robotology_install_folder}
+# RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTHON=ON && make -j11
 
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
