@@ -58,7 +58,7 @@ void MouthThread::run()
     lock_guard<recursive_mutex> lg(m_methods_mutex);
 
     // get the status
-    yarp::dev::AudioPlayerStatus *Pstatus = m_audioPlayPort.read(false);
+    yarp::sig::AudioPlayerStatus *Pstatus = m_audioPlayPort.read(false);
     if (Pstatus)
     {
         m_audioIsPlaying = Pstatus->current_buffer_size > 0;
