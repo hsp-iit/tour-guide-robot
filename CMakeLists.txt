@@ -31,7 +31,7 @@ if (${OpenCV_FOUND})
 	endif ()
 endif()
 
-find_package(YARP COMPONENTS os idl_tools dev REQUIRED)
+find_package(YARP COMPONENTS os idl_tools dev sig REQUIRED)
 find_package(navigation)
 
 yarp_configure_external_installation(${PROJECT_NAME} WITH_PLUGINS)
