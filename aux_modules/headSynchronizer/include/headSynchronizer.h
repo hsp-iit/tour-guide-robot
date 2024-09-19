@@ -12,8 +12,8 @@
 #include <vector>
 #include <mutex>
 #include <yarp/os/LogComponent.h>
-#include <yarp/dev/AudioRecorderStatus.h>
-#include <yarp/dev/AudioPlayerStatus.h>
+#include <yarp/sig/AudioRecorderStatus.h>
+#include <yarp/sig/AudioPlayerStatus.h>
 
 class StatusCallback;
 class HeadSynchronizer : public yarp::os::RFModule, public headSynchronizerRPC
@@ -39,8 +39,8 @@ private:
     std::string m_headSynchronizerThriftPortName;
 
     yarp::os::BufferedPort<yarp::os::Bottle> m_pStatusInput;
-    yarp::os::BufferedPort<yarp::dev::AudioRecorderStatus> m_pMicrophoneStatus;
-    yarp::os::BufferedPort<yarp::dev::AudioPlayerStatus> m_pPlayerStatus;
+    yarp::os::BufferedPort<yarp::sig::AudioRecorderStatus> m_pMicrophoneStatus;
+    yarp::os::BufferedPort<yarp::sig::AudioPlayerStatus> m_pPlayerStatus;
 
     yarp::os::Port m_headSynchronizerThriftPort;
     yarp::os::Port m_pSynthesisOutput;
