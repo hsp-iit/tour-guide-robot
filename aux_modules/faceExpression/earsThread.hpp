@@ -15,8 +15,8 @@
 #include <yarp/os/PeriodicThread.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/ResourceFinder.h>
-#include <yarp/dev/AudioRecorderStatus.h>
-#include <yarp/dev/AudioPlayerStatus.h>
+#include <yarp/sig/AudioRecorderStatus.h>
+#include <yarp/sig/AudioPlayerStatus.h>
 #include <yarp/sig/Sound.h>
 
 class EarsThread : public yarp::os::PeriodicThread
@@ -27,7 +27,7 @@ public:
 private:
     yarp::os::ResourceFinder& m_rf;
     yarp::os::BufferedPort<yarp::sig::Sound > m_audioRecPort;
-    yarp::os::BufferedPort<yarp::dev::AudioRecorderStatus> m_audioStatusPort;
+    yarp::os::BufferedPort<yarp::sig::AudioRecorderStatus> m_audioStatusPort;
     std::mutex&             m_drawing_mutex;
     std::recursive_mutex    m_methods_mutex;
     std::string             m_imagePath;
