@@ -5,7 +5,7 @@
 #define VAD_MODULE_H
 
 #include <yarp/os/RFModule.h>
-#include <yarp/dev/AudioRecorderStatus.h>
+#include <yarp/sig/AudioRecorderStatus.h>
 #include "Detector.h"
 
 // Other frequencies do not seem to work well
