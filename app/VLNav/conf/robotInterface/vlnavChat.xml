@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2023-2023 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="VlNavLLMServer" build="2" portprefix="/vlnav_chat" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="vlnavChat" type="GPTDevice">
+            <param extern-name="vlnav_prompt_ctx" name="prompt_context">VLNav</param>
+            <param extern-name="vlnav_prompt" name="prompt_file">VisualNavigationQuery_prompt.txt</param>
+        </device>
+        <device name="LLM_nws" type="LLM_nws_yarp">
+            <param extern-name="LLMNwsYarp_name" name="name">
+                /vlnav_chat/LLM_nws
+            </param>
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdeviceLLM">
+                        vlnavChat
+                    </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+    </devices>
+</robot>
