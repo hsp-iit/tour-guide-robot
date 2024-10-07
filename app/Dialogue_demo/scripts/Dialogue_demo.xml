@@ -1,0 +1,111 @@
+<application>
+  <name>R1_Dialogue_demo</name>
+
+
+  <dependencies>
+  </dependencies>
+
+
+  <!-- Modules -->
+  <module>
+    <name>voiceActivationDetection</name>
+    <parameters></parameters>
+    <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
+    <node>r1-base</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--config micAudio.xml</parameters>
+    <workdir>/home/r1-user</workdir>
+    <environment>YARP_LOG_PROCESS_LABEL=MICROPHONE</environment>
+    <node>r1-torso</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context vadModule --from audioPlayer.ini</parameters>
+    <environment>YARP_LOG_PROCESS_LABEL=SPEAKER</environment>
+    <node>r1-face</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface </name>
+    <parameters>--context headSynchronizer --from faceDisplay.ini</parameters>
+    <node>r1-face</node>
+  </module>
+
+  <module>
+    <name>faceExpressionImage5GTour</name>
+    <parameters></parameters>
+    <node>r1-face</node>
+  </module>
+
+  <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context google --from googleTranscription.ini</parameters>
+        <node>console-llm</node>
+    </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context google --from googleSynthesizer.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context Dialogue_demo --from dialogueDemoChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context Dialogue_demo --from dialogueDemoStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <!-- Connections -->
+  <connection>
+    <from>/audioRecorder_nws/status:o</from>
+    <to>/faceExpressionImage/earsAudioStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/faceExpressionImage/image:o</from>
+    <to>/robot/faceDisplay/image:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioPlayerWrapper/status:o</from>
+    <to>/faceExpressionImage/mouthAudioData:i </to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioRecorder_nws/audio:o</from>
+    <to>/vad/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioRecorder_nws/audio:o</from>
+    <to>/faceExpressionImage/earsAudioData:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/vad/audio:o</from>
+    <to>/speechTranscription_nws/sound:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/speechSynthesizer_nws/sound:o</from>
+    <to>/audioPlayerWrapper/audio:i</to>
+    <protocol></protocol>
+  </connection>
+
+</application>
