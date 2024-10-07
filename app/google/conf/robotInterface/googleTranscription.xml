@@ -6,7 +6,7 @@
 <robot name="googleTranscription" build="2" portprefix="/googleTranscription" xmlns:xi="http://www.w3.org/2001/XInclude">
     <devices>
         <device name="googleSpeechTranscription" type="googleSpeechTranscription">
-            <param name="language_code">
+            <param extern-name="transcription_lang" name="language_code">
                 it-IT
             </param>
         </device>

@@ -6,8 +6,11 @@
 <robot name="googleSynthesizer" build="2" portprefix="/synthesizerBot" xmlns:xi="http://www.w3.org/2001/XInclude">
     <devices>
         <device name="googleSpeechSynthesis" type="googleSpeechSynthesizer">
-            <param name="language_code">
+            <param extern-name="synthesis_lang" name="language_code">
                 it-IT
+            </param>
+            <param extern-name="synthesis_voice" name="voice_name">
+                it-IT-Neural2-A
             </param>
         </device>
         <device name="synthesizerWrap" type="speechSynthesizer_nws_yarp">
