@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2006-2021 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="localization2D" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<devices>
+		<device name="ros2loc" type="ros2Localizer">
+
+			<group name="ROS2LOCALIZER_GENERAL">
+				<param  name="name">/ros2Localizer</param>
+			</group>
+			<group name="LOCALIZATION">
+				<param  name="localization_mode">ros</param>
+			</group> 
+			<group name="MAP">
+				<param  name="connect_to_yarp_mapserver">1</param>
+			</group>
+			<group name="ROS2">
+				<param  name="node_name">ros2Localizer</param>
+				<param  name="initialpose_topic">/initialpose</param>
+				<param  name="currentpose_topic">/amcl_pose</param>
+				<param  name="occupancygrid_topic">/map</param>
+				<param  name="particles_topic">/particle_cloud</param>
+			</group>
+			<group name= "TF">
+				<param  name="robot_frame_id">mobile_base_body_link</param>
+				<param  name="map_frame_id">map</param>
+			</group>
+			<group name="INITIAL_POS">
+				<param extern-name="init_map" name="initial_map">gam_sim_real</param>
+				<param  name="initial_x">-1.15</param>
+				<param  name="initial_y">-2.25</param>
+				<param  name="initial_theta">-166.8</param>
+			</group>
+		</device>
+
+        <device name="loc2DNwsYarp" type="localization2D_nws_yarp">
+            		<group name="GENERAL">
+				<param extern-name="yarp_loc_server_name" name="name">/localization2D_nws_yarp</param>
+			</group>
+			<action phase="startup" level="5" type="attach">
+				<paramlist name="networks">
+					<elem name="subdevicerosloc">
+						ros2loc
+					</elem>
+				</paramlist>
+			</action>
+			<action phase="shutdown" level="5" type="detach" />
+		</device>
+	</devices>
+</robot>
