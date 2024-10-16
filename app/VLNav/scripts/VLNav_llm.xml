@@ -19,4 +19,16 @@
     <node>console-llm</node>
   </module>
 
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context VLNav --from vlnavReplyChat.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>LLMStream</name>
+    <parameters>--context VLNav --from vlnavReplyStream.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
 </application>
