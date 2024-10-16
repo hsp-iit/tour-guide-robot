@@ -21,6 +21,8 @@ jobs:
             ros2_distro: "iron",
             base_image: "ubuntu:22.04",
             base_image_label: "ubuntu22.04",
+            yarp_dev_ros2_branch: "fix/yarp_master_compatibility",
+            yarp_dev_ros2_remote: "elandini84",
          }
          # - {
          #    ros2_distro: "humble",
@@ -31,6 +33,8 @@ jobs:
             ros2_distro: "iron",
             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
             base_image_label: "cuda.11.7.1-cudnn8",
+            yarp_dev_ros2_branch: "fix/yarp_master_compatibility",
+            yarp_dev_ros2_remote: "elandini84",
          }
     steps:
     - name: Info
@@ -53,10 +57,10 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Building development tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
+          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} --build-arg ros2_dev_branch=${{matrix.config.yarp_dev_ros2_branch}} --build-arg ros2_dev_remote=${{matrix.config.yarp_dev_ros2_remote}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
+          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} --build-arg ros2_dev_branch=${{matrix.config.yarp_dev_ros2_branch}} --build-arg ros2_dev_remote=${{matrix.config.yarp_dev_ros2_remote}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
        else
           echo "Failure!"
           exit 1
@@ -171,10 +175,10 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Building development tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
+          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} --build-arg ros2_dev_branch=${{matrix.config.yarp_dev_ros2_branch}} --build-arg ros2_dev_remote=${{matrix.config.yarp_dev_ros2_remote}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
+          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} --build-arg ros2_dev_branch=${{matrix.config.yarp_dev_ros2_branch}} --build-arg ros2_dev_remote=${{matrix.config.yarp_dev_ros2_remote}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
        else
           echo "Failure!"
           exit 1
