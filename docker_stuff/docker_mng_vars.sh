@@ -10,3 +10,5 @@ REPO_DEF="elandini84/r1images"
 JUNCTION="_"
 REPO_SEP=":"
 ROS_DOMAIN_ID=37 #The number should be between 0-101 (https://docs.ros.org/en/iron/Concepts/Intermediate/About-Domain-ID.html#overview)
+ROS2_DEV_BRANCH="fix/yarp_master_compatibility"
+ROS2_DEV_REMOTE="elandini84"

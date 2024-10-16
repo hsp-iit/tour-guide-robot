@@ -4,6 +4,8 @@ LABEL maintainer="Ettore Landini"
 
 ARG ros_distro
 ARG yarp_branch="master"
+ARG ros2_dev_remote="robotology"
+ARG ros2_dev_branch=${ros_distro}
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
@@ -182,7 +184,7 @@ RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.ba
 
 # YARP-DEVICES-ROS2
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/yarp-devices-ros2 -b master
+RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b ${ros2_dev_branch}
 RUN cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build"
 RUN cd yarp-devices-ros2 && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
 
@@ -251,9 +253,9 @@ sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
-RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
-RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
-RUN echo "source ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
+RUN echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
 RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
 RUN chmod +x /home/user1/.entrypoint.sh
 WORKDIR ${user1_home}
