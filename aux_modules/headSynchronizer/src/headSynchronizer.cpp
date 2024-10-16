@@ -161,7 +161,7 @@ bool HeadSynchronizer::getIsError()
 
 bool HeadSynchronizer::isAudioPlaying()
 {
-    yarp::dev::AudioPlayerStatus *playerStatus = m_pPlayerStatus.read();
+    yarp::sig::AudioPlayerStatus *playerStatus = m_pPlayerStatus.read();
     if (playerStatus)
     {
         return playerStatus->current_buffer_size > 0;
@@ -296,7 +296,7 @@ bool HeadSynchronizer::isSpeaking()
 
 bool HeadSynchronizer::isHearing()
 {
-    yarp::dev::AudioRecorderStatus *recorderStatus = m_pMicrophoneStatus.read();
+    yarp::sig::AudioRecorderStatus *recorderStatus = m_pMicrophoneStatus.read();
     if (recorderStatus)
     {
         return recorderStatus->enabled;
