@@ -9,7 +9,7 @@
   <!-- Modules -->
   <module>
     <name>yarprobotinterface</name>
-    <parameters>--context VLNav --from vlnavChat.ini</parameters>
+    <parameters>--context VLNav --from vlnavChat.ini --vlnav_prompt VisualNavigationQueryBlank_prompt.txt</parameters>
     <node>console-llm</node>
   </module>
 
