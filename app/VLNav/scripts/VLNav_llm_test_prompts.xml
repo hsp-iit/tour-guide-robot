@@ -1,5 +1,5 @@
 <application>
-  <name>VLNav_llm</name>
+  <name>VLNav_llm_test</name>
 
 
   <dependencies>
@@ -30,30 +30,5 @@
     <parameters>--context VLNav --from vlnavReplyStream.ini</parameters>
     <node>console-llm</node>
   </module>
-
-  <!-- Connections -->
-  <connection>
-      <from>/speechTranscription_nws/text:o</from>
-      <to>/vlnav_chat/LLMStream/text:i</to>
-      <protocol>fast_tcp</protocol>
-  </connection>
-
-  <connection>
-      <from>/vlnav_chat/LLMStream/text:o</from>
-      <to>/vlmaps/index/text:i</to>
-      <protocol>fast_tcp</protocol>
-  </connection>
-
-  <connection>
-      <from>/vlmaps/index/text:o</from>
-      <to>/vlnavRep_chat/LLMStream/text:i</to>
-      <protocol>fast_tcp</protocol>
-  </connection>
-
-  <connection>
-      <from>/vlnavRep_chat/LLMStream/text:o</from>
-      <to>/speechSynthesis_nws/text:i</to>
-      <protocol>fast_tcp</protocol>
-  </connection>
 
 </application>
