@@ -34,7 +34,6 @@
     <parameters></parameters>
     <environment>YARP_LOG_PROCESS_LABEL=WAKE-WORD</environment>
     <node>console</node>
-    <workdir>/usr/local/src/robot/speech/tour-guide-robot/build/bin</workdir>
   </module>
 
   <module>
@@ -42,7 +41,6 @@
     <parameters></parameters>
     <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
     <node>console</node>
-    <workdir>/usr/local/src/robot/speech/tour-guide-robot/build/bin</workdir>
   </module>
 
   <module>

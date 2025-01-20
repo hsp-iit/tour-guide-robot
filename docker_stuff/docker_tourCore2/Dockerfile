@@ -249,6 +249,12 @@ ENV YARP_DATA_DIRS=${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DI
 # R1 NETWORK CONFIG
 RUN yarp conf 192.168.100.10 10000
 
+# Set up ONNX Runtime
+WORKDIR ${robotology_install_folder}
+RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
+RUN tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
+ENV ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1
+
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
 ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \

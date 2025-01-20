@@ -29,7 +29,8 @@ Detector::Detector(int vadFrequency,
                     m_vadSavePriorToDetection(vadSavePriorToDetection),
                     m_vadNumSamples((vadFrequency == 16000) ? 512 :
                                     (vadFrequency == 8000) ? 256 :
-                                    throw std::runtime_error("Unsupported sample rate")),
+                                    throw std::runtime_error("Unsupported sample rate " + std::to_string(vadFrequency)
+                                                            + ", must be 8kHz or 16kHz");,
                     m_context((vadFrequency == 16000) ? 64 : 32, 0),
                     m_currentSoundBufferNorm(m_vadNumSamples, 0),
                     m_currentSoundBuffer(m_vadNumSamples, 0),
