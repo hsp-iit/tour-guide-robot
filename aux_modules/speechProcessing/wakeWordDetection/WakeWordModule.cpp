@@ -22,7 +22,7 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
                                                   "Name of the input port to stop streaming")
                                              .asString();
 
-    std::string accessKey = rf.check("accessKey", yarp::os::Value("E3HSLWAlzc76SFsflAy+9NSJotzp4u1VQIKU63sdiyc9CzqQL8HRDg=="),
+    std::string accessKey = rf.check("accessKey", yarp::os::Value(""),
                                                   "Porcupine access key")
                                              .asString();
 
