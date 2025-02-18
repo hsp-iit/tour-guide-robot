@@ -17,9 +17,9 @@ ENV DOCKER_UPDATED_ON=06_06_2024
 RUN apt-get update && apt-get install -y apt software-properties-common sudo psmisc lsb-release \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
-    python3-setuptools python3-pip iproute2 python3-tornado swig lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
+    python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 swig lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
 
-RUN pipx install numpy bpytop
+RUN pipx install numpy bpytop openwakeword
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
