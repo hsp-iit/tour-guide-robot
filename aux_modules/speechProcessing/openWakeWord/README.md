@@ -1,0 +1,2 @@
+# Open Wake Word YARP
+Wake word detection in YARP using [Open Wake Word](https://github.com/dscripka/openWakeWord). Train models to detect the new wake word using notebook, originally from [Open Home Assistant](https://www.home-assistant.io/voice_control/create_wake_word/)

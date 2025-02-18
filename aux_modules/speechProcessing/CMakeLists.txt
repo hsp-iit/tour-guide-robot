@@ -7,6 +7,8 @@ if(SILERO_VAD)
     add_subdirectory(sileroVAD)
 endif()
 
+add_subdirectory(openWakeWord)
+
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(libfvad IMPORTED_TARGET libfvad)
 if(${libfvad_FOUND})

@@ -30,9 +30,9 @@
   </module>
 
   <module>
-    <name>wakeWordDetection</name>
+    <name>oww.py</name>
     <parameters></parameters>
-    <environment>YARP_LOG_PROCESS_LABEL=WAKE-WORD</environment>
+    <workdir>/usr/local/src/robot/tour-guide-robot/aux_modules/speechProcessing/openWakeWord</workdir>
     <node>console</node>
   </module>
 
@@ -87,13 +87,11 @@
   <connection>
     <from>/audioRecorder_nws/audio:o</from>
     <to>/wake/audio:i</to>
-    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
   </connection>
 
   <connection>
     <from>/wake/audio:o</from>
     <to>/vad/audio:i</to>
-    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
   </connection>
 
   <connection>
