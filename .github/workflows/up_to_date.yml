@@ -76,13 +76,13 @@ jobs:
             ros2_distro: "jazzy",
             base_image: "ubuntu:24.04",
             base_image_label: "ubuntu24.04",
-            work_dir: "docker_stuff/docker_sim_alt/"
+            work_dir: "docker_stuff/docker_sim_up_to_date/"
          }
          - {
             ros2_distro: "jazzy",
             base_image: "nvidia/cuda:12.6.0-cudnn-devel-ubuntu24.04",
             base_image_label: "cuda.12.6.0-cudnn",
-            work_dir: "docker_stuff/docker_sim_alt/"
+            work_dir: "docker_stuff/docker_sim_up_to_date/"
          }
     steps:
     - name: Info

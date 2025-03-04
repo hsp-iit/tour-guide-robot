@@ -93,7 +93,7 @@ jobs:
             ros2_distro: "iron",
             base_image: "ubuntu:22.04",
             base_image_label: "ubuntu22.04",
-            work_dir: "docker_stuff/docker_sim2/"
+            work_dir: "docker_stuff/docker_sim_old/"
          }
          # - {
          #    ros2_distro: "humble",
@@ -104,7 +104,7 @@ jobs:
             ros2_distro: "iron",
             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
             base_image_label: "cuda.11.7.1-cudnn8",
-            work_dir: "docker_stuff/docker_sim2/"
+            work_dir: "docker_stuff/docker_sim_old/"
          }
     steps:
     - name: Info

@@ -202,6 +202,7 @@ bool returnToChargePoint::checkPosition()
     std::string targetname;
     m_iNav2D->getNameOfCurrentTarget(targetname);
     yCInfo(RETURNTOCHARGEPOINT_ACTION) << "This is the goal: " << goal << "and this is the target " << targetname;
-    bool response = !moving && m_iNav2D->checkNearToLocation(theGoal, 1.0, 5.0) && targetname == goal;
+    bool is_near;
+    bool response = !moving && m_iNav2D->checkNearToLocation(theGoal, is_near, 1.0, 5.0) && targetname == goal;
     return response;
 }
