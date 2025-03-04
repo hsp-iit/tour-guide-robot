@@ -11,12 +11,17 @@ roam.sh
   exit
 fi
 
-
 # Name of the SSID
 ESSID=$(iwgetid -r)
 
 # These frequencies are expressed in MHz and they are the ones used by the APs
 FREQ=$AP_FREQUENCIES
+
+if [ -z "$INTERFACE" ]
+then
+    echo 'Please set the INTERFACE environment variable, e.g. by getting its output from iwconfig'
+    exit -1
+fi
 
 if [ -z "$FREQ" ]
 then
@@ -39,12 +44,12 @@ while [[ true ]]; do
     if [[ $DB -le $DETECTION_THRESHOLD ]]
     then
 
-        BEST_AP=$(sudo wpa_cli -i scan_results | grep -w $ESSID | sort -nrk3 | awk -v th="$DETECTION_THRESHOLD" '$3>=th {print $1}' | head -n1)
+        BEST_AP=$(sudo wpa_cli -i $INTERFACE scan_results | grep -w $ESSID | sort -nrk3 | awk -v th="$DETECTION_THRESHOLD" '$3>=th {print $1}' | head -n1)
         if [[ x"$BEST_AP" == "x" ]] || [[ "${BEST_AP^^}" == "${CURRENT_AP^^}" ]]
         then
             # Since there is no better AP to connect to, we scan for new APs
             echo "There is still no AP guaranteeing a signal > ${DETECTION_THRESHOLD} db"
-            RET=$(sudo wpa_cli -i scan freq=${FREQ})
+            RET=$(sudo wpa_cli -i $INTERFACE scan freq=${FREQ})
             echo $RET
         else
             # We see a better AP to connect to
