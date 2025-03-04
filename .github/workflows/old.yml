@@ -1,4 +1,4 @@
-name: Docker Images CI
+name: Docker Images CI - Old
 
 on:
   schedule:

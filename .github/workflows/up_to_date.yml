@@ -1,4 +1,4 @@
-name: Slowly paced docker Images CI
+name: Docker Images CI - Up to date
 
 on:
   schedule:
