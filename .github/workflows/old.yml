@@ -2,7 +2,7 @@ name: Docker Images CI
 
 on:
   schedule:
-  - cron: "0 2 * * 1"
+  - cron: "0 2 * * 1-5"
   workflow_dispatch:
 
 
@@ -16,39 +16,25 @@ jobs:
          #    ros2_distro: "humble",
          #    base_image: "ubuntu:22.04",
          #    base_image_label: "ubuntu22.04",
-         #    work_dir: "docker_stuff/docker_tourCore_alt/"
+         #    work_dir: "docker_stuff/docker_tourCore_old/"
          # }
          - {
-<<<<<<< HEAD
             ros2_distro: "iron",
             base_image: "ubuntu:22.04",
             base_image_label: "ubuntu22.04",
-            work_dir: "docker_stuff/docker_tourCore_alt/"
-=======
-            ros2_distro: "jazzy",
-            base_image: "ubuntu:24.04",
-            base_image_label: "ubuntu24.04",
-            work_dir: "docker_stuff/docker_tourCore_up_to_date/"
->>>>>>> iron
+            work_dir: "docker_stuff/docker_tourCore_old/"
          }
          # - {
          #    ros2_distro: "humble",
          #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
          #    base_image_label: "cuda.11.7.1-cudnn8",
-         #    work_dir: "docker_stuff/docker_tourCore_alt/"
+         #    work_dir: "docker_stuff/docker_tourCore_old/"
          # }
          - {
-<<<<<<< HEAD
             ros2_distro: "iron",
             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
             base_image_label: "cuda.11.7.1-cudnn8",
-            work_dir: "docker_stuff/docker_tourCore_alt/"
-=======
-            ros2_distro: "jazzy",
-            base_image: "nvidia/cuda:12.6.0-cudnn-devel-ubuntu24.04",
-            base_image_label: "cuda.12.6.0-cudnn",
-            work_dir: "docker_stuff/docker_tourCore_up_to_date/"
->>>>>>> iron
+            work_dir: "docker_stuff/docker_tourCore_old/"
          }
     steps:
     - name: Info
@@ -102,25 +88,23 @@ jobs:
          #    ros2_distro: "humble",
          #    base_image: "ubuntu:22.04",
          #    base_image_label: "ubuntu22.04",
-         #    work_dir: "docker_stuff/docker_sim_alt/"
          # }
          - {
             ros2_distro: "iron",
             base_image: "ubuntu:22.04",
             base_image_label: "ubuntu22.04",
-            work_dir: "docker_stuff/docker_sim_alt/"
+            work_dir: "docker_stuff/docker_sim2/"
          }
          # - {
          #    ros2_distro: "humble",
          #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
          #    base_image_label: "cuda.11.7.1-cudnn8",
-         #    work_dir: "docker_stuff/docker_sim_alt/"
          # }
          - {
             ros2_distro: "iron",
             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
             base_image_label: "cuda.11.7.1-cudnn8",
-            work_dir: "docker_stuff/docker_sim_alt/"
+            work_dir: "docker_stuff/docker_sim2/"
          }
     steps:
     - name: Info
