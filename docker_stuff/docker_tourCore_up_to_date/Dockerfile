@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y apt-utils software-properties-common su
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 swig lsof iftop iputils-ping gdb bash-completion btop mlocate && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install numpy bpytop openwakeword
+RUN pip3 install --break-system-packages numpy bpytop openwakeword
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
