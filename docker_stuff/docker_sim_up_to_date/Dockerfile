@@ -213,7 +213,7 @@ cmake .. && make -j11
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN mkdir installed
-RUN git https://github.com/icub-tech-iit/r1-models
+RUN git clone https://github.com/icub-tech-iit/r1-models
 RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
     cmake --build build && cmake --build build --target install
 
