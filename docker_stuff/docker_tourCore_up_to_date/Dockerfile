@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y apt-utils software-properties-common su
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 swig lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install numpy bpytop openwakeword
+RUN pip3 install --break-system-packages numpy bpytop openwakeword
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
@@ -85,8 +85,6 @@ RUN cd yarp && mkdir build && cd build && \
     -DYARP_COMPILE_libYARP_math=ON \
     -DYARP_COMPILE_GUIS=ON \
     -DYARP_COMPILE_DEVICE_PLUGINS=ON \
-    -DYARP_COMPILE_BINDINGS=ON \
-    -DCREATE_PYTHON=ON \
     -DENABLE_yarpcar_mjpeg=ON \
     -DENABLE_yarpcar_human=ON \
     -DENABLE_yarpcar_segmentationimage=ON \
@@ -187,6 +185,14 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/cer-sim -b ros2
 RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
+
+# r1-models
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN mkdir installed
+RUN git clone https://github.com/icub-tech-iit/r1-models
+RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
+    cmake --build build && cmake --build build --target install
 
 # YARP-DEVICES-ROS2
 WORKDIR ${robotology_install_folder}

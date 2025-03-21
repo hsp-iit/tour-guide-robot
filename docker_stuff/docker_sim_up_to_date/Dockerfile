@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y apt software-properties-common sudo psm
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 swig lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
 
-RUN pipx install numpy bpytop openwakeword
+RUN pip3 install --break-system-packages numpy bpytop openwakeword
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
@@ -211,12 +211,23 @@ WORKDIR ${robotology_install_folder}
 RUN cd yarp/build && sudo make install
 RUN git clone https://github.com/robotology/gz-sim-yarp-plugins
 RUN cd gz-sim-yarp-plugins && mkdir build && cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/gz-sim-yarp-plugins/install \
-    -DCMAKE_PREFIX_PATH=${robotology_install_folder}/gz-sim-yarp-plugins/install && \
-    make -j11 && make install
+cmake .. && make -j11
+
+# r1-models
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN mkdir installed
+RUN git clone https://github.com/icub-tech-iit/r1-models
+RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
+    cmake --build build && cmake --build build --target install
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
+ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_user}/gz-sim-yarp-plugins
+ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
+ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
+ENV R1_MODELS_SOURCE_DIR=${robotology_install_user}/r1-models
+ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${robotology_install_user}/installed/share:${robotology_install_user}/installed/share/R1Mk3/robots
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
