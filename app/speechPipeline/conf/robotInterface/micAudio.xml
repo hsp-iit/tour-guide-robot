@@ -19,10 +19,10 @@
         </device>
 
         <device name="dev2" type="audioRecorder_nws_yarp">
-	    <param name="start"> 1 </param>
-            <param name="send_sound_on_stop"> 0 </param>
-            <param name="min_samples_over_network"> 3200 </param>
-            <param name="max_samples_over_network"> 3200 </param>
+	        <param name="start" extern-name="mic_start"> 1 </param>
+            <param name="send_sound_on_stop" extern-name="mic_sound_on_stop"> 0 </param>
+            <param name="min_samples_over_network" extern-name="mic_min_samples"> 3200 </param>
+            <param name="max_samples_over_network" extern-name="mic_max_samples"> 3200 </param>
 
             <action phase="startup" level="5" type="attach">
                 <paramlist name="networks">
