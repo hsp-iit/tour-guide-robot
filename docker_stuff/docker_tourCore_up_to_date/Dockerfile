@@ -18,8 +18,6 @@ RUN apt-get update && apt-get install -y apt-utils software-properties-common su
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --break-system-packages numpy bpytop openwakeword
-
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
 COPY ./common/xorg.conf /etc/X11/xorg.conf
 
@@ -34,7 +32,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y ros-${ros_distro}
     python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
-    python3-pytest-rerunfailures python3-rosdep python3-vcstool && rosdep init && rm -rf /var/lib/apt/lists/*
+    python3-pytest-rerunfailures python3-rosdep python3-vcstool python3-venv && rosdep init && rm -rf /var/lib/apt/lists/*
 
 # Install yarp dependencies
 RUN apt-get update && apt-get install -y libode8 libace-dev libboost-filesystem-dev libboost-system-dev \
@@ -63,6 +61,20 @@ ENV robotology_install_user user1
 ENV user1_home /home/${robotology_install_user}
 ENV robotology_install_folder /usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
+
+# Miniforge installation TEST
+USER ${robotology_install_user}
+WORKDIR ${user1_home}
+RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+RUN /bin/bash -c "bash ${user1_home}/Miniforge3-$(uname)-$(uname -m).sh -b"
+RUN ${user1_home}/miniforge3/bin/conda init
+RUN /bin/bash -c "source ${user1_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda create -y -n openwakeword python=3.11 && \
+    conda clean -afy"
+RUN /bin/bash -c "source ${user1_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate openwakeword && \
+    pip install numpy bpytop openwakeword ipython && \
+    conda clean -afy"
 
 # SWIG 4.21
 WORKDIR ${user1_home}
@@ -268,7 +280,7 @@ RUN git clone https://github.com/snakers4/silero-vad
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
-RUN /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON -DWAKE_WORD=ON; make -j11"
+RUN /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
 ENV YARP_DATA_DIRS=${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DIR}/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:${CER_DIR}/share/CER:${ICUBcontrib_DIR}/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-device-rplidar/build/share/yarp:${ICUBcontrib_SHARE}:${WEB_TELEOP_DIR}/share/yarp-web-teleop
@@ -288,9 +300,10 @@ RUN echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
 RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
+RUN echo "conda activate openwakeword" >> /home/user1/.bashrc
 RUN chmod +x /home/user1/.entrypoint.sh
 WORKDIR ${user1_home}
 #RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
 ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
-CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
+CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash && conda activate openwakeword
