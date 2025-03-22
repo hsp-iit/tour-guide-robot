@@ -270,6 +270,12 @@ EXPOSE 10000/tcp 10000/udp
 USER ${robotology_install_user}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros && sudo chown -R ${robotology_install_user}:${robotology_install_user} /home/${robotology_install_user}/.ros
 
+# Set up ONNX Runtime
+WORKDIR ${robotology_install_folder}
+RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
+RUN tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
+ENV ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1
+
 #SileroVAD
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/snakers4/silero-vad
