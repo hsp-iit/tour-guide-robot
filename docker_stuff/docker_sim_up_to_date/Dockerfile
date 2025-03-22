@@ -65,6 +65,14 @@ ENV user1_home /home/${robotology_install_user}
 ENV robotology_install_folder /usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
+# SWIG 4.21
+WORKDIR ${user1_home}
+RUN mkdir Downloads && cd Donwloads &&\
+    wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
+    unzip -q swig_4_2_1_ubuntu_24_04.zip && \
+    sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
+    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
+
 #gazebo models
 RUN mkdir -p $user1_home/.gazebo && git clone https://github.com/osrf/gazebo_models $user1_home/.gazebo/models
 
@@ -121,9 +129,10 @@ ENV YARP_ROOT=${robotology_install_folder}/yarp
 ENV YARP_DIR=${robotology_install_folder}/yarp/build
 
 # YARP bindings
-# USER ${robotology_install_user}
-# WORKDIR ${robotology_install_folder}
-# RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTHON=ON && make -j11
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN cd yarp && cd bindings &&  mkdir build && cd build && \
+    cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
 
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
