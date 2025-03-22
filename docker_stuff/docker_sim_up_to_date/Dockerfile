@@ -258,11 +258,15 @@ EXPOSE 10000/tcp 10000/udp
 USER ${robotology_install_user}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros && sudo chown -R ${robotology_install_user}:${robotology_install_user} /home/${robotology_install_user}/.ros
 
+#SileroVAD
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/snakers4/silero-vad
+
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
-RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+RUN /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
 ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop
