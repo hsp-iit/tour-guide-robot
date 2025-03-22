@@ -66,7 +66,7 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${roboto
 
 # SWIG 4.21
 WORKDIR ${user1_home}
-RUN mkdir Downloads && cd Donwloads &&\
+RUN mkdir Downloads && cd Downloads &&\
     wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
     unzip -q swig_4_2_1_ubuntu_24_04.zip && \
     sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
