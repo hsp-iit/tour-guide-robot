@@ -1,8 +1,10 @@
 # Tour Guide Robot
 
+[![Docker build](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/main.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/main.yml)
+
 [![Docker build - Old](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/old.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/old.yml)
 
-[![Docker build](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/main.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/main.yml)
+[![Docker talk build](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/talk.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/talk.yml)
 
 #### The Dockerfile(s) can be found [here](https://github.com/hsp-iit/tour-guide-robot/tree/master/docker_stuff).
 
