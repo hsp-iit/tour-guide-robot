@@ -7,14 +7,13 @@ ARG yarp_branch="master"
 ARG ros2_dev_remote="robotology"
 ARG ros2_dev_branch=${yarp_branch}
 ARG gazebo_pkg=ros-${ros_distro}-ros-gz
-ARG gazebo_version=harmonic
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_UPDATED_ON=06_06_2024
 
 # Install essentials
-RUN apt-get update && apt-get install -y apt software-properties-common sudo psmisc lsb-release \
+RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
@@ -53,7 +52,7 @@ RUN useradd -l -u 33334 -G sudo -md /home/user1 -s /bin/bash -p user1 user1 && \
 
 # ROS2 Installation (part2)
 USER user1
-RUN rosdep fix-permissions && rosdep update
+RUN sudo rosdep fix-permissions && rosdep update
 
 # Set ENV
 USER user1
@@ -63,19 +62,7 @@ ENV user1_home /home/${robotology_install_user}
 ENV robotology_install_folder /usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
-# Miniforge installation TEST
-USER ${robotology_install_user}
-WORKDIR ${user1_home}
-RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-RUN /bin/bash -c "bash ${user1_home}/Miniforge3-$(uname)-$(uname -m).sh -b"
-RUN ${user1_home}/miniforge3/bin/conda init
-RUN /bin/bash -c "source ${user1_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda create -y -n openwakeword python=3.11 && \
-    conda clean -afy"
-RUN /bin/bash -c "source ${user1_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda activate openwakeword && \
-    pip install numpy bpytop openwakeword ipython && \
-    conda clean -afy"
+RUN pip3 install --break-system-packages numpy bpytop
 
 # SWIG 4.21
 WORKDIR ${user1_home}
@@ -85,8 +72,6 @@ RUN mkdir Downloads && cd Downloads &&\
     sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
     sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
 
-#gazebo models
-RUN mkdir -p $user1_home/.gazebo && git clone https://github.com/osrf/gazebo_models $user1_home/.gazebo/models
 
 # Build ycm
 USER ${robotology_install_user}
@@ -109,22 +94,14 @@ RUN cd yarp && mkdir build && cd build && \
     -DYARP_COMPILE_GUIS=ON \
     -DYARP_COMPILE_DEVICE_PLUGINS=ON \
     -DENABLE_yarpcar_mjpeg=ON \
+    -DENABLE_yarpcar_human=ON \
     -DENABLE_yarpcar_segmentationimage=ON \
     -DENABLE_yarpcar_portmonitor=ON \
     -DENABLE_yarpmod_portaudio=ON \
     -DENABLE_yarpmod_portaudioPlayer=ON \
     -DENABLE_yarpmod_portaudioRecorder=ON \
-    -DENABLE_yarpmod_fakeAnalogSensor=ON \
     -DENABLE_yarpmod_fakeBattery=ON  \
-    -DENABLE_yarpmod_fakeDepthCamera=ON \
-    -DENABLE_yarpmod_fakeIMU=ON  \
-    -DENABLE_yarpmod_fakeLaser=ON  \
-    -DENABLE_yarpmod_fakeLocalizer=ON \
-    -DENABLE_yarpmod_fakeMicrophone=ON  \
-    -DENABLE_yarpmod_fakeMotionControl=ON  \
-    -DENABLE_yarpmod_fakeNavigation=ON  \
-    -DENABLE_yarpmod_fakeSpeaker=ON  \
-    -DENABLE_yarpmod_fakebot=ON \
+    -DENABLE_yarpmod_controlboardwrapper2=ON \
     -DENABLE_yarpmod_laserFromDepth=ON \
     -DENABLE_yarpmod_laserFromExternalPort=ON \
     -DENABLE_yarpmod_laserFromDepth=ON \
@@ -149,6 +126,14 @@ RUN cd yarp && cd bindings &&  mkdir build && cd build && \
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
+# Build icub-firmware-shared
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/robotology/icub-firmware-shared -b devel
+RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+ENV icub_firmware_shared_ROOT=${robotology_install_folder}/icub-firmware-shared
+ENV icub_firmware_shared_DIR=${robotology_install_folder}/icub-firmware-shared/build
+
 # Build icub-main
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
@@ -158,6 +143,21 @@ RUN cd icub-main && mkdir build && cd build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
+    -DENABLE_icubmod_bcbBattery=ON \
+    -DENABLE_icubmod_bmsBattery=ON \
+    -DENABLE_icubmod_embObjBattery=ON \
+    -DENABLE_icubmod_embObjAnalogSensor=ON \
+    -DENABLE_icubmod_embObjFTsensor=ON \
+    -DENABLE_icubmod_embObjIMU=ON \
+    -DENABLE_icubmod_embObjInertials=ON \
+    -DENABLE_icubmod_embObjMais=ON \
+    -DENABLE_icubmod_embObjMotionControl=ON \
+    -DENABLE_icubmod_embObjMultiEnc=ON \
+    -DENABLE_icubmod_embObjPSC=ON \
+    -DENABLE_icubmod_embObjSkin=ON \
+    -DENABLE_icubmod_embObjStrain=ON \
+    -DENABLE_icubmod_parametricCalibrator=ON \
+    -DENABLE_icubmod_parametricCalibratorEth=ON \
     -DICUBMAIN_COMPILE_SIMULATORS=OFF \
     -DENABLE_icubmod_gazecontrollerclient=ON && \
     make -j11
@@ -167,7 +167,7 @@ ENV ICUB_DIR=${robotology_install_folder}/icub-main/build
 # Build robots-configuration devel
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/randaz81/robots-configuration.git -b R1SN003_ros2
+RUN git clone https://github.com/robotology/robots-configuration.git -b devel
 
 # Build navigation
 USER ${robotology_install_user}
@@ -177,62 +177,23 @@ RUN cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${
 ENV navigation_ROOT=${robotology_install_folder}/navigation
 ENV navigation_DIR=${robotology_install_folder}/navigation/build
 
-
-# Gazebo
-RUN sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
-RUN sudo apt-get update
-RUN sudo apt-get install -y gz-${gazebo_version}
-
-# Gz-sim plugins dependencies
-WORKDIR /home/${robotology_install_user}
-RUN git clone https://github.com/CLIUtils/CLI11
-RUN cd CLI11/ && \
-    mkdir build && \
-    cd build && \
-    git submodule update --init && \
-    cmake .. && \
-    cmake --build . && \
-    sudo cmake --install .
-
 # CER
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/cer.git
 RUN cd cer && mkdir build && cd build && cmake .. \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DENABLE_cermod_cerDoubleLidar=ON \
-            -DENABLE_cermod_cerOdometry=ON \
-            -DENABLE_cermod_tripodMotionControl=ON && make -j11
+                -DCMAKE_BUILD_TYPE=Release \
+                -DENABLE_cermod_cerDoubleLidar=ON \
+                -DENABLE_cermod_cerOdometry=ON \
+                -DENABLE_cermod_tripodMotionControl=ON && make -j11
 ENV CER_ROOT=${robotology_install_folder}/cer
 ENV CER_DIR=${robotology_install_folder}/cer/build
 
-# YARP-DEVICES-ROS2
-WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b ${ros2_dev_branch}
-RUN cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build"
-RUN cd yarp-devices-ros2 && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
-
-# CER-Sim stuff
+# CER-SIM
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/cer-sim -b ros2
 RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
-
-# Build icub-contrib-common
-USER ${robotology_install_user}
-WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/icub-contrib-common.git
-RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
-ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
-
-# Gz-sim Plugins
-USER ${robotology_install_user}
-WORKDIR ${robotology_install_folder}
-RUN cd yarp/build && sudo make install
-RUN git clone https://github.com/robotology/gz-sim-yarp-plugins
-RUN cd gz-sim-yarp-plugins && mkdir build && cd build && \
-cmake .. && make -j11
 
 # r1-models
 USER ${robotology_install_user}
@@ -242,26 +203,40 @@ RUN git clone https://github.com/icub-tech-iit/r1-models
 RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
     cmake --build build && cmake --build build --target install
 
+# YARP-DEVICES-ROS2
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b ${ros2_dev_branch}
+RUN cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build"
+RUN cd yarp-devices-ros2 && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
+
+# YARP RPLidar Devices
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/robotology/yarp-device-rplidar -b master
+RUN cd yarp-device-rplidar && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_rpLidar4=OFF && make -j11
+ENV yarp-device-rpLidar_ROOT=${robotology_install_folder}/yarp-device-rplidar
+ENV yarp-device-rpLidar_DIR=${robotology_install_folder}/yarp-device-rplidar/build
+
+# Build icub-contrib-common
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/robotology/icub-contrib-common.git
+RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
+ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/lib
+ENV ICUBcontrib_SHARE=${robotology_install_folder}/iCubContrib/share/ICUBcontrib
+
 # Set environmental variables
+USER ${robotology_install_user}
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
-ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_user}/gz-sim-yarp-plugins
-ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
-ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
-ENV R1_MODELS_SOURCE_DIR=${robotology_install_user}/r1-models
-ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${robotology_install_user}/installed/share:${robotology_install_user}/installed/share/R1Mk3/robots
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
+ENV PATH=$PATH:${YARP_DIR}/bin:${navigation_DIR}/bin:${CER_DIR}/bin:${ICUB_DIR}/bin:${ICUB_DIR}:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/icub-main/build:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
-ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV DISPLAY=:1
 ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
-ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib
-ENV GAZEBO_MODEL_PATH=${robotology_install_folder}/cer-sim/gazebo/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
-ENV YARP_CLOCK=/clock
-#ENV CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
+ENV CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -270,27 +245,26 @@ EXPOSE 10000/tcp 10000/udp
 USER ${robotology_install_user}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros && sudo chown -R ${robotology_install_user}:${robotology_install_user} /home/${robotology_install_user}/.ros
 
-# Set up ONNX Runtime
+# Groot and BT dependencies
+RUN sudo apt-get update && sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && \
+cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
+USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
-RUN tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
-ENV ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1
-
-#SileroVAD
-WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/snakers4/silero-vad
-
-WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop && mkdir build && cd build && cmake ..
+RUN git clone https://github.com/BehaviorTree/Groot.git
+#RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
 RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
+
+# Navigation stuff
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
-RUN /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
+RUN /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop
+ENV YARP_DATA_DIRS=${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DIR}/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:${CER_DIR}/share/CER:${ICUBcontrib_DIR}/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-device-rplidar/build/share/yarp:${ICUBcontrib_SHARE}:${WEB_TELEOP_DIR}/share/yarp-web-teleop
 
 # R1 NETWORK CONFIG
-RUN yarp conf 172.17.0.1 10000
+RUN yarp conf 192.168.100.10 10000
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
@@ -299,15 +273,14 @@ ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
 sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-# Set ROS2 environment
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
 RUN echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
+RUN echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
 RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
-RUN echo "conda activate openwakeword" >> /home/user1/.bashrc
 RUN chmod +x /home/user1/.entrypoint.sh
-
 WORKDIR ${user1_home}
 #RUN sudo updatedb
+# Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
 ENTRYPOINT [ "/home/user1/.entrypoint.sh" ]
-CMD ["bash"]
+CMD if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0 && sudo chown user1:user1 /dev/ttyUSB1; fi && bash
