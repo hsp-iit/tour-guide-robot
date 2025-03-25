@@ -48,7 +48,7 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Pushing tourCore2 development image"
-          docker elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
+          docker push elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Pushing tourCore2 stable image"
           docker push elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
