@@ -12,7 +12,7 @@ RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
 RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
 # Iterate over all the Ubuntu versions to find the latest CUDA version, starting from the most recent
-RUN for ubuntu_v in 2404 2204 2004 1804 1604 1404 1304 1204; do \
+RUN for ubuntu_v in 2404 2204 2004; do \
         # print the current CUDA version and Ubuntu version (useful if building with --progress=plain --no-cache option)
         echo "Looking for CUDA version "$cuda_version" in Ubuntu $ubuntu_v"; \
         echo "Looking into: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/"; \

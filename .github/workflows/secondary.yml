@@ -1,0 +1,112 @@
+name: Docker build secondary
+
+on:
+  schedule:
+  - cron: "0 2 * * 2,4"
+  workflow_dispatch:
+
+jobs:
+  build-talk-docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+         config:
+         - {
+            work_dir: "docker_stuff/docker_talk/",
+            ubuntu_version: "ub24",
+            gcpp_version: "v2.33"
+         }
+    steps:
+    - name: Info
+      run: |
+       echo "Event type: ${{github.event_name}}"
+    - name: Change docker to experimental mode
+      run: |
+       sudo rm -rf /etc/docker/daemon.json
+       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
+    - name: Restart docker daemon
+      run: sudo systemctl restart docker
+    - uses: actions/checkout@v4
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build the talk Docker image
+      working-directory: ${{matrix.config.work_dir}}
+      run: |
+       if [ ${{ github.event_name }} == 'schedule' ]; then
+          echo "Building development talk image"
+          docker compose build r1-talk-${{ matrix.config.ubuntu_version }}-${{ matrix.config.gcpp_version }}-master
+       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+          echo "Building stable talk image"
+          docker compose build r1-talk-${{ matrix.config.ubuntu_version }}-${{ matrix.config.gcpp_version }}-master
+       else
+          echo "Failure!"
+          exit 1
+       fi
+    - name: Push tourCore2 image
+      run: |
+       if [ ${{ github.event_name }} == 'schedule' ]; then
+          echo "Pushing talk development image"
+          docker push elandini84/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}
+       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+          echo "Pushing talk stable image"
+          docker push elandini84/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}
+       else
+          echo "Failure!"
+          exit 1
+       fi
+
+  build-cuda-docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+         config:
+         - {
+            work_dir: "docker_tourCore_cuda_custom",
+            base_image: "elandini84/r1images:tourCore2_ubuntu24.04_jazzy_stable",
+            cuda_version: "12.1.0",
+            base_image_label: "ubuntu24.04_jazzy"
+         }
+    steps:
+    - name: Info
+      run: |
+       echo "Event type: ${{github.event_name}}"
+    - name: Change docker to experimental mode
+      run: |
+       sudo rm -rf /etc/docker/daemon.json
+       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
+    - name: Restart docker daemon
+      run: sudo systemctl restart docker
+    - uses: actions/checkout@v4
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build the tour core Docker image
+      working-directory: ${{matrix.config.work_dir}}
+      run: |
+       if [ ${{ github.event_name }} == 'schedule' ]; then
+          echo "Building development custom cuda image"
+          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_devel .
+       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+          echo "Building stable custom cuda image"
+          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_stable .
+       else
+          echo "Failure!"
+          exit 1
+       fi
+    - name: Push tourCore2 image
+      run: |
+       if [ ${{ github.event_name }} == 'schedule' ]; then
+          echo "Pushing custom cuda development image"
+          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_devel
+       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
+          echo "Pushing custom cuda stable image"
+          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_stable
+       else
+          echo "Failure!"
+          exit 1
+       fi
