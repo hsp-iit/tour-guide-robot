@@ -214,6 +214,14 @@ RUN git clone https://github.com/robotology/icub-contrib-common.git
 RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
 ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
 
+# Ergocub software
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/icub-tech-iit/ergocub-software && \
+    cd ergocub-software && \
+    cmake .. -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && make -j11
+ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
+
 # Gz-sim Plugins
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
@@ -227,16 +235,16 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN mkdir installed
 RUN git clone https://github.com/icub-tech-iit/r1-models
-RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
+RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${user1_home}/installed && \
     cmake --build build && cmake --build build --target install
 
 # Set environmental variables
-RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
-ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_user}/gz-sim-yarp-plugins
+RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
+ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins
 ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
 ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
-ENV R1_MODELS_SOURCE_DIR=${robotology_install_user}/r1-models
-ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${robotology_install_user}/installed/share:${robotology_install_user}/installed/share/R1Mk3/robots
+ENV R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models
+ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
