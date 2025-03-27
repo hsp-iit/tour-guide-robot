@@ -115,12 +115,12 @@
 
   <connection>
     <from>/cutString/text:o</from>
-    <to>/r1_chat/LLMStream/text:i</to>
+    <to>/r1_demo_chat/LLMStream/text:i</to>
     <protocol>fast_tcp</protocol>
   </connection>
 
   <connection>
-    <from>/r1_chat/LLMStream/text:o</from>
+    <from>/r1_demo_chat/LLMStream/text:o</from>
     <to>/speechSynthesizer_nws/text:i</to>
     <protocol>fast_tcp</protocol>
   </connection>
