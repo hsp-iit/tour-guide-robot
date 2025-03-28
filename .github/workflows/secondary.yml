@@ -64,7 +64,7 @@ jobs:
       matrix:
          config:
          - {
-            work_dir: "docker_tourCore_cuda_custom",
+            work_dir: "docker_stuff/docker_tourCore_cuda_custom",
             base_image: "elandini84/r1images:tourCore2_ubuntu24.04_jazzy_",
             cuda_version: "12.1.0",
             base_image_label: "ubuntu24.04_jazzy"
