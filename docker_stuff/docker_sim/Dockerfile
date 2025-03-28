@@ -219,7 +219,7 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/icub-tech-iit/ergocub-software && \
     cd ergocub-software && \
-    cmake .. -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && make -j11
+    cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
 ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
 
 # Gz-sim Plugins

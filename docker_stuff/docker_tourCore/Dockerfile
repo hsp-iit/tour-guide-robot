@@ -143,8 +143,8 @@ RUN cd icub-main && mkdir build && cd build && \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
-    -DENABLE_icubmod_bcbBattery=ON \
-    -DENABLE_icubmod_bmsBattery=ON \
+    -DENABLE_icubmod_bcbBattery=OFF \
+    -DENABLE_icubmod_bmsBattery=OFF \
     -DENABLE_icubmod_embObjBattery=ON \
     -DENABLE_icubmod_embObjAnalogSensor=ON \
     -DENABLE_icubmod_embObjFTsensor=ON \
