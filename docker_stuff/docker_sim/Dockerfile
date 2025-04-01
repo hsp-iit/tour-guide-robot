@@ -289,7 +289,6 @@ RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
 RUN echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
 RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
-RUN echo "conda activate openwakeword" >> /home/user1/.bashrc
 RUN chmod +x /home/user1/.entrypoint.sh
 
 WORKDIR ${user1_home}
