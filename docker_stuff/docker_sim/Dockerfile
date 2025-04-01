@@ -73,9 +73,6 @@ RUN mkdir Downloads && cd Downloads &&\
     sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
     sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
 
-#gazebo models
-RUN mkdir -p $user1_home/.gazebo && git clone https://github.com/osrf/gazebo_models $user1_home/.gazebo/models
-
 # Build ycm
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
@@ -251,8 +248,6 @@ ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
 ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV DISPLAY=:1
 ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
-ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib
-ENV GAZEBO_MODEL_PATH=${robotology_install_folder}/cer-sim/gazebo/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
