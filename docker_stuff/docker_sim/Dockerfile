@@ -256,7 +256,6 @@ ENV GAZEBO_MODEL_PATH=${robotology_install_folder}/cer-sim/gazebo/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
-ENV YARP_CLOCK=/clock
 #ENV CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
 
 # Manage yarp port
@@ -273,7 +272,7 @@ RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
 RUN /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop
+ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop:${ERGOCUB_SOFTWARE_DIR}/share/yarp
 
 # R1 NETWORK CONFIG
 RUN yarp conf 172.17.0.1 10000
