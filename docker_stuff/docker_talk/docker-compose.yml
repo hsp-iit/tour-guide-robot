@@ -24,7 +24,7 @@ x-nlp: &nlp
 services:
 
 # Images
-  r1-talk-ub24-v2-33-master:
+  r1-talk-ub24-v2.33-master:
     image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
     build:
       context: .
@@ -41,12 +41,12 @@ services:
           google_cloud_version: tags/2025.01.13
 
 # Containers
-  r1-talk-ub24-v2-33-master-container:
+  r1-talk-ub24-v2.33-master-container:
     image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
     <<: *nlp
     container_name: r1-talk-ub24-v2-33-master-container
     command: terminator -g /home/yarp-user/.config/terminator/config
-  r1-talk-ub24-v2-33-master-yarprun:
+  r1-talk-ub24-v2.33-master-yarprun:
     image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
     <<: *nlp
     container_name: r1-talk-ub24-v2-33-master-yarprun
