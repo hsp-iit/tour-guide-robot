@@ -37,9 +37,11 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Building development talk image"
+          sudo rm -rf /opt/hostedtoolcache
           docker compose build r1-talk-${{ matrix.config.ubuntu_version }}-${{ matrix.config.gcpp_version }}-master
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable talk image"
+          sudo rm -rf /opt/hostedtoolcache
           docker compose build r1-talk-${{ matrix.config.ubuntu_version }}-${{ matrix.config.gcpp_version }}-master
        else
           echo "Failure!"
@@ -90,9 +92,11 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Building development custom cuda image"
+          sudo rm -rf /opt/hostedtoolcache
           sudo docker build --build-arg base_img=${{matrix.config.base_image}}devel --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable custom cuda image"
+          sudo rm -rf /opt/hostedtoolcache
           sudo docker build --build-arg base_img=${{matrix.config.base_image}}stable --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_stable .
        else
           echo "Failure!"
@@ -142,9 +146,11 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Building development custom cuda image"
+          sudo rm -rf /opt/hostedtoolcache
           sudo docker build --build-arg base_img=${{matrix.config.base_image}}devel --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_devel .
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Building stable custom cuda image"
+          sudo rm -rf /opt/hostedtoolcache
           sudo docker build --build-arg base_img=${{matrix.config.base_image}}stable --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_stable .
        else
           echo "Failure!"
