@@ -177,9 +177,9 @@
       <self_collide>false</self_collide>
     </model>
     <include>
-      <uri>file:///home/user1/installed/share/R1Mk3/robots/R1Mk3Gazebo</uri>
+      <uri>model://R1Mk3/robots/R1Mk3Gazebo/model.urdf</uri>
       <name>R1Mk3</name>
-      <pose>5.0801113361235704 -0.15014128997544901 0.16 0 0 0</pose>
+      <pose>5.178462898632425 -0.82562353951984402 0.16 0 0 0</pose>
     </include>
     <light name='sun1' type='directional'>
       <pose>0 0 10 0 0 0</pose>
