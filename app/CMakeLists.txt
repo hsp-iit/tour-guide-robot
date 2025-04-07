@@ -19,6 +19,7 @@ add_subdirectory(llmTest)
 add_subdirectory(VLNav)
 add_subdirectory(yarpmanager)
 add_subdirectory(Dialogue_demo)
+add_subdirectory(demo)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 
