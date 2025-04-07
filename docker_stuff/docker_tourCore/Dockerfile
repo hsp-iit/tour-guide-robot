@@ -168,7 +168,7 @@ ENV ICUB_DIR=${robotology_install_folder}/icub-main/build
 # Build robots-configuration devel
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/robots-configuration.git -b devel
+RUN git clone https://github.com/robotology/robots-configuration.git -b master
 
 # Build navigation
 USER ${robotology_install_user}
