@@ -87,8 +87,8 @@ ENV YCM_DIR=${robotology_install_folder}/ycm/build
 # Build YARP
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/yarp.git -b ${yarp_branch}
-RUN cd yarp && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/yarp.git -b ${yarp_branch} && \
+    cd yarp && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DYARP_COMPILE_libYARP_math=ON \
@@ -130,16 +130,16 @@ RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash
 # Build icub-firmware-shared
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/icub-firmware-shared -b devel
-RUN cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+RUN git clone https://github.com/robotology/icub-firmware-shared -b devel && \
+    cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 ENV icub_firmware_shared_ROOT=${robotology_install_folder}/icub-firmware-shared
 ENV icub_firmware_shared_DIR=${robotology_install_folder}/icub-firmware-shared/build
 
 # Build icub-main
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/icub-main.git -b devel
-RUN cd icub-main && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/icub-main.git -b devel && \
+    cd icub-main && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
@@ -173,16 +173,16 @@ RUN git clone https://github.com/robotology/robots-configuration.git -b devel
 # Build navigation
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/navigation.git -b master
-RUN cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
+RUN git clone https://github.com/robotology/navigation.git -b master && \
+    cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
 ENV navigation_ROOT=${robotology_install_folder}/navigation
 ENV navigation_DIR=${robotology_install_folder}/navigation/build
 
 # CER
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/cer.git
-RUN cd cer && mkdir build && cd build && cmake .. \
+RUN git clone https://github.com/robotology/cer.git && \
+    cd cer && mkdir build && cd build && cmake .. \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DENABLE_cermod_cerDoubleLidar=ON \
                 -DENABLE_cermod_cerOdometry=ON \
@@ -193,8 +193,8 @@ ENV CER_DIR=${robotology_install_folder}/cer/build
 # CER-SIM
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/cer-sim -b ros2
-RUN cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
+RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
+    cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
 
 # Ergocub software
 USER ${robotology_install_user}
@@ -207,29 +207,29 @@ ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
 # r1-models
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN mkdir installed
-RUN git clone https://github.com/icub-tech-iit/r1-models
-RUN cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
+RUN mkdir installed && \
+    git clone https://github.com/icub-tech-iit/r1-models && \
+    cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
     cmake --build build && cmake --build build --target install
 
 # YARP-DEVICES-ROS2
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b ${ros2_dev_branch}
-RUN cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build"
-RUN cd yarp-devices-ros2 && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
+RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b ${ros2_dev_branch} && \
+    cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build" && \
+    cd .. && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
 
 # YARP RPLidar Devices
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/yarp-device-rplidar -b master
-RUN cd yarp-device-rplidar && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_rpLidar4=OFF && make -j11
+RUN git clone https://github.com/robotology/yarp-device-rplidar -b master && \
+    cd yarp-device-rplidar && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_rpLidar4=OFF && make -j11
 ENV yarp-device-rpLidar_ROOT=${robotology_install_folder}/yarp-device-rplidar
 ENV yarp-device-rpLidar_DIR=${robotology_install_folder}/yarp-device-rplidar/build
 
 # Build icub-contrib-common
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/icub-contrib-common.git
-RUN cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
+RUN git clone https://github.com/robotology/icub-contrib-common.git && \
+    cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
 ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/lib
 ENV ICUBcontrib_SHARE=${robotology_install_folder}/iCubContrib/share/ICUBcontrib
 
@@ -259,15 +259,15 @@ RUN sudo apt-get update && sudo apt-get install -y libgtest-dev libzmq3-dev libb
 cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/BehaviorTree/Groot.git
+RUN git clone https://github.com/BehaviorTree/Groot.git && \
 #RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
-RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
+    git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
 
 # Navigation stuff
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake ..
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
-RUN /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake .. && \
+    git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
+    /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
 ENV YARP_DATA_DIRS=${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DIR}/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:${CER_DIR}/share/CER:${ICUBcontrib_DIR}/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-device-rplidar/build/share/yarp:${ICUBcontrib_SHARE}:${WEB_TELEOP_DIR}/share/yarp-web-teleop
@@ -282,12 +282,12 @@ ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
 sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
-RUN echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
-RUN echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh
-RUN echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh
-RUN echo 'exec "$@"' >> /home/user1/.entrypoint.sh
-RUN chmod +x /home/user1/.entrypoint.sh
+RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh && \
+    echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh && \
+    echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh && \
+    echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh && \
+    echo 'exec "$@"' >> /home/user1/.entrypoint.sh && \
+    chmod +x /home/user1/.entrypoint.sh
 WORKDIR ${user1_home}
 #RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
