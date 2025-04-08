@@ -6,6 +6,8 @@
 
 	<module>
 		<name>yarpRTMPose</name>
+		<parameters>--from /home/user/mutual-gaze-classifier-demo/app/config/yarpRTMPose.ini</parameters>
+		<workdir>/home/user/human-sensing/yarpRTMPose/data</workdir>
 		<node>console-mg</node>
 	</module>
 
