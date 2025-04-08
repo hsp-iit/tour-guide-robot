@@ -59,7 +59,7 @@
 
 
 	<connection>
-		<from>/depthCamera/rgbImage:o</from>
+		<from>/cer/realsense_repeater/rgbImage:o</from>
 		<to>/yarpRTMPose/image:i</to>
 		<protocol>mjpeg</protocol>
 	</connection>
