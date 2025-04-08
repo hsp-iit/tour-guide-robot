@@ -1,0 +1,102 @@
+<application>
+<name>mutual_gaze_multiface_classifier_R1_demo</name>
+<version>1.0</version>
+
+<!-- Modules -->
+
+	<module>
+		<name>yarpRTMPose</name>
+		<node>console-mg</node>
+	</module>
+
+	<module>
+		<name>multiface-mutualgaze-classifier.py</name>
+		<parameters>--from /usr/local/share/ICUBcontrib/contexts/mutual-gaze-classifier-demo/classifier_conf.ini</parameters>
+		<deployer>python3</deployer>
+		<node>console-mg</node>
+	</module>
+
+	<module>
+		<name>yarpview</name>
+		<parameters>--name /view/rgb --w 640 --h 480</parameters>
+		<node>console-mg</node>
+	</module>
+
+	<module>
+		<name>yarpview</name>
+		<parameters>--name /view/skeleton --w 640 --h 480</parameters>
+		<node>console-mg</node>
+	</module>
+
+	<module>
+	  	<name>yarpview</name>
+	  	<parameters>--name /view/eyecontact --w 640 --h 480</parameters>
+	  	<node>console-mg</node>
+	</module>
+
+	<module>
+		<name>eyeContactManager</name>
+		<parameters></parameters>
+		<node>console</node>
+	</module>
+
+	<module>
+		<name>cer_gaze-controller</name>
+		<parameters>--cameras::context cameraCalibration --cameras::file cerEyes_320x240.ini --joints-limits::pitch "(-20.0 20.0)" --joints-limits::yaw "(-40.0 40.0)"</parameters>
+		<node>r1-base</node>
+	</module>
+
+
+<!-- Connections -->
+
+	<connection>
+		<from>/depthCamera/rgbImage:o</from>
+		<to>/view/rgb</to>
+		<protocol>mjpeg</protocol>
+	</connection>
+
+
+	<connection>
+		<from>/depthCamera/rgbImage:o</from>
+		<to>/yarpRTMPose/image:i</to>
+		<protocol>mjpeg</protocol>
+	</connection>
+
+	<connection>
+		<from>/yarpRTMPose/image:o</from>
+		<to>/view/skeleton</to>
+		<protocol>mjpeg</protocol>
+	</connection>
+
+	<connection>
+		<from>/depthCamera/rgbImage:o</from>
+		<to>/mutualgaze/image:i</to>
+		<protocol>mjpeg</protocol>
+	</connection>
+
+	<connection>
+		<from>/yarpRTMPose/target:o</from>
+		<to>/mutualgaze/data:i</to>
+	</connection>
+
+	<connection>
+	  	<from>/mutualgaze/image:o</from>
+	  	<to>/view/eyecontact</to>
+	  	<protocol>mjpeg</protocol>
+	</connection>
+
+	<connection>
+		<from>/eyeContactManager/control:o</from>
+		<to>/cer_gaze-controller/target:i</to>
+		<protocol>fast_tcp</protocol>
+	</connection>
+
+	<connection>
+		<from>/mutualgaze/pred:o</from>
+		<to>/eyeContactManager/pred:i</to>
+		<protocol>fast_tcp</protocol>
+	</connection>
+
+</application>
+
+

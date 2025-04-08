@@ -1,0 +1,28 @@
+<application>
+  <name>RobotValleyR1April2025</name>
+
+  <application>
+    <name>Navigation_ROS2_R1SN003_dummy</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>Speech_Pipeline_Demo_Conversation_VAD_robot</name>
+    <prefix></prefix>
+  </application>
+
+  <application>
+    <name>mutual_gaze_multiface_classifier_R1_demo</name>
+    <prefix></prefix>
+  </application>
+
+  <module>
+    <name>yarpActionsPlayer</name>
+    <parameters>--filename yarpActionPlayer_config.ini --execute</parameters>
+    <node>console</node>
+  </module>
+  
+  <dependencies>
+  </dependencies>
+
+</application>
