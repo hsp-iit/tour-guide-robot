@@ -52,7 +52,7 @@
 <!-- Connections -->
 
 	<connection>
-		<from>/depthCamera/rgbImage:o</from>
+		<from>/cer/realsense_repeater/rgbImage:o</from>
 		<to>/view/rgb</to>
 		<protocol>mjpeg</protocol>
 	</connection>
@@ -71,7 +71,7 @@
 	</connection>
 
 	<connection>
-		<from>/depthCamera/rgbImage:o</from>
+		<from>/cer/realsense_repeater/rgbImage:o</from>
 		<to>/mutualgaze/image:i</to>
 		<protocol>mjpeg</protocol>
 	</connection>
