@@ -31,16 +31,16 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch robot_state_publisher.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>robot_state_publisher.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
 
    <!-- Frame for external realsense -->
    <module>
-      <name>ros2</name>
-      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
+      <name>ros2_run.sh</name>
+      <parameters>tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
       <node>r1-base</node>
    </module>
 
@@ -53,7 +53,7 @@
    <module>
       <name>joystickCtrl</name>
       <parameters>--context navigation2 --from joystick_cer_linux_high_speed_stratus.ini --force_configuration --GENERAL::outputPortName /joystickCtrl:o</parameters>
-      <node>r1-base</node>
+      <node>r1-torso</node>
    </module>
 
    <module>
@@ -70,8 +70,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch amcl.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>amcl.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
@@ -83,8 +83,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch navigation.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/nav2_unknown_params.yaml</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>navigation.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/nav2_unknown_params.yaml</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
