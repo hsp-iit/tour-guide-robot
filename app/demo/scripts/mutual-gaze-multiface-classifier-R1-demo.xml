@@ -13,7 +13,7 @@
 
 	<module>
 		<name>multiface-mutualgaze-classifier.py</name>
-		<parameters>--from /usr/local/share/ICUBcontrib/contexts/mutual-gaze-classifier-demo/classifier_conf.ini</parameters>
+		<parameters>--from /home/user/robotology-superbuild/build/install/share/ICUBcontrib/contexts/mutual-gaze-classifier-demo/classifier_conf.ini</parameters>
 		<deployer>python3</deployer>
 		<node>console-mg</node>
 	</module>
