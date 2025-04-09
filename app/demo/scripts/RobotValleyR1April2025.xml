@@ -7,7 +7,7 @@
   </application>
 
   <application>
-    <name>Speech_Pipeline_Demo_Conversation_VAD_robot</name>
+    <name>Speech_Pipeline_Demo_Robot_valley_robot</name>
     <prefix></prefix>
   </application>
 
@@ -21,7 +21,7 @@
     <parameters>--filename yarpActionPlayer_config.ini --execute</parameters>
     <node>console</node>
   </module>
-  
+
   <dependencies>
   </dependencies>
 
