@@ -287,7 +287,9 @@ RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh && \
     echo ". ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> /home/user1/.entrypoint.sh && \
     echo ". ${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts/evaluate_ip.sh" >> /home/user1/.entrypoint.sh && \
     echo 'exec "$@"' >> /home/user1/.entrypoint.sh && \
-    chmod +x /home/user1/.entrypoint.sh
+    chmod +x /home/user1/.entrypoint.sh && \
+    sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/user1/.bashrc
+
 WORKDIR ${user1_home}
 #RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
