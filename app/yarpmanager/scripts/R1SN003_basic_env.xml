@@ -11,11 +11,4 @@
       <workdir></workdir>
       <node>iiticublap292</node>
    </module>
-
-   <module>
-      <name>yarplogger</name>
-      <parameters>--start</parameters>
-      <workdir></workdir>
-      <node>iiticublap292</node>
-   </module>
 </application>
