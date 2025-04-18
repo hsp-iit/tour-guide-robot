@@ -11,4 +11,11 @@
       <workdir></workdir>
       <node>iiticublap292</node>
    </module>
+
+   <module>
+      <name>yarpmotorgui</name>
+      <parameters>$ENV{ROBOT_CODE}/robots/robots-configuration/R1SN003</parameters>
+      <workdir></workdir>
+      <node>iiticublap292</node>
+   </module>
 </application>

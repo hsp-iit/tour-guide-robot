@@ -32,7 +32,7 @@
 
    <module>
       <name>ros2_launch.sh</name>
-      <parameters>launch robot_state_publisher.launch.py</parameters>
+      <parameters>robot_state_publisher.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
@@ -71,7 +71,7 @@
 
    <module>
       <name>ros2_launch.sh</name>
-      <parameters>launch amcl.launch.py</parameters>
+      <parameters>amcl.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
@@ -84,7 +84,7 @@
 
    <module>
       <name>ros2_launch.sh</name>
-      <parameters>launch navigation.launch.py</parameters>
+      <parameters>navigation.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
@@ -92,7 +92,7 @@
    <module>
 
       <name>ros2_launch.sh</name>
-      <parameters>launch launch/costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/cris_new_area_fixed_keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/cris_new_area_fixed_keepout_mask.yaml</parameters>
+      <parameters>launch/costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/cris_new_area_fixed_keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/cris_new_area_fixed_keepout_mask.yaml</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/</workdir>
       <node>console</node>
    </module>
