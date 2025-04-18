@@ -1,0 +1,21 @@
+<application>
+   <name>R1SN003_basic_env</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>docker</name>
+      <parameters>run --rm --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --name tourcore elandini84/r1images:tourCore2_ubuntu24.04_jazzy_devel yarp run --server /console --log</parameters>
+      <workdir></workdir>
+      <node>iiticublap292</node>
+   </module>
+
+   <module>
+      <name>yarplogger</name>
+      <parameters>--start</parameters>
+      <workdir></workdir>
+      <node>iiticublap292</node>
+   </module>
+</application>

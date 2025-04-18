@@ -1,0 +1,10 @@
+<cluster name="Laptop" user="elandini">
+
+<nameserver namespace="/laptop" node="localhost"> </nameserver>
+
+<!-- specify nodes, if you want to enable display on desktop please specify which desktop to use
+this is usually the value of the DISPLAY variable when logged on -->
+<node address="localhost">console</node>
+<node address="localhost">console-llm</node>
+
+</cluster>
