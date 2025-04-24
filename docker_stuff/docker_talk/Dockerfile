@@ -299,7 +299,7 @@ ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/
 ENV PATH=${PATH}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/bin
 
 RUN echo "conda activate openwakeword" >> /home/${user_name}/.bashrc && \
-    sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/user1/.bashrc
+    sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/${user_name}/.bashrc
 
 WORKDIR ${yarp_user_home}
 CMD bash && conda activate openwakeword
