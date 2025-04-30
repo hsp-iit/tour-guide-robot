@@ -7,7 +7,7 @@ ARG yarp_branch="master"
 ARG ros2_dev_remote="robotology"
 ARG ros2_dev_branch=${yarp_branch}
 ARG gazebo_pkg=ros-${ros_distro}-ros-gz
-ARG gazebo_version=harmonic
+ARG gazebo_version=ionic
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
