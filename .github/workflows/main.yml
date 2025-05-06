@@ -10,6 +10,7 @@ jobs:
   build-tour-docker:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
          config:
          - {
@@ -78,6 +79,7 @@ jobs:
   build-tour-docker-sim:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
          config:
          - {
