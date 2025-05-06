@@ -58,9 +58,9 @@ RUN rosdep fix-permissions && rosdep update
 # Set ENV
 USER user1
 RUN sudo mkdir /usr/local/src/robot
-ENV robotology_install_user user1
-ENV user1_home /home/${robotology_install_user}
-ENV robotology_install_folder /usr/local/src/robot
+ENV robotology_install_user user1 \
+    user1_home /home/${robotology_install_user} \
+    robotology_install_folder /usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
 RUN pip3 install --break-system-packages numpy bpytop
@@ -122,8 +122,8 @@ RUN git clone https://github.com/robotology/yarp.git -b ${yarp_branch} && \
     -DENABLE_yarppm_depthimage_to_mono=ON \
     -DENABLE_yarppm_depthimage_to_rgb=ON && \
     make -j11
-ENV YARP_ROOT=${robotology_install_folder}/yarp
-ENV YARP_DIR=${robotology_install_folder}/yarp/build
+ENV YARP_ROOT=${robotology_install_folder}/yarp \
+    YARP_DIR=${robotology_install_folder}/yarp/build
 
 # YARP bindings
 USER ${robotology_install_user}
@@ -146,8 +146,8 @@ RUN git clone https://github.com/robotology/icub-main.git -b devel && \
     -DICUBMAIN_COMPILE_SIMULATORS=OFF \
     -DENABLE_icubmod_gazecontrollerclient=ON && \
     make -j11
-ENV ICUB_ROOT=${robotology_install_folder}/icub-main
-ENV ICUB_DIR=${robotology_install_folder}/icub-main/build
+ENV ICUB_ROOT=${robotology_install_folder}/icub-main \
+    ICUB_DIR=${robotology_install_folder}/icub-main/build
 
 # Build robots-configuration devel
 USER ${robotology_install_user}
@@ -159,8 +159,8 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/navigation.git -b master && \
     cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
-ENV navigation_ROOT=${robotology_install_folder}/navigation
-ENV navigation_DIR=${robotology_install_folder}/navigation/build
+ENV navigation_ROOT=${robotology_install_folder}/navigation \
+    navigation_DIR=${robotology_install_folder}/navigation/build
 
 
 # Gazebo
@@ -189,8 +189,8 @@ RUN git clone https://github.com/robotology/cer.git && \
             -DENABLE_cermod_cerDoubleLidar=ON \
             -DENABLE_cermod_cerOdometry=ON \
             -DENABLE_cermod_tripodMotionControl=ON && make -j11
-ENV CER_ROOT=${robotology_install_folder}/cer
-ENV CER_DIR=${robotology_install_folder}/cer/build
+ENV CER_ROOT=${robotology_install_folder}/cer \
+    CER_DIR=${robotology_install_folder}/cer/build
 
 # YARP-DEVICES-ROS2
 WORKDIR ${robotology_install_folder}
@@ -237,20 +237,20 @@ RUN mkdir installed && \
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
-ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins
-ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
-ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
-ENV R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models
-ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots
-ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
-ENV ROBOT_CODE=${robotology_install_folder}
-ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
-ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
-ENV DISPLAY=:1
-ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
-ENV YARP_COLORED_OUTPUT=1
-ENV QT_X11_NO_MITSHM=1
-ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
+ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins \
+    GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build \
+    GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib \
+    R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models \
+    GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots \
+    TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
+    ROBOT_CODE=${robotology_install_folder} \
+    CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim \
+    PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts \
+    DISPLAY=:1 \
+    LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/ \
+    YARP_COLORED_OUTPUT=1 \
+    QT_X11_NO_MITSHM=1 \
+    PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
 #ENV CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
 
 # Manage yarp port
@@ -266,17 +266,17 @@ RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-t
     git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
     /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
-ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop:${ERGOCUB_SOFTWARE_DIR}/share/yarp
+ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
+    YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop:${ERGOCUB_SOFTWARE_DIR}/share/yarp
 
 # R1 NETWORK CONFIG
 RUN yarp conf 172.17.0.1 10000
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
-ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
-ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+    ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
+    ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # Set ROS2 environment
