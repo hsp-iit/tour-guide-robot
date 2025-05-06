@@ -57,11 +57,11 @@ RUN rosdep fix-permissions && rosdep update
 
 # Set ENV
 USER user1
-RUN sudo mkdir /usr/local/src/robot
 ENV robotology_install_user user1
-ENV user1_home /home/${robotology_install_user}
 ENV robotology_install_folder /usr/local/src/robot
-RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
+ENV user1_home /home/${robotology_install_user}
+RUN sudo mkdir /usr/local/src/robot && \
+    sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
 RUN pip3 install --break-system-packages numpy bpytop
 
@@ -225,7 +225,7 @@ WORKDIR ${robotology_install_folder}
 RUN cd yarp/build && sudo make install && \
     git clone https://github.com/robotology/gz-sim-yarp-plugins && \
     cd gz-sim-yarp-plugins && mkdir build && cd build && \
-cmake .. && make -j11
+    cmake .. && make -j11
 
 # r1-models
 USER ${robotology_install_user}
@@ -274,9 +274,9 @@ RUN yarp conf 172.17.0.1 10000
 
 # Possibly temporary ROS2 network middleware change
 RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
-ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
-ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+    ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
+    ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # Set ROS2 environment
