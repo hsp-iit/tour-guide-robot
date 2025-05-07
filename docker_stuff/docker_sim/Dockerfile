@@ -233,7 +233,7 @@ WORKDIR ${robotology_install_folder}
 RUN mkdir installed && \
     git clone https://github.com/icub-tech-iit/r1-models && \
     cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${user1_home}/installed && \
-    cmake --build build && cmake --build build --target install --fix-missing
+    cmake --build build && cmake --build build --target install
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
