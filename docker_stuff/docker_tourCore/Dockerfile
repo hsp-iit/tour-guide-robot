@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     DOCKER_UPDATED_ON=06_06_2024
 
 # Install essentials
-RUN apt-get update && apt-get install -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
+RUN apt-get update && apt-get install --fix-missing -y apt-utils software-properties-common sudo psmisc lsb-release protobuf-compiler libatlas-base-dev \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
     net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
@@ -28,7 +28,7 @@ RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
-    apt-get update && apt-get upgrade -y && apt-get install -y ros-${ros_distro}-desktop ros-${ros_distro}-navigation2 ros-${ros_distro}-nav2-bringup \
+    apt-get update && apt-get upgrade -y && apt-get install --fix-missing -y ros-${ros_distro}-desktop ros-${ros_distro}-navigation2 ros-${ros_distro}-nav2-bringup \
     ros-${ros_distro}-slam-toolbox ros-${ros_distro}-test-msgs ${gazebo_pkg} \
     python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
@@ -36,7 +36,7 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     python3-pytest-rerunfailures python3-rosdep python3-vcstool python3-venv && rosdep init && rm -rf /var/lib/apt/lists/*
 
 # Install yarp dependencies
-RUN apt-get update && apt-get install -y libode8 libace-dev libboost-filesystem-dev libboost-system-dev \
+RUN apt-get update && apt-get install --fix-missing -y libode8 libace-dev libboost-filesystem-dev libboost-system-dev \
     libboost-thread-dev libc6 python3 libgsl0-dev libncurses5-dev libsdl1.2-dev subversion git gfortran \
     libxmu-dev libode-dev wget unzip qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5svg5 \
     libqt5opengl5-dev libopencv-dev freeglut3-dev libtinyxml-dev libblas-dev coinor-libipopt-dev \
@@ -210,7 +210,7 @@ WORKDIR ${robotology_install_folder}
 RUN mkdir installed && \
     git clone https://github.com/icub-tech-iit/r1-models && \
     cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
-    cmake --build build && cmake --build build --target install
+    cmake --build build && cmake --build build --target install --fix-missing
 
 # YARP-DEVICES-ROS2
 WORKDIR ${robotology_install_folder}
@@ -255,7 +255,7 @@ USER ${robotology_install_user}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros && sudo chown -R ${robotology_install_user}:${robotology_install_user} /home/${robotology_install_user}/.ros
 
 # Groot and BT dependencies
-RUN sudo apt-get update && sudo apt-get install -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && \
+RUN sudo apt-get update && sudo apt-get install --fix-missing -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && \
 cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
@@ -276,7 +276,7 @@ ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
 RUN yarp conf 192.168.100.10 10000
 
 # Possibly temporary ROS2 network middleware change
-RUN sudo apt-get update && sudo apt-get install -y cyclonedds-dev cyclonedds-tools \
+RUN sudo apt-get update && sudo apt-get install --fix-missing -y cyclonedds-dev cyclonedds-tools \
 ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
 ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
 sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
