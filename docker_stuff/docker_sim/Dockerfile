@@ -59,7 +59,7 @@ RUN rosdep fix-permissions && rosdep update
 USER user1
 RUN sudo mkdir /usr/local/src/robot
 ENV robotology_install_user=user1 \
-    user1_home=/home/${robotology_install_user} \
+    user1_home=/home/user1 \
     robotology_install_folder=/usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
