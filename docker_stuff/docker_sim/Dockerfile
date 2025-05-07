@@ -58,9 +58,9 @@ RUN rosdep fix-permissions && rosdep update
 # Set ENV
 USER user1
 RUN sudo mkdir /usr/local/src/robot
-ENV robotology_install_user user1 \
-    user1_home /home/${robotology_install_user} \
-    robotology_install_folder /usr/local/src/robot
+ENV robotology_install_user=user1 \
+    user1_home=/home/${robotology_install_user} \
+    robotology_install_folder=/usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
 RUN pip3 install --break-system-packages numpy bpytop

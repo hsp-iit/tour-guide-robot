@@ -12,8 +12,8 @@ ARG google_cloud_version="tags/2025.01.13"
 ARG tour_branch="jazzy"
 
 # Non-interactive installation mode
-ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=12_04_2024
+ENV DEBIAN_FRONTEND=noninteractive \
+    DOCKER_UPDATED_ON=12_04_2024
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils \
@@ -50,9 +50,9 @@ RUN useradd -l -u 33334 -G sudo -md /home/${user_name} -s /bin/bash -p ${user_na
 # Set ENV
 USER ${user_name}
 RUN sudo mkdir ${robot_code}
-ENV robotology_install_user ${user_name}
-ENV yarp_user_home /home/${robotology_install_user}
-ENV robot_code ${robot_code}
+ENV robotology_install_user=${user_name} \
+    yarp_user_home=/home/${robotology_install_user} \
+    robot_code=${robot_code}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_code}
 
 # Miniforge installation
@@ -72,8 +72,8 @@ RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && 
 # Build ycm
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/ycm.git -b master
-RUN cd ycm && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/ycm.git -b master && \
+    cd ycm && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
@@ -82,8 +82,8 @@ ENV YCM_DIR=${robot_code}/ycm/build
 # Build YARP
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp.git -b $yarp_version
-RUN cd yarp && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
+    cd yarp && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DYARP_COMPILE_libYARP_math=ON \
