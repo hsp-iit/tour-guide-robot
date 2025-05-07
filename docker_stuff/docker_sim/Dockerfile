@@ -245,7 +245,7 @@ ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plug
     TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
     ROBOT_CODE=${robotology_install_folder} \
     CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim \
-    PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts \
+    PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts:${robotology_install_folder}/tour-guide-robot/app/headSynchronizer/scripts \
     DISPLAY=:1 \
     LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/ \
     YARP_COLORED_OUTPUT=1 \
@@ -267,7 +267,7 @@ RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-t
     /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
-    YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop:${ERGOCUB_SOFTWARE_DIR}/share/yarp
+    YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-web-teleop/build/share/yarp-web-teleop:${ERGOCUB_SOFTWARE_DIR}/share/yarp
 
 # R1 NETWORK CONFIG
 RUN yarp conf 172.17.0.1 10000

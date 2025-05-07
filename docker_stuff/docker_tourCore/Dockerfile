@@ -58,8 +58,8 @@ RUN sudo rosdep fix-permissions && rosdep update
 # Set ENV
 USER user1
 RUN sudo mkdir /usr/local/src/robot
-ENV robotology_install_user=user1 \
-    user1_home=/home/${robotology_install_user} \
+ENV robotology_install_user=user1
+ENV user1_home=/home/${robotology_install_user} \
     robotology_install_folder=/usr/local/src/robot
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robotology_install_folder}
 
@@ -237,9 +237,9 @@ ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/lib \
 USER ${robotology_install_user}
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
-    PATH=$PATH:${YARP_DIR}/bin:${navigation_DIR}/bin:${CER_DIR}/bin:${ICUB_DIR}/bin:${ICUB_DIR}:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/icub-main/build:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts \
+    PATH=$PATH:${YARP_DIR}/bin:${navigation_DIR}/bin:${CER_DIR}/bin:${ICUB_DIR}/bin:${ICUB_DIR}:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/icub-main/build:${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts:${robotology_install_folder}/tour-guide-robot/app/headSynchronizer/scripts \
     ROBOT_CODE=${robotology_install_folder} \
-    CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim \
+    CER_SIM_ROOT_DIR=${robotology_install_folder}/cer-sim \
     DISPLAY=:1 \
     LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/ \
     YARP_COLORED_OUTPUT=1 \
