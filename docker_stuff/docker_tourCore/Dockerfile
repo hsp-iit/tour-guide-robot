@@ -210,7 +210,7 @@ WORKDIR ${robotology_install_folder}
 RUN mkdir installed && \
     git clone https://github.com/icub-tech-iit/r1-models && \
     cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${robotology_install_user}/installed && \
-    cmake --build build && cmake --build build --target install --fix-missing
+    cmake --build build && cmake --build build --target install
 
 # YARP-DEVICES-ROS2
 WORKDIR ${robotology_install_folder}
