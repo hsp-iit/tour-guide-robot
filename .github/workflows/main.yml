@@ -25,12 +25,12 @@ jobs:
          #    base_image_label: "cuda.12.8.1-cudnn",
          #    work_dir: "docker_stuff/docker_tourCore/"
          # }
-         - {
-            ros2_distro: "jazzy",
-            base_image: "ste93/convince:ubuntu_24.04_qt_6.8.3",
-            base_image_label: "ubuntu_24.04_qt_6.8.3",
-            work_dir: "docker_stuff/docker_tourCore/"
-         }
+         # - {
+         #    ros2_distro: "jazzy",
+         #    base_image: "ste93/convince:ubuntu_24.04_qt_6.8.3",
+         #    base_image_label: "ubuntu_24.04_qt_6.8.3",
+         #    work_dir: "docker_stuff/docker_tourCore/"
+         # }
     steps:
     - name: Info
       run: |
@@ -94,12 +94,12 @@ jobs:
          #    base_image_label: "cuda.12.8.1-cudnn",
          #    work_dir: "docker_stuff/docker_sim/"
          # }
-         - {
-            ros2_distro: "jazzy",
-            base_image: "ste93/convince:ubuntu_24.04_qt_6.8.3",
-            base_image_label: "ubuntu_24.04_qt_6.8.3",
-            work_dir: "docker_stuff/docker_sim/"
-         }
+         # - {
+         #    ros2_distro: "jazzy",
+         #    base_image: "ste93/convince:ubuntu_24.04_qt_6.8.3",
+         #    base_image_label: "ubuntu_24.04_qt_6.8.3",
+         #    work_dir: "docker_stuff/docker_sim/"
+         # }
     steps:
     - name: Info
       run: |
