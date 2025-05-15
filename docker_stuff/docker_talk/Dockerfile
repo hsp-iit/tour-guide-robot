@@ -12,8 +12,8 @@ ARG google_cloud_version="tags/2025.01.13"
 ARG tour_branch="jazzy"
 
 # Non-interactive installation mode
-ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=12_04_2024
+ENV DEBIAN_FRONTEND=noninteractive \
+    DOCKER_UPDATED_ON=12_04_2024
 
 # Install essentials
 RUN apt-get update && apt-get install -y apt-utils \
@@ -50,9 +50,9 @@ RUN useradd -l -u 33334 -G sudo -md /home/${user_name} -s /bin/bash -p ${user_na
 # Set ENV
 USER ${user_name}
 RUN sudo mkdir ${robot_code}
-ENV robotology_install_user ${user_name}
-ENV yarp_user_home /home/${robotology_install_user}
-ENV robot_code ${robot_code}
+ENV robotology_install_user=${user_name} \
+    yarp_user_home=/home/${user_name} \
+    robot_code=${robot_code}
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_code}
 
 # Miniforge installation
@@ -72,8 +72,8 @@ RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && 
 # Build ycm
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/ycm.git -b master
-RUN cd ycm && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/ycm.git -b master && \
+    cd ycm && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
@@ -82,8 +82,8 @@ ENV YCM_DIR=${robot_code}/ycm/build
 # Build YARP
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp.git -b $yarp_version
-RUN cd yarp && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
+    cd yarp && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DYARP_COMPILE_libYARP_math=ON \
@@ -111,8 +111,8 @@ RUN cd yarp && mkdir build && cd build && \
     -DENABLE_yarppm_depthimage_to_rgb=ON && \
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=ON && \
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=OFF
-ENV YARP_ROOT=${robot_code}/yarp
-ENV YARP_DIR=${robot_code}/yarp/build
+ENV YARP_ROOT=${robot_code}/yarp \
+    YARP_DIR=${robot_code}/yarp/build
 
 # SWIG 4.21
 WORKDIR ${yarp_user_home}
@@ -222,13 +222,13 @@ RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/hsp-
 # Set environmental variables
 USER ${robotology_install_user}
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
-ENV PATH=$PATH:$YARP_DIR/bin
-ENV DISPLAY=:1
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:${robot_code}/cer/build/share/CER:${robot_code}/r1-object-retrieval/build/share/R1_OBJECT_RETRIEVAL
-ENV LD_LIBRARY_PATH=${robot_code}/yarp/build/lib/yarp/
-ENV YARP_COLORED_OUTPUT=1
-ENV QT_X11_NO_MITSHM=1
-ENV PYTHONPATH=$PYTHONPATH:${YARP_ROOT}/bindings/build/lib/python3/
+ENV PATH=$PATH:$YARP_DIR/bin \
+    DISPLAY=:1 \
+    YARP_DATA_DIRS=$YARP_DIR/share/yarp:${robot_code}/cer/build/share/CER:${robot_code}/r1-object-retrieval/build/share/R1_OBJECT_RETRIEVAL \
+    LD_LIBRARY_PATH=${robot_code}/yarp/build/lib/yarp/ \
+    YARP_COLORED_OUTPUT=1 \
+    QT_X11_NO_MITSHM=1 \
+    PYTHONPATH=$PYTHONPATH:${YARP_ROOT}/bindings/build/lib/python3/
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -244,8 +244,8 @@ RUN git clone https://github.com/Microsoft/vcpkg.git && \
 ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
 ### Packaging google-cloud-cpp instructions ############################################### END ####
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json
-ENV BUILD_SUFFIX=build
+ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json \
+    BUILD_SUFFIX=build
 
 WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
@@ -277,9 +277,9 @@ RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} &&
     -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
     -DLIBOAI_INSTALL_PATH=/home/${user_name}/Downloads/liboai && cd build && \
     make -j8
-ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${YARP_DEVICES_LLM_DIR}/share/yarp:${YARP_DEVICES_LLM_DIR}/share
-ENV PATH=$PATH:${YARP_DEVICES_LLM_DIR}/bin
+ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
+    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
+    PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
 
 # Set up ONNX Runtime
 WORKDIR ${robot_code}
@@ -294,9 +294,9 @@ RUN git clone https://github.com/snakers4/silero-vad
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
-ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot
-ENV PATH=${PATH}:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/bin
+ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
+    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
+    PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
 
 RUN echo "conda activate openwakeword" >> /home/${user_name}/.bashrc && \
     sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/${user_name}/.bashrc
