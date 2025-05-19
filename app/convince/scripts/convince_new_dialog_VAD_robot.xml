@@ -77,14 +77,14 @@
     </module>
 
     <module>
-        <name>ros2</name>
+        <name>ros2_speech_to_text_component</name>
         <parameters>run speech_to_text_component speech_to_text_component</parameters>
         <workdir>/home/user1/UC3</workdir>
         <node>bt</node>
     </module>
 
     <module>
-        <name>ros2</name>
+        <name>ros2_text_to_speech_component</name>
         <parameters>run text_to_speech_component text_to_speech_component --from text_to_speech_config.ini</parameters>
         <workdir>/home/user1/UC3/src/components/text_to_speech_component/config</workdir>
         <node>bt</node>
@@ -131,6 +131,18 @@
     <connection>
         <from>/vad/rpc:o</from>
         <to>/wake/rpc:i</to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/wake/notification:o</from>
+        <to>/wake_notification:i</to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+    
+    <connection>
+        <from>/wake/face:o</from>
+        <to>/faceExpressionImage/rpc </to>
         <protocol>fast_tcp</protocol>
     </connection>
 
