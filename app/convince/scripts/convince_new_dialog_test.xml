@@ -1,0 +1,104 @@
+<application>
+    <name>convince_new_dialog_test</name>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context speechPipeline --from micAudio.ini --mic_sound_on_stop 1 --mic_start 0 --mic_min_samples 4000 --mic_max_samples 4000</parameters>
+        <node>console</node>
+    </module>
+
+    <module>
+        <name>yarpaudiocontrolgui</name>
+        <parameters>--local /controlMic:rpc --remote-rec /audioRecorder_nws</parameters>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context vadModule --from audioPlayer.ini</parameters>
+        <node>console</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context convince --from madamaChat.ini</parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context convince --from poiMadamaChat.ini </parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context convince --from welcomeTalkChat.ini </parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context google --from googleSynthesizer.ini</parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context google --from googleTranscription.ini</parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>ros2_scheduler_component</name>
+        <parameters>run scheduler_component scheduler_component conf/tours.json TOUR_MADAMA_3</parameters>
+        <workdir>/home/user1/UC3</workdir>
+        <node>bt</node>
+    </module>
+
+    <!-- <module>
+        <name>ros2</name>
+        <parameters>run speech_to_text_component speech_to_text_component conf/tours.json TOUR_MADAMA_3</parameters>
+        <workdir>/home/user1/UC3</workdir>
+        <node>bt</node>
+    </module> -->
+
+    <!-- <module>
+        <name>ros2_cpp_dialog_component</name>
+        <parameters>run dialog_component dialog_component -\-from config.ini</parameters>
+        <workdir>/home/user1/UC3/build/dialog_component</workdir>
+        <node>bt</node>
+    </module> -->
+
+    <!-- <module>
+        <name>ros2_py_dialog_component</name>
+        <parameters>run py_interaction_cliserv service</parameters>
+        <workdir />
+        <node>bt</node>
+    </module> -->
+    
+    <!-- <module>
+        <name>ros2_dialog_skill</name>
+        <parameters>run dialog_skill dialog_skill</parameters>
+        <workdir />
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_dialog_tick</name>
+        <parameters>service call /DialogSkill/tick bt_interfaces/srv/TickAction</parameters>
+        <workdir />
+        <node>bt</node>
+    </module> -->
+
+    <connection>
+        <from>/audioRecorder_nws/audio:o</from>
+        <to>/SpeechToTextComponent/audio:i</to>
+    </connection>
+
+</application>
