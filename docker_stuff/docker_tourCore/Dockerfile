@@ -266,7 +266,7 @@ RUN git clone https://github.com/BehaviorTree/Groot.git && \
 # Navigation stuff
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake .. && \
-    git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
+    cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
     /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
