@@ -106,6 +106,12 @@ jobs:
             base_image_label: "cuda.11.7.1-cudnn8",
             work_dir: "docker_stuff/docker_sim_old/"
          }
+         - {
+             ros2_distro: "iron",
+             base_image: "ste93/convince:ubuntu_22.04_qt_6.8.3",
+             base_image_label: "ubuntu_22.04_qt_6.8.3",
+             work_dir: "docker_stuff/docker_sim/"
+           }
     steps:
     - name: Info
       run: |
