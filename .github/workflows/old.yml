@@ -10,103 +10,79 @@ jobs:
   build-tour-docker:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-         config:
-         # - {
-         #    ros2_distro: "humble",
-         #    base_image: "ubuntu:22.04",
-         #    base_image_label: "ubuntu22.04",
-         #    work_dir: "docker_stuff/docker_tourCore_old/"
-         # }
-         - {
-            ros2_distro: "iron",
-            base_image: "ubuntu:22.04",
-            base_image_label: "ubuntu22.04",
-            work_dir: "docker_stuff/docker_tourCore_old/"
-         }
-         # - {
-         #    ros2_distro: "humble",
-         #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-         #    base_image_label: "cuda.11.7.1-cudnn8",
-         #    work_dir: "docker_stuff/docker_tourCore_old/"
-         # }
-         - {
-            ros2_distro: "iron",
-            base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-            base_image_label: "cuda.11.7.1-cudnn8",
-            work_dir: "docker_stuff/docker_tourCore_old/"
-         }
-    steps:
-    - name: Info
-      run: |
-       echo "Event type: ${{github.event_name}}"
-    - name: Change docker to experimental mode
-      run: |
-       sudo rm -rf /etc/docker/daemon.json
-       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart docker daemon
-      run: sudo systemctl restart docker
-    - uses: actions/checkout@v4
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the tour core Docker image
-      working-directory: ${{matrix.config.work_dir}}
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable tour core image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
-       else
-          echo "Failure!"
-          exit 1
-       fi
-    - name: Push tourCore2 image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing tourCore2 development image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing tourCore2 stable image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable
-       else
-          echo "Failure!"
-          exit 1
-       fi
+        config:
+          - {
+              ros2_distro: "iron",
+              base_image: "ubuntu:22.04",
+              base_image_label: "ubuntu22.04",
+              work_dir: "docker_stuff/docker_tourCore_old/",
+              yarp_branch: "yarp-3.12",
+              ros2_dev_branch: "master"
+            }
+          - {
+             ros2_distro: "iron",
+             base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
+             base_image_label: "cuda.11.7.1-cudnn8",
+             work_dir: "docker_stuff/docker_tourCore_old/",
+             yarp_branch: "yarp-3.12",
+             ros2_dev_branch: "master"
+          }
 
+    steps:
+      - name: Info
+        run: |
+         echo "Event type: ${{github.event_name}}"
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push tourCore2 image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.config.work_dir }}
+          file: ${{ matrix.config.work_dir }}/Dockerfile
+          build-args: |
+            base_img=${{matrix.config.base_image}}
+            ros_distro=${{matrix.config.ros2_distro}}
+            yarp_branch=${{matrix.config.yarp_branch}}
+            ros2_dev_branch=${{matrix.config.ros2_dev_branch}}
+          push: true
+          tags: |
+            elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
 
   build-tour-docker-sim:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-         config:
-         # - {
-         #    ros2_distro: "humble",
-         #    base_image: "ubuntu:22.04",
-         #    base_image_label: "ubuntu22.04",
-         # }
-         - {
-            ros2_distro: "iron",
-            base_image: "ubuntu:22.04",
-            base_image_label: "ubuntu22.04",
-            work_dir: "docker_stuff/docker_sim_old/"
-         }
-         # - {
-         #    ros2_distro: "humble",
-         #    base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-         #    base_image_label: "cuda.11.7.1-cudnn8",
-         # }
-         - {
-            ros2_distro: "iron",
-            base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
-            base_image_label: "cuda.11.7.1-cudnn8",
-            work_dir: "docker_stuff/docker_sim_old/"
-         }
-         - {
+        config:
+          - {
+              ros2_distro: "iron",
+              base_image: "ubuntu:22.04",
+              base_image_label: "ubuntu22.04",
+              work_dir: "docker_stuff/docker_sim_old/",
+              yarp_branch: "yarp-3.12",
+              ros2_dev_branch: "master"
+            }
+          - {
+              ros2_distro: "iron",
+              base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
+              base_image_label: "cuda.11.7.1-cudnn8",
+              work_dir: "docker_stuff/docker_sim_old/",
+              yarp_branch: "yarp-3.12",
+              ros2_dev_branch: "master"
+          }
+          - {
              ros2_distro: "iron",
              base_image: "ste93/convince:ubuntu_22.04_qt_6.8.3",
              base_image_label: "ubuntu_22.04_qt_6.8.3",
@@ -114,44 +90,33 @@ jobs:
              yarp_branch: "yarp-3.12",
              ros2_dev_branch: "master"
            }
+
     steps:
-    - name: Info
-      run: |
-       echo "Event type: ${{github.event_name}}"
-    - name: Change docker to experimental mode
-      run: |
-       sudo rm -rf /etc/docker/daemon.json
-       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart docker daemon
-      run: sudo systemctl restart docker
-    - uses: actions/checkout@v4
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the tour core Docker image for simulation
-      working-directory: ${{matrix.config.work_dir}}
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development tour simulation image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel .
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable tour simulation image"
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}} --build-arg ros_distro=${{matrix.config.ros2_distro}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable .
-       else
-          echo "Failure!"
-          exit 1
-       fi
-    - name: Push tourSim2 image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing tour simulation development image"
-          docker push elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_devel
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing tour simulation stable image"
-          docker push elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_stable
-       else
-          echo "Failure!"
-          exit 1
-       fi
+      - name: Info
+        run: |
+         echo "Event type: ${{github.event_name}}"
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push tourSim2 image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.config.work_dir }}
+          file: ${{ matrix.config.work_dir }}/Dockerfile
+          build-args: |
+            base_img=${{matrix.config.base_image}}
+            ros_distro=${{matrix.config.ros2_distro}}
+            yarp_branch=${{matrix.config.yarp_branch}}
+            ros2_dev_branch=${{matrix.config.ros2_dev_branch}}
+          push: true
+          tags: |
+            elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}

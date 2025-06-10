@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y apt-utils \
     ca-certificates gnupg libace-dev ycm-cmake-modules locales \
     curl zip unzip tar python3-setuptools python3-pip iproute2 \
     python3-tornado lsof iftop iputils-ping gdb bash-completion \
-    btop && \
+    btop libcurl4-openssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
@@ -252,6 +252,10 @@ RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
    cd yarp-devices-google-cloud && cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/yarp-user/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake && \
    cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
+
+RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
+   cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
 WORKDIR /home/${user_name}/Downloads
 # Install openai c++ dependencies

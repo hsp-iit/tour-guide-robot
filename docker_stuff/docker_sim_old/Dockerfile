@@ -117,6 +117,7 @@ RUN cd yarp && mkdir build && cd build && \
     make -j11
 ENV YARP_ROOT=${robotology_install_folder}/yarp
 ENV YARP_DIR=${robotology_install_folder}/yarp/build
+ENV PATH=$PATH:$YARP_DIR/bin
 
 # YARP bindings
 USER ${robotology_install_user}
@@ -126,6 +127,14 @@ RUN cd yarp && cd bindings &&  mkdir build && cd build && cmake .. -DCREATE_PYTH
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
+# Build icub-firmware-shared
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/robotology/icub-firmware-shared -b devel && \
+    cd icub-firmware-shared && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
+ENV icub_firmware_shared_ROOT=${robotology_install_folder}/icub-firmware-shared \
+    icub_firmware_shared_DIR=${robotology_install_folder}/icub-firmware-shared/build
+
 # Build icub-main
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
@@ -133,6 +142,7 @@ RUN git clone https://github.com/robotology/icub-main.git -b devel
 RUN cd icub-main && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
+    -DALLOW_DEVICE_PARAM_PARSER_GENERATION=ON \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
     -DICUBMAIN_COMPILE_SIMULATORS=OFF \
@@ -209,7 +219,7 @@ RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
-ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
+ENV PATH=$PATH:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV DISPLAY=:1
 ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
 ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib

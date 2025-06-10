@@ -110,6 +110,7 @@ RUN cd yarp && mkdir build && cd build && \
     make -j11
 ENV YARP_ROOT=${robotology_install_folder}/yarp
 ENV YARP_DIR=${robotology_install_folder}/yarp/build
+ENV PATH=$PATH:$YARP_DIR/bin
 
 # YARP bindings
 USER ${robotology_install_user}
@@ -134,6 +135,7 @@ RUN git clone https://github.com/robotology/icub-main.git -b devel
 RUN cd icub-main && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
+    -DALLOW_DEVICE_PARAM_PARSER_GENERATION=ON \
     -DENABLE_icubmod_cartesiancontrollerserver=ON \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
     -DENABLE_icubmod_bcbBattery=${battery} \
