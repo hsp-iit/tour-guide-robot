@@ -82,6 +82,14 @@ jobs:
               yarp_branch: "yarp-3.12",
               ros2_dev_branch: "master"
           }
+          - {
+             ros2_distro: "iron",
+             base_image: "ste93/convince:ubuntu_22.04_qt_6.8.3",
+             base_image_label: "ubuntu_22.04_qt_6.8.3",
+             work_dir: "docker_stuff/docker_sim/",
+             yarp_branch: "yarp-3.12",
+             ros2_dev_branch: "master"
+           }
 
     steps:
       - name: Info
