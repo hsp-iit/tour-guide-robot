@@ -13,24 +13,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {
-          #     ros2_distro: "jazzy",
-          #     base_image: "ubuntu:24.04",
-          #     base_image_label: "ubuntu24.04",
-          #     work_dir: "docker_stuff/docker_tourCore/"
-          #   }
           - {
              ros2_distro: "jazzy",
              base_image: "nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04",
              base_image_label: "cuda.12.8.1-cudnn",
-             work_dir: "docker_stuff/docker_tourCore/"
+             work_dir: "docker_stuff/docker_tourCore/",
+             yarp_branch: "yarp-3.12",
+             ros2_dev_branch: "master"
           }
-          # - {
-          #    ros2_distro: "jazzy",
-          #    base_image: "ste93/convince:ubuntu_24.04_qt_6.8.3",
-          #    base_image_label: "ubuntu_24.04_qt_6.8.3",
-          #    work_dir: "docker_stuff/docker_tourCore/"
-          # }
 
     steps:
       - name: Info
@@ -56,6 +46,8 @@ jobs:
           build-args: |
             base_img=${{matrix.config.base_image}}
             ros_distro=${{matrix.config.ros2_distro}}
+            yarp_branch=${{matrix.config.yarp_branch}}
+            ros2_dev_branch=${{matrix.config.ros2_dev_branch}}
           push: true
           tags: |
             elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
@@ -66,24 +58,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {
-          #     ros2_distro: "jazzy",
-          #     base_image: "ubuntu:24.04",
-          #     base_image_label: "ubuntu24.04",
-          #     work_dir: "docker_stuff/docker_sim/"
-          #   }
           - {
              ros2_distro: "jazzy",
              base_image: "nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04",
              base_image_label: "cuda.12.8.1-cudnn",
-             work_dir: "docker_stuff/docker_sim/"
+             work_dir: "docker_stuff/docker_sim/",
+             yarp_branch: "yarp-3.12",
+             ros2_dev_branch: "master"
           }
-          # - {
-          #    ros2_distro: "jazzy",
-          #    base_image: "ste93/convince:ubuntu_24.04_qt_6.8.3",
-          #    base_image_label: "ubuntu_24.04_qt_6.8.3",
-          #    work_dir: "docker_stuff/docker_sim/"
-          # }
 
     steps:
       - name: Info
@@ -109,6 +91,8 @@ jobs:
           build-args: |
             base_img=${{matrix.config.base_image}}
             ros_distro=${{matrix.config.ros2_distro}}
+            yarp_branch=${{matrix.config.yarp_branch}}
+            ros2_dev_branch=${{matrix.config.ros2_dev_branch}}
           push: true
           tags: |
             elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
