@@ -61,7 +61,7 @@
   <!-- LLM device -->
   <module>
      <name>yarprobotinterface</name>
-     <parameters>--context demo --from r1RobotValleyChat.ini</parameters>
+     <parameters>--context demo --from r1RobotValleyChat.ini --r1_demo_prompt r1_cris_generic_prompt.txt</parameters>
      <workdir></workdir>
      <node>console-llm</node>
   </module>
