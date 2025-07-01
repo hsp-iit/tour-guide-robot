@@ -173,12 +173,18 @@ WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/robots-configuration.git -b master
 
 # Build navigation
+# USER ${robotology_install_user}
+# WORKDIR ${robotology_install_folder}
+# RUN git clone https://github.com/robotology/navigation.git -b master && \
+#     cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
+# ENV navigation_ROOT=${robotology_install_folder}/navigation \
+#     navigation_DIR=${robotology_install_folder}/navigation/build
+
+# Build navigation
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/navigation.git -b master && \
-    cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
-ENV navigation_ROOT=${robotology_install_folder}/navigation \
-    navigation_DIR=${robotology_install_folder}/navigation/build
+RUN git clone https://github.com/robotology/navigation.git -b master
+ENV navigation_ROOT=${robotology_install_folder}/navigation
 
 # CER
 USER ${robotology_install_user}
