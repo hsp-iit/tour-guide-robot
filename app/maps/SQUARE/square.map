@@ -1,0 +1,9 @@
+#The YARP root map description file.
+#it points to yarp flag maps
+#it points to ROS occupancy grid (optional)
+
+MapName     square
+YarpMapData square_25px_30cm.ppm
+
+resolution 0.012
+origin (-3.072, -3.072, 0.000000)

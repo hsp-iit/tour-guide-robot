@@ -1,0 +1,6 @@
+image: square_25px_30m.pgm
+resolution: 0.012
+origin: [-3.072, -3.072, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
