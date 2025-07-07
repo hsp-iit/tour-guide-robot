@@ -35,7 +35,7 @@ Detector::Detector(int vadFrequency,
                     m_currentSoundBufferNorm(m_vadNumSamples, 0),
                     m_currentSoundBuffer(m_vadNumSamples, 0),
                     m_fillCount(0) {
-    
+
     init_onnx_model(modelPath);
 
     m_input.resize(m_context.size() + m_vadNumSamples);
@@ -76,7 +76,7 @@ void Detector::reset_states() {
 void Detector::predict(const std::vector<float> &data) {
     // Create ort tensors
     std::copy(m_context.begin(), m_context.end(), m_input.begin());
-    std::copy(m_currentSoundBuffer.begin(), m_currentSoundBuffer.end(), m_input.begin() + m_context.size()); 
+    std::copy(m_currentSoundBuffer.begin(), m_currentSoundBuffer.end(), m_input.begin() + m_context.size());
     Ort::Value input_ort = Ort::Value::CreateTensor<float>(
         m_memory_info, m_input.data(), m_input.size(), m_input_node_dims, 2);
     Ort::Value state_ort = Ort::Value::CreateTensor<float>(
@@ -102,7 +102,7 @@ void Detector::predict(const std::vector<float> &data) {
     std::memcpy(m_state.data(), stateN, m_size_state * sizeof(float));
 
     bool isTalking = speech_prob > m_vadThreshold;
-    if (isTalking) { 
+    if (isTalking) {
         yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";
         m_soundDetected = true;
         m_soundToSend.push_back(m_currentSoundBuffer);
@@ -117,7 +117,7 @@ void Detector::predict(const std::vector<float> &data) {
                 sendSound();
                 m_soundToSend.clear();
                 m_soundDetected = false;
-                m_rpcClient.stop();
+                // m_rpcClient.stop();
                 reset_states();
             }
             else if (m_vadSaveGap)
@@ -133,14 +133,14 @@ void Detector::predict(const std::vector<float> &data) {
                 m_soundToSend.pop_front();
             }
         }
-        
+
     }
 
     // copy last part into context for next input
     std::copy(
         m_currentSoundBuffer.end() - m_context.size(),
-        m_currentSoundBuffer.end(),  
-        m_context.begin()                     
+        m_currentSoundBuffer.end(),
+        m_context.begin()
     );
 };
 
@@ -157,8 +157,8 @@ void Detector::onRead(yarp::sig::Sound& soundReceived) {
             predict(m_currentSoundBufferNorm);
             m_fillCount = 0;
         }
-    } 
-    
+    }
+
 }
 
 
@@ -186,7 +186,7 @@ void Detector::sendSound() {
     {
         soundToSend.set(0, i);
     }
-    
+
     m_filteredAudioOutputPort.write();
 }
 
