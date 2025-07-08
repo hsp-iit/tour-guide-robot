@@ -31,7 +31,7 @@ add_executable(${PROJECT_NAME})
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-ament_target_dependencies(${PROJECT_NAME} text_to_speech_interfaces rclcpp )
+ament_target_dependencies(${PROJECT_NAME} rclcpp )
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES})
 
 target_include_directories(${PROJECT_NAME}
