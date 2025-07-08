@@ -15,7 +15,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(text_to_speech_interfaces REQUIRED)
 find_package(YCM REQUIRED)
 find_package(YARP 3.11 REQUIRED COMPONENTS dev os sig)
 
