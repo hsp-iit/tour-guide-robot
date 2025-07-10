@@ -3,9 +3,9 @@ version: "3.7"
 x-nlp: &nlp
   environment:
     - DISPLAY=${DISPLAY}
-    - XAUTHORITY=/home/user1/.Xauthority
+    - XAUTHORITY=/home/yarp-user/.Xauthority
     - QT_X11_NO_MITSHM=1
-    - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user1/1000/bus
+    - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/yarp-user/1000/bus
     - LIBGL_ALWAYS_INDIRECT=0
     - YARP_COLORED_OUTPUT=1
     - NVIDIA_DRIVER_CAPABILITIES=all
@@ -15,7 +15,6 @@ x-nlp: &nlp
     - TOUR_BRANCH=${TOUR_BRANCH:-master}
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
-    - "$XAUTHORITY:/home/user1/.Xauthority:ro"  # mount the auth file
     - "/etc/hosts:/etc/hosts"
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
