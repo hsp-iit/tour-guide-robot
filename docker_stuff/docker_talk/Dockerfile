@@ -189,34 +189,35 @@ RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/robo
 RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/hsp-iit/r1-object-retrieval && \
     cd r1-object-retrieval && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
     rm CMakeLists.txt && touch CMakeLists.txt && \
-    echo "# Copyright: (C) 2015 iCub Facility Istituto Italiano di Tecnologia" CMakeLists.txt && \
-    echo "# Authors: Raffaele Colombo" CMakeLists.txt && \
-    echo "# CopyPolicy: Released under the terms of the GNU GPL v2.0." CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "cmake_minimum_required(VERSION 3.12)" CMakeLists.txt && \
-    echo "project(R1_OBJECT_RETRIEVAL LANGUAGES CXX C VERSION 1.0.0)" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "set(CMAKE_CXX_EXTENSIONS OFF)" CMakeLists.txt && \
-    echo "set(CMAKE_CXX_STANDARD 11)" CMakeLists.txt && \
-    echo "set(CMAKE_CXX_STANDARD_REQUIRED 11)" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "set_property(GLOBAL PROPERTY USE_FOLDERS ON)" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "find_package(YCM)" CMakeLists.txt && \
-    echo "find_package(YARP 3.11 REQUIRED)" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "include(GNUInstallDirs)" CMakeLists.txt && \
-    echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")" CMakeLists.txt && \
-    echo "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")" CMakeLists.txt && \
-    echo "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "${PROJECT_NAME} is always built with dynamic plugins")" CMakeLists.txt && \
-    echo "yarp_configure_external_installation(${PROJECT_NAME} WITH_PLUGINS)" CMakeLists.txt && \
-    echo "" CMakeLists.txt && \
-    echo "# Everything is configured now, we can start adding source code" CMakeLists.txt && \
-    echo "add_subdirectory(app)" CMakeLists.txt
+    echo "# Copyright: (C) 2015 iCub Facility Istituto Italiano di Tecnologia" >> CMakeLists.txt && \
+    echo "# Authors: Raffaele Colombo" >> CMakeLists.txt && \
+    echo "# CopyPolicy: Released under the terms of the GNU GPL v2.0." >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "cmake_minimum_required(VERSION 3.12)" >> CMakeLists.txt && \
+    echo "project(R1_OBJECT_RETRIEVAL LANGUAGES CXX C VERSION 1.0.0)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set(CMAKE_CXX_EXTENSIONS OFF)" >> CMakeLists.txt && \
+    echo "set(CMAKE_CXX_STANDARD 11)" >> CMakeLists.txt && \
+    echo "set(CMAKE_CXX_STANDARD_REQUIRED 11)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set_property(GLOBAL PROPERTY USE_FOLDERS ON)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "find_package(YCM)" >> CMakeLists.txt && \
+    echo "find_package(YARP 3.11 REQUIRED)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "include(GNUInstallDirs)" >> CMakeLists.txt && \
+    echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")" >> CMakeLists.txt && \
+    echo "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")" >> CMakeLists.txt && \
+    echo "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL "${PROJECT_NAME} is always built with dynamic plugins")" >> CMakeLists.txt && \
+    echo "yarp_configure_external_installation(${PROJECT_NAME} WITH_PLUGINS)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "# Everything is configured now, we can start adding source code" >> CMakeLists.txt && \
+    echo "add_subdirectory(app)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt
 
 
 # Set environmental variables
