@@ -211,8 +211,9 @@ RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b master
 # CER-Sim stuff
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
-    cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
+# RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
+#     cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
+RUN git clone https://github.com/robotology/cer-sim -b ros2
 
 # Build icub-contrib-common
 USER ${robotology_install_user}
