@@ -12,7 +12,7 @@
     <devices>
         <device name="dev1" type="portaudioRecorder">
         <group name="AUDIO_BASE">
-            <param name="rate"> 16000 </param>
+            <param name="rate" extern-name="mic_rate"> 16000 </param>
             <param name="samples"> 180000 </param>
             <param name="channels"> 1  </param>
         </group>
