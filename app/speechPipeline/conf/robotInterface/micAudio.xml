@@ -16,6 +16,7 @@
             <param name="samples"> 180000 </param>
             <param name="channels"> 1  </param>
         </group>
+        <param name="audio_device_id" extern-name="mic_id"> 0 </param>
         </device>
 
         <device name="dev2" type="audioRecorder_nws_yarp">
