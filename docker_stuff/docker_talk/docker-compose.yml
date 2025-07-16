@@ -14,6 +14,7 @@ x-nlp: &nlp
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
     - "/etc/hosts:/etc/hosts"
+    - "${HOME}/.config/yarp:/home/user1/.config/yarp:rw"
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "./entrypoints/entrypoint_light.sh:/home/yarp-user/config/.entrypoint_light.sh"
