@@ -14,7 +14,7 @@
         <group name="AUDIO_BASE">
             <param name="rate" extern-name="mic_rate"> 16000 </param>
             <param name="samples"> 180000 </param>
-            <param name="channels"> 1  </param>
+            <param name="channels" extern-name="mic_channels"> 1  </param>
         </group>
         <param name="audio_device_id" extern-name="mic_id"> 0 </param>
         </device>

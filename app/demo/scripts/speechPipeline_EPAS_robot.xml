@@ -90,6 +90,7 @@
   <connection>
     <from>/audioRecorder_nws/audio:o</from>
     <to>/wake/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
   </connection>
 
   <connection>
