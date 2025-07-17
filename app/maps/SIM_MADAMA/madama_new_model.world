@@ -105,7 +105,7 @@
 
     <model name="SIM_CER_ROBOT">
       <include>
-        <uri>model://cer_no_collisions_20m</uri>
+        <uri>model://R1Mk3Gazebo</uri>
       </include>
     </model>
     
