@@ -21,7 +21,8 @@ Detector::Detector(int vadFrequency,
                     int vadSavePriorToDetection,
                     const std::string modelPath,
                     std::string filteredAudioPortOutName,
-                    std::string wakeWordClientPort):
+                    std::string wakeWordClientPort,
+                    int8_t vadReenableKeyword):
                     m_vadFrequency(vadFrequency),
                     m_vadGapAllowance(gapAllowance),
                     m_vadSaveGap(saveGap),
@@ -34,6 +35,7 @@ Detector::Detector(int vadFrequency,
                     m_context((vadFrequency == 16000) ? 64 : 32, 0),
                     m_currentSoundBufferNorm(m_vadNumSamples, 0),
                     m_currentSoundBuffer(m_vadNumSamples, 0),
+                    m_vadReenableKeyword(vadReenableKeyword),
                     m_fillCount(0) {
 
     init_onnx_model(modelPath);
@@ -117,7 +119,11 @@ void Detector::predict(const std::vector<float> &data) {
                 sendSound();
                 m_soundToSend.clear();
                 m_soundDetected = false;
-                // m_rpcClient.stop();
+                if (m_vadReenableKeyword)
+                {
+                    yCDebug(VADAUDIOPROCESSOR) << "Re-enabling keyword";
+                    m_rpcClient.stop();
+                }
                 reset_states();
             }
             else if (m_vadSaveGap)
