@@ -72,6 +72,7 @@
   <connection>
     <from>/audioRecorder_nws/audio:o</from>
     <to>/speechTranscription_nws/sound:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
   </connection>
 
   <connection>

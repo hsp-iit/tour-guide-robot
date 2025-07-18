@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install --fix-missing -y libode8 libace-dev libboo
     liblapack-dev libmumps-dev qml-module-qtmultimedia qml-module-qtquick-dialogs qml-module-qtquick-controls \
     qml-module-qt-labs-settings libqcustomplot-dev qml-module-qt-labs-folderlistmodel libedit-dev \
     libeigen3-dev libjpeg-dev libsimbody-dev libxml2-dev libjs-underscore portaudio19-dev libgtkmm-2.4-dev \
-    libi2c-dev libv4l-dev
+    libi2c-dev libv4l-dev libsoxr-dev
 
 # Create user: user1
 USER root

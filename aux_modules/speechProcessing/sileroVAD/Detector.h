@@ -29,12 +29,13 @@ public:
             int vadSavePriorToDetection,
             const std::string modelPath,
             std::string filteredAudioPortOutName,
-            std::string wakeWordClientPort);
+            std::string wakeWordClientPort,
+            int8_t vadReenableKeyword = 0);
     using TypedReaderCallback<yarp::sig::Sound>::onRead;
     void onRead(yarp::sig::Sound& soundReceived) override;
     float m_vadThreshold;
     int m_vadGapAllowance;
-    
+
 private:
     const int m_vadFrequency;
     const bool m_vadSaveGap;
@@ -46,6 +47,7 @@ private:
     std::vector<int16_t> m_currentSoundBuffer; // Original for downstream processing/synthesis
     std::vector<float> m_context;
     int m_fillCount; // keep track of up to what index the buffer is full
+    int m_vadReenableKeyword; // If 1, reenable the keyword after each audio clip
     bool m_soundDetected{false};
     std::string m_filteredAudioPortOutName;
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
@@ -66,7 +68,7 @@ private:
 
     // Model Inputs
     std::vector<Ort::Value> m_ort_inputs;
-    
+
     std::vector<const char *> m_input_node_names = {"input", "state", "sr"};
     std::vector<float> m_input;
     unsigned int m_size_state = 2 * 1 * 128; // It's FIXED.
@@ -74,7 +76,7 @@ private:
     std::vector<int64_t> m_sr;
 
     int64_t m_input_node_dims[2] = {};
-    const int64_t m_state_node_dims[3] = {2, 1, 128}; 
+    const int64_t m_state_node_dims[3] = {2, 1, 128};
     const int64_t m_sr_node_dims[1] = {1};
 
     // Model Outputs

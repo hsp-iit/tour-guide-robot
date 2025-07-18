@@ -24,6 +24,9 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
     std::string vadServerPort = rf.check("vad_server_port_name", yarp::os::Value("/vad/rpc:i"),
                                                   "Name of the input port for  synchronization rpc port.")
                                              .asString();
+    int8_t vadReenableKeyword = rf.check("vad_reenable_keyword", yarp::os::Value(0),
+                                                  "If 1, reenable the keyword after each audio clip.")
+                                             .asInt8();
 
 
 
@@ -87,7 +90,7 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    
+
     m_audioProcessor = std::make_shared<Detector>(m_vadFrequency,
                                                     m_vadGapAllowance,
                                                     m_vadSaveGap,
@@ -95,7 +98,8 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
                                                     m_vadSavePriorToDetection,
                                                     m_modelPath,
                                                     filteredAudioPortOutName,
-                                                    wakeWordClientPort);
+                                                    wakeWordClientPort,
+                                                    vadReenableKeyword);
 
     m_audioPort.useCallback(*m_audioProcessor);
 
@@ -103,7 +107,7 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
     {
         yCDebug(VADAUDIOPROCESSORCREATOR) << "Cannot open port " << vadServerPort;
         return false;
-    } 
+    }
     m_rpcServer = std::make_unique<SileroVADServer>(m_audioProcessor);
 
     m_rpcServer->yarp().attachAsServer(m_rpcPort);
