@@ -150,11 +150,11 @@ RUN cd icub-main && mkdir build && cd build && \
     make -j11
 ENV ICUB_ROOT=${robotology_install_folder}/icub-main
 ENV ICUB_DIR=${robotology_install_folder}/icub-main/build
-
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${ICUB_DIR}/share/iCub/robots
 # Build robots-configuration devel
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/randaz81/robots-configuration.git -b R1SN003_ros2
+RUN git clone https://github.com/robotology/robots-configuration.git
 
 # Build navigation
 USER ${robotology_install_user}
@@ -214,6 +214,41 @@ ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
 
 USER ${robotology_install_user}
 
+# Ergocub software
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/icub-tech-iit/ergocub-software && \
+    cd ergocub-software && \
+    cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
+ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
+
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ERGOCUB_SOFTWARE_DIR}/share/ergoCub
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ERGOCUB_SOFTWARE_DIR}/share/yarp
+# ergoCub model in Gazebo
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${ERGOCUB_SOFTWARE_DIR}/share/ergoCub/robots
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${ERGOCUB_SOFTWARE_DIR}/share/
+
+
+# r1-models
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN mkdir installed && \
+    git clone https://github.com/leogori/r1-models -b fix_navigation && \
+    cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${user1_home}/installed && \
+    cmake --build build && cmake --build build --target install
+ENV R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models 
+ENV R1_MODELS_DIR=${robotology_install_folder}/r1-models/build
+
+# R1Mk3 model in YARP
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${R1_MODELS_DIR}/share/R1Mk3
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${R1_MODELS_DIR}/share/yarp
+
+# R1Mk3 model in Gazebo
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${R1_MODELS_DIR}/R1Mk3/robots
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${R1_MODELS_DIR}/R1Mk3
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${R1_MODELS_DIR}
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${R1_MODELS_DIR}/share/
+ 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> /home/${robotology_install_user}/.bashrc
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
@@ -221,12 +256,12 @@ ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
 ENV PATH=$PATH:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/headSynchronizer/scripts
 ENV DISPLAY=:1
-ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
-ENV GAZEBO_PLUGIN_PATH=$GazeboYARPPlugins_DIR/lib
-ENV GAZEBO_MODEL_PATH=${robotology_install_folder}/cer-sim/gazebo/
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${robotology_install_folder}/yarp/build/lib/yarp/
+ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:${GazeboYARPPlugins_DIR}/lib
+ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:${robotology_install_folder}/cer-sim/gazebo/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
-ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
+ENV PYTHONPATH=${PYTHONPATH}:${robotology_install_folder}/yarp/bindings/build/lib/python3/
 ENV YARP_CLOCK=/clock
 #ENV CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
 
@@ -240,11 +275,11 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop && mkdir build && cd build && cmake ..
 RUN git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro}
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b feat/madama_new_model_iron
 RUN cd tour-guide-robot && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j11
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build
-ENV YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${YARP_DIR}/share/yarp:${ICUB_DIR}/share/iCub:${navigation_DIR}/share/navigation:${TOUR_GUIDE_ROBOT_SOURCE_DIR}/build/share/tour-guide-robot:${CER_DIR}/share/CER:${ICUBcontrib_DIR}/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${WEB_TELEOP_DIR}/share/yarp-web-teleop
 
 # R1 NETWORK CONFIG
 RUN yarp conf 172.17.0.1 10000
@@ -255,7 +290,7 @@ ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distr
 ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
 sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-
+ENV CYCLONEDDS_URI=/usr/local/src/robot/tour-guide-robot/app/navigation2/conf/cyclone_dds_sim_settings.xml
 # Set ROS2 environment
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh
 RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh
