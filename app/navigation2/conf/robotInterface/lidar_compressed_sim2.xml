@@ -14,20 +14,20 @@
 
     <device xmlns:xi="http://www.w3.org/2001/XInclude" name="sender" type="rangefinder2D_nws_ros2">
         <param name="period"> 0.01 </param>
-     
+
         <action phase="startup" level="6" type="attach">
            <paramlist name="networks">
               <elem name="cer_laser">  recev </elem>
            </paramlist>
         </action>
-     
+
         <param name ="node_name"> cer_laser_local </param>
         <param name ="topic_name"> /laser_local</param>
         <param name ="frame_id"> mobile_base_double_lidar </param>
-     
+
         <action phase="shutdown" level="5" type="detach" />
     </device>
-    
+
     <device xmlns:xi="http://www.w3.org/2001/XInclude" name="sender_yarp" type="rangefinder2D_nws_yarp">
         <param name="period"> 0.01 </param>
         <param name="name">    /laser_local:o </param>

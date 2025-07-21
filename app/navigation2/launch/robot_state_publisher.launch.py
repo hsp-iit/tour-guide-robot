@@ -9,7 +9,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     cersimFolder = os.environ.get('CER_SIM_ROOT_DIR')
 
-    urdf = os.path.abspath(cersimFolder+"/R1SN00x_urdf/R1SN003/cer.urdf")
+    urdf = os.path.abspath("/usr/local/src/robot/r1-models/build/R1Mk3/robots/R1Mk3Gazebo/model.urdf")
     with open(urdf, 'r') as infp:
         robot_desc = infp.read()
 

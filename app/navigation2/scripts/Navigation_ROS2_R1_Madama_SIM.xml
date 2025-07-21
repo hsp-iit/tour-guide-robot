@@ -5,8 +5,8 @@
  
     <!-- modules -->
     <module>
-       <name>ros2</name>
-       <parameters>launch robot_state_publisher.launch.py use_sim_time:=true</parameters>
+       <name>ros2_launch.sh</name>
+       <parameters>robot_state_publisher.launch.py use_sim_time:=true</parameters>
        <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
        <node>console</node>
     </module>
@@ -43,8 +43,8 @@
     </module>
  
     <module>
-       <name>ros2</name>
-       <parameters>launch amcl.launch.py use_sim_time:=true</parameters>
+       <name>ros2_launch.sh</name>
+       <parameters>amcl.launch.py use_sim_time:=true</parameters>
        <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
        <node>console</node>
     </module>
@@ -56,15 +56,15 @@
     </module>
  
     <module>
-       <name>ros2</name>
-       <parameters>launch navigation.launch.py use_sim_time:=true</parameters>
+       <name>ros2_launch.sh</name>
+       <parameters> navigation.launch.py use_sim_time:=true</parameters>
        <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
        <node>console</node>
     </module>
  
     <module>
-       <name>ros2</name>
-       <parameters>launch costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml use_sim_time:=true</parameters>
+       <name>ros2_launch.sh</name>
+       <parameters> costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml use_sim_time:=true</parameters>
        <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
        <node>console</node>
     </module>
@@ -77,7 +77,7 @@
  
     <module>
        <name>headObstaclesScanner</name>
-       <parameters>--GENERAL::robot SIM_CER_ROBOT --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+       <parameters>--GENERAL::robot r1mk3Sim --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
        <node>console</node>
     </module>
  
