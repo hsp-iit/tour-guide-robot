@@ -1,0 +1,94 @@
+<application>
+    <name>Navigation_ROS2_R1_Madama_SIM</name>
+    <dependencies>
+    </dependencies>
+ 
+    <!-- modules -->
+    <module>
+       <name>ros2_launch.sh</name>
+       <parameters>robot_state_publisher.launch.py use_sim_time:=true</parameters>
+       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>baseControl2</name>
+       <parameters>--context baseControl2_SIM_new_model --from cer_baseControl2_ros2.ini --skip_robot_interface_check</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>./set_navigation_position_sim.sh</name>
+       <parameters></parameters>
+       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>yarprobotinterface</name>
+       <parameters>--context navigation2 --from pointCloudCreator_sim.ini</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>yarprobotinterface</name>
+       <parameters>--context navigation2 --from lidar_compressed_sim.ini</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>yarprobotinterface</name>
+       <parameters>--context navigation2 --from mapServer.ini</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>ros2_launch.sh</name>
+       <parameters>amcl.launch.py use_sim_time:=true</parameters>
+       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>yarprobotinterface</name>
+       <parameters>--context navigation2 --from localizationROS2.ini --init_map madama3</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>ros2_launch.sh</name>
+       <parameters> navigation.launch.py use_sim_time:=true</parameters>
+       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>ros2_launch.sh</name>
+       <parameters> costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml use_sim_time:=true</parameters>
+       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>yarprobotinterface</name>
+       <parameters>--context navigation2 --from navigator2D.ini</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>headObstaclesScanner</name>
+       <parameters>--GENERAL::robot r1mk3Sim --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+       <node>console</node>
+    </module>
+ 
+    <module>
+       <name>rviz2</name>
+       <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
+       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/</workdir>
+       <node>console</node>
+    </module>
+ 
+    <!-- connections -->
+ 
+ </application>
+ 
