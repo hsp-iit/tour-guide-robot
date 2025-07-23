@@ -126,7 +126,7 @@ RUN cd yarp && cd bindings &&  mkdir build && cd build && \
     cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
 
 # Install YARP completion
-RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
+RUN sudo ln -s ${YARP_DIR}/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
 # Build icub-firmware-shared
 USER ${robotology_install_user}
