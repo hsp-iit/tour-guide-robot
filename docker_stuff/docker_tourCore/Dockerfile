@@ -247,7 +247,7 @@ ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
     YARP_COLORED_OUTPUT=1 \
     QT_X11_NO_MITSHM=1 \
     PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
-    CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
+    CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp

@@ -1,6 +1,8 @@
 UBUNTU_DEF="ubuntu:24.04"
 CUDA_DEF="nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04"
 ROS_DEF="jazzy"
+CYCLON_CONF_PATH_FBK="../../app/navigation2/conf/cyclone_dds_settings.xml"
+CYCLON_CONF_PATH_DEF="${HOME}/.config/cyclone_dds_settings.xml"
 GAZEBO_DEF="harmonic"
 YARP_DEF="master"
 CUDA_SUFFIX="cuda.12.8.1-cudnn"
