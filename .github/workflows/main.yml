@@ -112,6 +112,7 @@ jobs:
             yarp_branch=${{matrix.config.yarp_branch}}
             ros2_dev_branch=${{matrix.config.ros2_dev_branch}}
             gazebo_version=${{matrix.config.gazebo_version}}
+            gazebo_version=${{matrix.config.gazebo_version}}
           push: true
           tags: |
             elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_${{matrix.config.ros2_distro}}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}

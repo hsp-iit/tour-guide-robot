@@ -126,7 +126,7 @@ RUN cd yarp && cd bindings &&  mkdir build && cd build && \
     cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
 
 # Install YARP completion
-RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
+RUN sudo ln -s ${YARP_DIR}/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
 # Build icub-firmware-shared
 USER ${robotology_install_user}
@@ -254,7 +254,7 @@ ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
     YARP_COLORED_OUTPUT=1 \
     QT_X11_NO_MITSHM=1 \
     PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
-    CYCLONEDDS_URI=${robotology_install_folder}/tour-guide-robot/app/navigation2/conf/cyclone_dds_settings.xml
+    CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp

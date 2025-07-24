@@ -16,6 +16,11 @@ usage()
     echo "    -e, --repo  + \"repo_name\"          Build/run the image with the passed repository reference"
     echo "    -r, --ros_distro + \"distro_name\"   Build/run the image with the passed distro (the passed value will be also used to compose the image tag)"
     echo "    -y, --yarp_branch + \"yarp branch\"  Build/run the image with the passed yarp branch (the passed value, if different from \"master\", will be also used to compose the image tag)."
+    echo "                                         If not passed, the branch used will be \"master\""
+    echo "        --inner_cycl_dds               If passed, the cyclone dds configuration file in app/navigation2/conf will be used, otherwise the one in ~/.config will be used."
+    echo "        --dds_conf_path + \"path\"     If passed, the cyclone dds configuration file will be copied from the specified path to the container. If not passed, the default one will be used."
+    echo "        --nogpu                        If passed, the image will be run without gpu support (only for ubuntu images)"
+    echo "    -v, --version                      Print the current version"
     echo "                                       If not passed, the branch used will be \"master\""
     echo "    -p, --print                        Just print the image name that would be built/run with the passed options"
     echo "    -h, --help                         See current help"
@@ -117,6 +122,26 @@ get_opts()
                 shift
                 RUN_WITH_GPU=false
                 ;;
+            --innner_cycl_dds)
+                shift
+                CYCLON_CONF_PATH=$CYCLON_CONF_PATH_FBK
+                ;;
+            --dds_conf_path)
+                shift
+                if [[ -z $1 ]]; then
+                    echo "You must specify a path for the cyclone dds configuration file"
+                    usage
+                fi
+                CYCLON_CONF_PATH=$1
+                if [[ ! -f $CYCLON_CONF_PATH ]]; then
+                    echo "The cyclone dds configuration file does not exist in the specified path: $CYCLON_CONF_PATH"
+                    echo "Using the default one: $CYCLON_CONF_PATH_DEF"
+                    CYCLON_CONF_PATH=$CYCLON_CONF_PATH_DEF
+                else
+                    echo "Using the cyclone dds configuration file in: $CYCLON_CONF_PATH"
+                fi
+                shift
+                ;;
             -h|--help)
                 usage
                 ;;
@@ -163,6 +188,7 @@ IMAGE=$UBUNTU_DEF
 REPO=$REPO_DEF
 REPO_SET=false
 BASE_TAG=$BASE_TAG_DEF
+CYCLON_CONF_PATH=$CYCLON_CONF_PATH_DEF
 
 ############################################################
 # Process the input options. Add options as needed.        #
@@ -185,9 +211,9 @@ if [[ $GONNA_BUILD == "true" ]]; then
 else
     sudo xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
+        sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
     elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
+        sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
     else
         echo "ERROR: You cannot run a nVidia based image without gpu support"
     fi
