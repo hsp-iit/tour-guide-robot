@@ -239,21 +239,21 @@ RUN mkdir installed && \
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
-ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins \
-    GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build \
-    GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib \
-    R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models \
-    GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots \
-    TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
-    ROBOT_CODE=${robotology_install_folder} \
-    CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim \
-    PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts:${robotology_install_folder}/tour-guide-robot/app/headSynchronizer/scripts \
-    DISPLAY=:1 \
-    LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/ \
-    YARP_COLORED_OUTPUT=1 \
-    QT_X11_NO_MITSHM=1 \
-    PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
-    CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
+ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins
+ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
+ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
+ENV R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models
+ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots
+ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
+ENV ROBOT_CODE=${robotology_install_folder}
+ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
+ENV PATH=$PATH:$YARP_DIR/bin:$navigation_DIR/bin:$CER_DIR/bin:$ICUB_DIR/bin:$ICUB_DIR:${robotology_install_folder}/iCubContrib/bin:${robotology_install_folder}/Groot/build:${robotology_install_folder}/tour-guide-robot/build/bin:${robotology_install_folder}/tour-guide-robot/app/navigation2/scripts:${robotology_install_folder}/tour-guide-robot/app/headSynchronizer/scripts
+ENV DISPLAY=:1
+ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
+ENV YARP_COLORED_OUTPUT=1
+ENV QT_X11_NO_MITSHM=1
+ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
+ENV CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
