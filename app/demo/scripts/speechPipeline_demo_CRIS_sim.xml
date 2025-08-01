@@ -20,7 +20,7 @@
 
   <module>
     <name>sileroVAD</name>
-    <parameters></parameters>
+    <parameters>--vad_reenable_keyword 1</parameters>
     <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
     <node>console-llm</node>
   </module>
@@ -147,6 +147,12 @@
   <connection>
     <from>/audioRecorder_nws/status:o</from>
     <to>/faceExpressionImage/earsAudioStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioRecorder_nws/audio:o</from>
+    <to>/faceExpressionImage/earsAudioData:i</to>
     <protocol>fast_tcp</protocol>
   </connection>
 
