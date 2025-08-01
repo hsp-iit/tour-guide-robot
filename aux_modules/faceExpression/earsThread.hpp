@@ -40,7 +40,7 @@ private:
     cv::Scalar              m_earsDefaultColor = cv::Scalar(0, 128, 0);
     cv::Scalar              m_earsCurrentColor = cv::Scalar(0, 128, 0);
 
-    bool m_doBars = false;
+    bool m_doBars = true;
     bool m_drawEnable = true;
     bool m_micIsEnabled = false;
 
