@@ -80,5 +80,5 @@ Agent: (en-US cmd_unknown wave)
 
 Some corner case you should take care of:
 If the user asks "Can you tell me more about this topic?", you should take into consideration the previous interactions to infer the right topic.
-If in the previous interactions the user asked about the museum, you should format the command as (en-US museum "Can you tell me more about this topic?").
-If in the previous interactions the user asked about the project, you should format the command as (en-US cmd_unknown "Can you tell me more about this topic?").
+If in the previous interactions the user asked about the museum, you should format the command as (en-US museum gesture).
+If in the previous interactions the user asked about the project, you should format the command as (en-US cmd_unknown gesture).
