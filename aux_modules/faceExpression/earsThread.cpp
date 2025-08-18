@@ -110,7 +110,23 @@ void EarsThread::run()
             float divider=10000;
             // float divider=32800;
             percentage = fabs((float)max_val / divider);
-            updateBars(percentage);
+            try // this is a BAD solution.
+                ///TODO: Investigate further the crash issue
+            {
+                updateBars(percentage);
+            }
+            catch (const std::exception& e)
+            {
+                yError() << "Error updating bars:" << e.what();
+                if(m_micIsEnabled==false){
+                    m_earBar.setTo(Scalar(0,0,255));
+                    percentage=0.5;
+                }
+                else
+                {
+                    m_earBar.setTo(m_earsDefaultColor);
+                }
+            }
             yInfo() << percentage;
         }
     }
