@@ -1,4 +1,4 @@
-#include "WakeWordModule.h" 
+#include "WakeWordModule.h"
 
 #include <iostream>
 
@@ -26,11 +26,11 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
                                                   "Porcupine access key")
                                              .asString();
 
-    std::string modelPath = rf.check("model_path", yarp::os::Value("/usr/local/src/robot/speech/tour-guide-robot/aux_modules/speechProcessing/wakeWordDetection/porcupine/lib/common/porcupine_params.pv"),
+    std::string modelPath = rf.check("model_path", yarp::os::Value("/usr/local/src/robot/tour-guide-robot/aux_modules/speechProcessing/wakeWordDetection/porcupine/lib/common/porcupine_params.pv"),
                                                   "Path to wake word detector model")
                                              .asString();
 
-    std::string keywordPath = rf.check("keyword_path", yarp::os::Value("/usr/local/src/robot/speech/tour-guide-robot/Hey-R-one_en_linux_v3_0_0.ppn"),
+    std::string keywordPath = rf.check("keyword_path", yarp::os::Value("/usr/local/src/robot/tour-guide-robot/aux_modules/speechProcessing/wakeWordDetection/demo/Hey-R-one_en_linux_v3_0_0.ppn"),
                                                   "Path to ppn file containing keyword info")
                                              .asString();
 
@@ -46,14 +46,14 @@ bool WakeWordModule::configure(yarp::os::ResourceFinder &rf) {
     {
         yCDebug(WAKEWORDMODULE) << "Cannot open port " << audioPortInName;
         return false;
-    } 
+    }
     m_audioPortIn.useCallback(*m_callback);
 
     if (!m_rpcPort.open(wakeWordServerPort))
     {
         yCDebug(WAKEWORDMODULE) << "Cannot open port " << wakeWordServerPort;
         return false;
-    } 
+    }
     m_rpcServer = std::make_unique<WakeServer>(m_callback);
 
     m_rpcServer->yarp().attachAsServer(m_rpcPort);
