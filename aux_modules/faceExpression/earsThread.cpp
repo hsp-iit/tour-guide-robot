@@ -106,27 +106,11 @@ void EarsThread::run()
         if(data_audio){
             auto vec= data_audio->getChannel(0);
       	    short int max_val = *std::max_element(vec.begin(),vec.end());
-//            max_val = 30000;
+            // max_val = 30000;
             float divider=10000;
             // float divider=32800;
             percentage = fabs((float)max_val / divider);
-            try // this is a BAD solution.
-                ///TODO: Investigate further the crash issue
-            {
-                updateBars(percentage);
-            }
-            catch (const std::exception& e)
-            {
-                yError() << "Error updating bars:" << e.what();
-                if(m_micIsEnabled==false){
-                    m_earBar.setTo(Scalar(0,0,255));
-                    percentage=0.5;
-                }
-                else
-                {
-                    m_earBar.setTo(m_earsDefaultColor);
-                }
-            }
+            updateBars(percentage);
             yInfo() << percentage;
         }
     }
@@ -140,7 +124,8 @@ void EarsThread::run()
 bool EarsThread::updateBars(float percentage)
 {
     lock_guard<mutex> faceguard(m_drawing_mutex);
-
+    if(percentage > 1.00)
+        percentage = 1.00;
     earBar0_len = earBar0_minLen + (earBar0_maxLen - earBar0_minLen) *  percentage;
     earBar1_len = earBar1_minLen + (earBar1_maxLen - earBar1_minLen) *  percentage;
 
