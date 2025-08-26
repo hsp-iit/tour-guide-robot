@@ -91,12 +91,13 @@ void EarsThread::run()
 
     float percentage = 0.5;
 
-    yWarning("Check mic");
     yarp::sig::AudioRecorderStatus *rec_status = m_audioStatusPort.read(false);
     if (rec_status)
     {
+        bool old_mic_status = m_micIsEnabled;
         m_micIsEnabled = rec_status->enabled; //&& rec_status->current_buffer_size > 0;
-        yWarning("We got mic status %d",m_micIsEnabled);
+        if(m_micIsEnabled != old_mic_status)
+            yDebug("We got mic status %d",m_micIsEnabled);
     }
 
     yarp::sig::Sound* data_audio = m_audioRecPort.read(false);
@@ -105,7 +106,7 @@ void EarsThread::run()
         if(data_audio){
             auto vec= data_audio->getChannel(0);
       	    short int max_val = *std::max_element(vec.begin(),vec.end());
-//            max_val = 30000;
+            // max_val = 30000;
             float divider=10000;
             // float divider=32800;
             percentage = fabs((float)max_val / divider);
@@ -123,7 +124,8 @@ void EarsThread::run()
 bool EarsThread::updateBars(float percentage)
 {
     lock_guard<mutex> faceguard(m_drawing_mutex);
-
+    if(percentage > 1.00)
+        percentage = 1.00;
     earBar0_len = earBar0_minLen + (earBar0_maxLen - earBar0_minLen) *  percentage;
     earBar1_len = earBar1_minLen + (earBar1_maxLen - earBar1_minLen) *  percentage;
 
