@@ -116,4 +116,10 @@
     <protocol>fast_tcp</protocol>
   </connection>
 
+  <connection>
+    <from>/audioRecorder_nws/audio:o</from>
+    <to>/faceExpressionImage/earsAudioData:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
 </application>
