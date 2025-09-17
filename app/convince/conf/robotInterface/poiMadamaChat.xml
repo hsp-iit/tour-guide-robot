@@ -7,7 +7,7 @@ SPDX-License-Identifier: BSD-3-Clause
 <robot name="PoIMadamaLLMServer" build="2" portprefix="/poi_madama_chat" xmlns:xi="http://www.w3.org/2001/XInclude">
     <devices>
         <device name="poiMadamaChat" type="GPTDevice">
-            <param extern-name="poi_prompt_ctx" name="prompt_context">llmTest</param>
+            <param extern-name="poi_prompt_ctx" name="prompt_context">convince</param>
             <param extern-name="poi_prompt" name="prompt_file">poi_madama_prompt.txt</param>
         </device>
         <device name="LLM_nws" type="LLM_nws_yarp">
