@@ -91,6 +91,27 @@
     </module>
 
     <module>
+        <name>yarpActionsPlayer</name>
+        <parameters> --filename configuration.ini --execute</parameters>
+        <workdir>/home/user1/UC3/conf/animations/</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_cpp_dance_component</name>
+        <parameters>run dance_component dance_component --from config.ini</parameters>
+        <workdir>/home/user1/UC3/src/components/dance_component/config</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_execute_dance_component</name>
+        <parameters>run execute_dance_component execute_dance_component --from config.ini</parameters>
+        <workdir>/home/user1/UC3/src/components/execute_dance_component/config</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
         <name>ros2_cpp_dialog_component</name>
         <parameters>run dialog_component dialog_component --from config.ini</parameters>
         <workdir>/home/user1/UC3/src/components/dialog_component/cpp_dialog_component/config</workdir>
