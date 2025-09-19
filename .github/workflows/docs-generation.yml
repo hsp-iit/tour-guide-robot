@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: feat/docs  # ensure we are on the correct branch
 
       - name: Set up Python
         uses: actions/setup-python@v5
