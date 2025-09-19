@@ -78,7 +78,7 @@
 
    <module>
       <name>ros2_launch.sh</name>
-      <parameters>navigation.launch.py</parameters>
+      <parameters>navigation.launch.py params_file:=../conf/nav2_params_erzelli.yaml</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
