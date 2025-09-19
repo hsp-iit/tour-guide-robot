@@ -1,0 +1,31 @@
+{
+    "projects": {
+        "convince": "This folder contains applications that allow R1 to dialog with users in the CONVINCE project Use Case 3. For more information about the project, please refer to the [UC3 repository](https://github.com/convince-project/UC3)."
+    },
+    "applications": {
+        "convince_new_dialog_VAD_robot": "Starts the convince dialog pipeline with VAD for execution on the robot.",
+        "convince_new_dialog_VAD_test": "Starts the convince dialog pipeline with VAD for execution in simulation.",
+        "convince_new_dialog_test": "Starts the convince dialog pipeline for execution in simulation."
+    },
+    "modules": {
+        "yarprobotinterface --context speechPipeline --from micAudio.ini --mic_sound_on_stop 0 --mic_start 1 --mic_min_samples 4000 --mic_max_samples 4000": "Starts the speech pipeline with microphone input.",
+        "python3 oww.py": "Runs the OpenWakeWord detection script.",
+        "sileroVAD": "Voice Activity Detection using Silero models.",
+        "python3 play_notification.py": "Plays a notification sound.",
+        "yarprobotinterface --context vadModule --from audioPlayer.ini": "Starts the audio player module.",
+        "yarprobotinterface --context convince --from madamaChat.ini": "Starts the convince module with madamaChat configuration.",
+        "yarprobotinterface --context convince --from poiMadamaChat.ini": "Starts the convince module with poiMadamaChat configuration.",
+        "yarprobotinterface --context convince --from welcomeTalkChat.ini": "Starts the convince module with welcomeTalkChat configuration.",
+        "yarprobotinterface --context speechPipeline --from azureSynthesizer.ini": "Starts the speech pipeline with Azure synthesizer.",
+        "yarprobotinterface --context speechPipeline --from azureTranscription.ini": "Starts the speech pipeline with Azure transcription.",
+        "ros2_scheduler_component run scheduler_component scheduler_component conf/tours.json TOUR_MADAMA_3": "Runs the ROS2 scheduler component.",
+        "ros2_speech_to_text_component run speech_to_text_component speech_to_text_component": "Runs the ROS2 speech to text component.",
+        "ros2_text_to_speech_component run text_to_speech_component text_to_speech_component --from text_to_speech_config.ini": "Runs the ROS2 text to speech component.",
+        "yarpActionsPlayer --filename configuration.ini --execute": "Executes the YARP actions player.",
+        "ros2_cpp_dance_component run dance_component dance_component --from config.ini": "Runs the ROS2 C++ dance component.",
+        "ros2_execute_dance_component run execute_dance_component execute_dance_component --from config.ini": "Runs the ROS2 execute dance component.",
+        "ros2_cpp_dialog_component run dialog_component dialog_component --from config.ini": "Runs the ROS2 C++ dialog component.",
+        "ros2_py_dialog_component run py_interaction_cliserv service": "Runs the ROS2 Python dialog component.",
+        "ros2_dialog_skill run dialog_skill dialog_skill": "Runs the ROS2 dialog skill component."
+    }
+}
