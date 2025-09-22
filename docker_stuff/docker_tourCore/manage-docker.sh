@@ -22,11 +22,11 @@ usage()
     echo "        --nogpu                        If passed, the image will be run without gpu support (only for ubuntu images)"
     echo "    -v, --version                      Print the current version"
     echo "                                       If not passed, the branch used will be \"master\""
-    echo "    -p, --print                        Just print the image name that would be built/run with the passed options"
+    echo "    -p, --print                        Just print the command that would be executed to build/run the image"
     echo "    -h, --help                         See current help"
     echo "If the parent image is not specified (neither -u nor -c), the '$UBUNTU_DEF' one will be used"
     echo "If the build type is not specified (neither -d nor -s), the '$DEVEL_SUFFIX' tag will be used"
-    echo "If the ROS2 distro is not specified, 'humble' will be used."
+    echo "If the ROS2 distro is not specified, $ROS_DEF will be used."
     echo "If the repository is not specified, $REPO_DEF will be used."
     echo "WARNING: If a wrong ROS2 distro name is passed, the image build will fail"
 
@@ -122,7 +122,7 @@ get_opts()
                 shift
                 RUN_WITH_GPU=false
                 ;;
-            --innner_cycl_dds)
+            --inner_cycl_dds)
                 shift
                 CYCLON_CONF_PATH=$CYCLON_CONF_PATH_FBK
                 ;;
@@ -137,6 +137,11 @@ get_opts()
                     echo "The cyclone dds configuration file does not exist in the specified path: $CYCLON_CONF_PATH"
                     echo "Using the default one: $CYCLON_CONF_PATH_DEF"
                     CYCLON_CONF_PATH=$CYCLON_CONF_PATH_DEF
+                    if [[ ! -f $CYCLON_CONF_PATH ]]; then
+                        echo "The default cyclone dds configuration file does not exist: $CYCLON_CONF_PATH"
+                        echo "Using the fallback one in the repository: $CYCLON_CONF_PATH_FBK"
+                        CYCLON_CONF_PATH=$CYCLON_CONF_PATH_FBK
+                    fi
                 else
                     echo "Using the cyclone dds configuration file in: $CYCLON_CONF_PATH"
                 fi
@@ -196,13 +201,24 @@ CYCLON_CONF_PATH=$CYCLON_CONF_PATH_DEF
 # Get the options
 get_opts $@
 
-if [[ $YARP_BRANCH != "master" ]]; then
-    YARP_TAG=$YARP_BRANCH$JUNCTION
-fi
+# It doesn't seem a good idea to increase the number of images that much. Let's keep only the yarp branch as variable for image building
+# if [[ $YARP_BRANCH != "master" ]]; then
+#     YARP_TAG=$YARP_BRANCH$JUNCTION
+# fi
 COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
 
 if [[ $JUST_PRINT == "true" ]]; then
-    echo $COMPLETE_IMAGE_NAME
+    if [[ $GONNA_BUILD == "true" ]]; then
+        echo "sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME ."
+    else
+        if [[ $RUN_WITH_GPU == "true" ]]; then
+            echo "sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME"
+        elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
+            echo "sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME"
+        else
+            echo "ERROR: You cannot run a nVidia based image without gpu support"
+        fi
+    fi
     exit
 fi
 
