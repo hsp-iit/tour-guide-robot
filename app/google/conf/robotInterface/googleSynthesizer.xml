@@ -12,6 +12,9 @@
             <param extern-name="synthesis_voice" name="voice_name">
                 it-IT-Neural2-A
             </param>
+            <param name="default_voices">
+                (it-IT-Standard-E en-US-Standard-C)
+            </param>
         </device>
         <device name="synthesizerWrap" type="speechSynthesizer_nws_yarp">
             <action phase="startup" level="5" type="attach">
