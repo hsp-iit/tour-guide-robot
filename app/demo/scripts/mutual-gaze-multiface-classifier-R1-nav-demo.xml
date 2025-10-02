@@ -1,5 +1,5 @@
 <application>
-<name>mutual_gaze_multiface_classifier_R1_demo</name>
+<name>mutual_gaze_multiface_classifier_R1_nav_demo</name>
 <version>1.0</version>
 
 <!-- Modules -->
@@ -38,7 +38,7 @@
 
 	<module>
 		<name>eyeContactManager</name>
-		<parameters>--no_nav</parameters>
+		<parameters></parameters>
 		<node>console</node>
 	</module>
 
