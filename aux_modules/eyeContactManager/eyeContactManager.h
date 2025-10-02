@@ -58,7 +58,7 @@ private:
   double m_period;
   double m_lastEyeContactTime;
   bool m_isHeadReset;
-  
+
   std::string m_gazeInputName;
   std::string m_eyeContactOutputName;
   std::string m_gazeControlName;
@@ -71,7 +71,7 @@ private:
   // Navigation client
   yarp::dev::Nav2D::NavigationStatusEnum m_nav_status;
   yarp::dev::PolyDriver m_pNav;
-  yarp::dev::Nav2D::INavigation2D *m_iNav;
+  yarp::dev::Nav2D::INavigation2D *m_iNav{nullptr};
   std::string m_remote_localization = "/localization2D_nws_yarp";
   std::string m_remote_map = "/map2D_nws_yarp";
   std::string m_remote_navigation = "/navigation2D_nws_yarp";
