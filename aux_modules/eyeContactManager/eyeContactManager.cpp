@@ -112,10 +112,24 @@ bool eyeContactManager::updateModule()
     }
     else
     {
-        lookAtPixel("track-face", closestPerson.x, closestPerson.y);
-        m_lastEyeContactTime = yarp::os::Time::now();
-        m_isHeadReset = false;
-        //m_headSynchronizer.startHearing();
+        switch (contactStatus)
+        {
+        case EyeContactStatus::LOOKING:
+
+            lookAtPixel("track-face", closestPerson.x, closestPerson.y);
+            m_lastEyeContactTime = yarp::os::Time::now();
+            m_isHeadReset = false;
+            //m_headSynchronizer.startHearing();
+            break;
+        case EyeContactStatus::NOT_LOOKING:
+            //m_headSynchronizer.stopHearing();
+            break;
+        case EyeContactStatus::NOBODY:
+            //m_headSynchronizer.stopHearing();
+            break;
+        default:
+            break;
+        }
     }
 
     // reset the head if timeout expires without any eye contact
