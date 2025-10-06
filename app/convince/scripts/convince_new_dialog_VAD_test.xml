@@ -98,23 +98,22 @@
     </module>
 
     <module>
-        <name>ros2_cpp_dance_component</name>
-        <parameters>run dance_component dance_component --from config.ini</parameters>
-        <workdir>/home/user1/UC3/src/components/dance_component/config</workdir>
+        <name>ros2_dance_component</name>
+        <parameters>run dance_component dance_component movements.json</parameters>
+        <workdir>/home/user1/UC3/conf</workdir>
         <node>bt</node>
     </module>
 
     <module>
         <name>ros2_execute_dance_component</name>
-        <parameters>run execute_dance_component execute_dance_component --from config.ini</parameters>
-        <workdir>/home/user1/UC3/src/components/execute_dance_component/config</workdir>
+        <parameters>run execute_dance_component execute_dance_component</parameters>
         <node>bt</node>
     </module>
 
     <module>
         <name>ros2_cpp_dialog_component</name>
         <parameters>run dialog_component dialog_component --from config.ini</parameters>
-        <workdir>/home/user1/UC3/src/components/dialog_component/cpp_dialog_component/config</workdir>
+        <workdir>/home/user1/UC3/</workdir>
         <node>bt</node>
     </module>
 
@@ -171,6 +170,12 @@
         <from>/vad/audio:o</from>
         <to>/SpeechToTextComponent/audio:i</to>
     </connection>
+
+    <application>
+        <name>convince_bt_components_connections</name>
+        <prefix></prefix>
+    </application>
+
     <!-- 
     <connection>
         <from>/speechTranscription_nws/text:o</from>

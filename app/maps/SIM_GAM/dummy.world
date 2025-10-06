@@ -85,9 +85,9 @@
       </spot>
     </light>
 
-    <model name="SIM_CER_ROBOT">
+    <model name="r1mk3Sim">
       <include>
-        <uri>model://cer_no_collisions_20m</uri>
+        <uri>model://R1Mk3Gazebo</uri>
       </include>
     </model>
     
