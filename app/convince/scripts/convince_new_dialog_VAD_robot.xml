@@ -171,10 +171,25 @@
         <to>/SpeechToTextComponent/audio:i</to>
     </connection>
 
-    <application>
+    <connection>
+        <from>/TextToSpeechComponent/batch:o</from>
+        <to>/VerbalOutputBatchReader/batch:i</to>
+    </connection>
+
+    <connection>
+        <from>/DialogComponent/audio:o</from>
+        <to>/audioPlayerWrapper/audio:i</to>
+    </connection>
+
+    <connection>
+        <from>/audioPlayerWrapper/status:o</from>
+        <to>/TextToSpeechComponent/audioPlayerWrapper/status:i</to>
+    </connection>
+
+    <!-- <application>
         <name>convince_bt_components_connections</name>
         <prefix></prefix>
-    </application>
+    </application> -->
     <!-- 
     <connection>
         <from>/speechTranscription_nws/text:o</from>
