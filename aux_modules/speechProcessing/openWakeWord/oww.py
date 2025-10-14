@@ -36,39 +36,39 @@ class WakeWordConfig:
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Wake Word Detection Module')
-    
+
     # Model configuration
     parser.add_argument('--models', nargs='+', default=['./hey_r_one.onnx'],
                       help='Paths to wake word model files')
     parser.add_argument('--framework', default='onnx',
                       help='Inference framework to use (default: onnx)')
-    
+
     # Audio configuration
     parser.add_argument('--buffer-size', type=int, default=1280,
                       help='Audio buffer size (default: 1280)')
     parser.add_argument('--sample-rate', type=int, default=16000,
                       help='Audio sample rate in Hz (default: 16000)')
-    
+
     # Detection configuration
     parser.add_argument('--thresholds', type=float, nargs='+',
                       help='List of thresholds matching the order of models (default: 0.2 for each)')
-    
+
     args = parser.parse_args()
-    
+
     # Create threshold dictionary by matching models with thresholds
     if args.thresholds:
         if len(args.thresholds) != len(args.models):
             print(f"Warning: Number of thresholds ({len(args.thresholds)}) "
                   f"doesn't match number of models ({len(args.models)}). "
                   "Using default threshold 0.2 for remaining models.")
-        
+
         thresholds = {}
         for model_path, threshold in zip(args.models, args.thresholds + [0.2] * len(args.models)):
             model_name = os.path.splitext(os.path.basename(model_path))[0]
             thresholds[model_name] = threshold
     else:
         thresholds = None
-    
+
     return WakeWordConfig(
         model_paths=args.models,
         inference_framework=args.framework,
@@ -83,7 +83,7 @@ def model_inference_process(sound_queue, result_queue, control_queue, config):
         buffer = sound_queue.get()
         if buffer is None:
             break
-            
+
         try:
             while not control_queue.empty():
                 signal = control_queue.get_nowait()
@@ -91,14 +91,14 @@ def model_inference_process(sound_queue, result_queue, control_queue, config):
                     model.reset()
         except queue.Empty:
             pass
-            
+
         try:
             pred = model.predict(buffer)
             result_queue.put((pred, buffer))
         except Exception as e:
             result_queue.put(f"Error: {e}")
 
-class OWWCallback(yarp.TypedReaderCallbackSound):
+class OWWCallback(yarp.SoundCallback):
     def __init__(self, sound_queue, out_port, config):
         super().__init__()
         self.queue = sound_queue
@@ -121,7 +121,7 @@ class OWWCallback(yarp.TypedReaderCallbackSound):
                     out_sound.set(sound.get(j), j)
                 self.out_port.write()
             return
-        
+
         try:
             num_samples = sound.getSamples()
             for i in range(num_samples):
@@ -150,7 +150,7 @@ def rpc_command_listener(rpc_port, face_port, callback, control_queue):
         except Exception as e:
             rpc_port.reply(yarp.Bottle("invalid command"))
             continue
-        
+
         if cmd_str == "stop":
             callback.active = True
             callback.reset_state()
@@ -171,10 +171,10 @@ def color_eyes(face_port, r, g, b):
     face_bottle.addFloat32(g)
     face_bottle.addFloat32(b)
     face_port.write()
-            
+
 def notify_detection(notification_port, face_port):
     color_eyes(face_port, 0, 255, 255)
-    
+
     notification_bottle = notification_port.prepare()
     notification_bottle.clear()
     notification_bottle.addString("play_sound")
@@ -192,7 +192,7 @@ def main():
     control_queue = mp.Queue()
 
     process = mp.Process(
-        target=model_inference_process, 
+        target=model_inference_process,
         args=(sound_queue, result_queue, control_queue, config)
     )
     process.start()
@@ -201,19 +201,19 @@ def main():
     out_sound_port.open("/wake/audio:o")
     in_sound_port = yarp.BufferedPortSound()
     in_sound_port.open("/wake/audio:i")
-    
+
     notification_port = yarp.BufferedPortBottle()
     notification_port.open("/wake/notification:o")
     face_port = yarp.BufferedPortBottle()
     face_port.open("/wake/face:o")
-    
+
     callback = OWWCallback(sound_queue, out_sound_port, config)
     in_sound_port.useCallback(callback)
 
     rpc_port = yarp.RpcServer()
     rpc_port.open("/wake/rpc:i")
     rpc_thread = threading.Thread(
-        target=rpc_command_listener, 
+        target=rpc_command_listener,
         args=(rpc_port, face_port, callback, control_queue)
     )
     rpc_thread.daemon = True
