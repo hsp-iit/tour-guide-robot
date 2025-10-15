@@ -71,7 +71,7 @@
 
     <module>
         <name>ros2_scheduler_component</name>
-        <parameters>run scheduler_component scheduler_component conf/tours.json TOUR_MADAMA_3</parameters>
+        <parameters>run scheduler_component scheduler_component conf/tours-with-italian-dates-in-chars.json TOUR_MADAMA_3</parameters>
         <workdir>/home/user1/UC3</workdir>
         <node>bt</node>
     </module>
@@ -111,6 +111,13 @@
     </module>
 
     <module>
+        <name>ros2_cartesian_pointing_component</name>
+        <parameters>run cartesian_pointing_component cartesian_pointing_component --context r1_cartesian_control --artworks yarp-contexts/contexts/r1_cartesian_control/artwork_coords.json</parameters>
+        <workdir>/home/user1/UC3/</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
         <name>ros2_cpp_dialog_component</name>
         <parameters>run dialog_component dialog_component --from config.ini</parameters>
         <workdir>/home/user1/UC3/</workdir>
@@ -130,13 +137,6 @@
         <workdir />
         <node>bt</node>
     </module>
-
-    <!-- <module>
-        <name>ros2_dialog_tick</name>
-        <parameters>service call /DialogSkill/tick bt_interfaces/srv/TickAction</parameters>
-        <workdir />
-        <node>bt</node>
-    </module> -->
 
     <connection>
         <from>/audioRecorder_nws/audio:o</from>
@@ -171,15 +171,19 @@
         <to>/SpeechToTextComponent/audio:i</to>
     </connection>
 
-    <application>
-        <name>convince_bt_components_connections</name>
-        <prefix></prefix>
-    </application>
-
-    <!-- 
     <connection>
-        <from>/speechTranscription_nws/text:o</from>
-        <to>/cutString/text:i</to>
-    </connection> -->
+        <from>/TextToSpeechComponent/batch:o</from>
+        <to>/VerbalOutputBatchReader/batch:i</to>
+    </connection>
+
+    <connection>
+        <from>/DialogComponent/audio:o</from>
+        <to>/audioPlayerWrapper/audio:i</to>
+    </connection>
+
+    <connection>
+        <from>/audioPlayerWrapper/status:o</from>
+        <to>/TextToSpeechComponent/audioPlayerWrapper/status:i</to>
+    </connection>
 
 </application>
