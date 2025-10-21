@@ -1,0 +1,36 @@
+<application>
+    <name>monitoring_convince</name>
+    
+    <module>
+        <name>./launch_other.sh</name>
+        <workdir>/home/user1/UC3/monitoring</workdir>
+        <node>/monitor</node>
+    </module>
+
+    <module>
+        <name>./launch_prop10POI.sh</name>
+        <workdir>/home/user1/UC3/monitoring</workdir>
+        <node>/monitor</node>
+    </module>
+
+    <module>
+        <name>python3</name>
+        <parameters>multi_monitor.py</parameters>
+        <workdir>/home/user1/UC3/monitoring</workdir>
+        <node>/monitor</node>
+    </module>
+
+
+     <module>
+        <name>./stop_other.sh</name>
+        <workdir>/home/user1/UC3/monitoring</workdir>
+        <node>/monitor</node>
+    </module>
+
+     <module>
+        <name>./stop_prop10POI.sh</name>
+        <workdir>/home/user1/UC3/monitoring</workdir>
+        <node>/monitor</node>
+    </module>
+
+</application>
