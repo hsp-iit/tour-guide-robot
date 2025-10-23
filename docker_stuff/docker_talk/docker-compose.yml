@@ -10,7 +10,7 @@ x-nlp: &nlp
     - R1_OBR_REMOTE=${R1_OBR_REMOTE:-origin}
     - R1_OBR_BRANCH=${R1_OBR_BRANCH:-master}
     - TOUR_REMOTE=${TOUR_REMOTE:-origin}
-    - TOUR_BRANCH=${TOUR_BRANCH:-master}
+    - TOUR_BRANCH=${TOUR_BRANCH:-jazzy}
     - ROBOT_CODE=${ROBOT_CODE:-/usr/local/src/robot}
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
