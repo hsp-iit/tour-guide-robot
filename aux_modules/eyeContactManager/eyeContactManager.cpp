@@ -72,34 +72,64 @@ EyeContactStatus eyeContactManager::GetClosestPersonLooking(yarp::os::Bottle *pe
 bool eyeContactManager::updateModule()
 {
     yarp::os::Bottle *peopleBottle = m_pGazeInput.read();
+    // if (peopleBottle == nullptr)
+    // {
+    //     yCWarning(EYE_CONTACT) << "No data received";
+    //     yarp::os::Time::delay(0.1);
+    //     return true;
+    // }
     Person closestPerson = Person();
     EyeContactStatus contactStatus = GetClosestPersonLooking(peopleBottle, closestPerson);
 
-    switch (contactStatus)
+    if(m_iNav)
     {
-    case EyeContactStatus::LOOKING:
-        m_iNav->getNavigationStatus(m_nav_status);
-
-        if (m_nav_status != yarp::dev::Nav2D::NavigationStatusEnum::navigation_status_moving)
+        switch (contactStatus)
         {
+        case EyeContactStatus::LOOKING:
+            m_iNav->getNavigationStatus(m_nav_status);
+
+            if (m_nav_status != yarp::dev::Nav2D::NavigationStatusEnum::navigation_status_moving)
+            {
+                lookAtPixel("track-face", closestPerson.x, closestPerson.y);
+                m_lastEyeContactTime = yarp::os::Time::now();
+                m_isHeadReset = false;
+                //m_headSynchronizer.startHearing();
+            }
+            else
+            {
+                resetNeck();
+            }
+            break;
+        case EyeContactStatus::NOT_LOOKING:
+            //m_headSynchronizer.stopHearing();
+            break;
+        case EyeContactStatus::NOBODY:
+            //m_headSynchronizer.stopHearing();
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        switch (contactStatus)
+        {
+        case EyeContactStatus::LOOKING:
+
             lookAtPixel("track-face", closestPerson.x, closestPerson.y);
             m_lastEyeContactTime = yarp::os::Time::now();
             m_isHeadReset = false;
             //m_headSynchronizer.startHearing();
+            break;
+        case EyeContactStatus::NOT_LOOKING:
+            //m_headSynchronizer.stopHearing();
+            break;
+        case EyeContactStatus::NOBODY:
+            //m_headSynchronizer.stopHearing();
+            break;
+        default:
+            break;
         }
-        else
-        {
-            resetNeck();
-        }
-        break;
-    case EyeContactStatus::NOT_LOOKING:
-        //m_headSynchronizer.stopHearing();
-        break;
-    case EyeContactStatus::NOBODY:
-        //m_headSynchronizer.stopHearing();
-        break;
-    default:
-        break;
     }
 
     // reset the head if timeout expires without any eye contact
@@ -163,26 +193,33 @@ bool eyeContactManager::configure(yarp::os::ResourceFinder &rf)
         return false;
     }
 
-    // open the navigation interface
-    yarp::os::Property nav_options;
-    nav_options.put("device", "navigation2D_nwc_yarp");
-    nav_options.put("local", "/eyeContactManager/navigation2D_nwc_yarp");
-    nav_options.put("navigation_server", m_remote_navigation);
-    nav_options.put("map_locations_server", m_remote_map);
-    nav_options.put("localization_server", m_remote_localization);
-    if (m_pNav.open(nav_options) == false)
+    bool noNav = false;
+    if(rf.check("no_nav"))
+        noNav = true;
+
+    if(!noNav)
     {
-        yCError(EYE_CONTACT) << "Unable to open navigation2D_nwc_yarp device";
-        return false;
-    }
-    m_pNav.view(m_iNav);
-    if (m_iNav == 0)
-    {
-        yCError(EYE_CONTACT) << "Unable to open navigation interface";
-        return false;
+        // open the navigation interface
+        yarp::os::Property nav_options;
+        nav_options.put("device", "navigation2D_nwc_yarp");
+        nav_options.put("local", "/eyeContactManager/navigation2D_nwc_yarp");
+        nav_options.put("navigation_server", m_remote_navigation);
+        nav_options.put("map_locations_server", m_remote_map);
+        nav_options.put("localization_server", m_remote_localization);
+        if (m_pNav.open(nav_options) == false)
+        {
+            yCError(EYE_CONTACT) << "Unable to open navigation2D_nwc_yarp device";
+            return false;
+        }
+        m_pNav.view(m_iNav);
+        if (m_iNav == 0)
+        {
+            yCError(EYE_CONTACT) << "Unable to open navigation interface";
+            return false;
+        }
     }
 
-    yCInfo(EYE_CONTACT) << "Configuration succesful.";
+    yCInfo(EYE_CONTACT) << "Configuration successful.";
 
     return true;
 }
@@ -206,9 +243,11 @@ bool eyeContactManager::close()
 {
     m_pEyeContactOutput.close();
     m_pGazeInput.close();
+    yCDebug(EYE_CONTACT) << "Closed ports";
     if (m_pNav.isValid())
         m_pNav.close();
     m_iNav = nullptr;
+    yCDebug(EYE_CONTACT) << "Closed navigation";
     return true;
 }
 
