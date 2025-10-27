@@ -43,7 +43,7 @@ The system is built with a modular architecture consisting of:
 - **Core Applications** (`app/`): Main robot control, navigation, and tour management applications
 - **Auxiliary Modules** (`aux_modules/`): Specialized modules for human interaction, speech processing, and environmental sensing
 - **Docker Environments** (`docker_stuff/`): Containerized development and deployment environments
-- **Hardware Interfaces** (`interfaces/`): YARP and ROS2 communication protocols
+- **Communication Interfaces** (`interfaces/`): YARP communication protocols defined by thrift files
 - **Behavior Trees** (`skills/`): Modular robot behaviors and decision-making logic
 
 ## Quick Start
