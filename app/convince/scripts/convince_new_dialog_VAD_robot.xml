@@ -93,8 +93,8 @@
     <module>
         <name>yarpActionsPlayer</name>
         <parameters> --filename configuration.ini --execute</parameters>
-        <workdir>/home/r1-user/yarpActionsPlayerFiles/convince/animations</workdir>
-        <node>r1-base</node>
+        <workdir>/home/user1/UC3/conf/animations/</workdir>
+        <node>bt</node>
     </module>
 
     <module>
@@ -172,8 +172,13 @@
     </connection>
 
     <connection>
+        <from>/SpeechToTextComponent/text:o</from>
+        <to>/DialogComponent/SpeechToTextClient:i</to>
+    </connection>
+
+    <connection>
         <from>/TextToSpeechComponent/batch:o</from>
-        <to>/VerbalOutputBatchReader/batch:i</to>
+        <to>/DialogComponent/batch:i</to>
     </connection>
 
     <connection>
@@ -185,6 +190,8 @@
         <from>/audioPlayerWrapper/status:o</from>
         <to>/TextToSpeechComponent/audioPlayerWrapper/status:i</to>
     </connection>
+
+    
 
 
 </application>
