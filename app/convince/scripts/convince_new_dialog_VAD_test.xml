@@ -172,8 +172,13 @@
     </connection>
 
     <connection>
+        <from>/SpeechToTextComponent/text:o</from>
+        <to>/DialogComponent/SpeechToTextClient:i</to>
+    </connection>
+
+    <connection>
         <from>/TextToSpeechComponent/batch:o</from>
-        <to>/VerbalOutputBatchReader/batch:i</to>
+        <to>/DialogComponent/batch:i</to>
     </connection>
 
     <connection>
