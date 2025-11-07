@@ -10,11 +10,12 @@ x-nlp: &nlp
     - R1_OBR_REMOTE=${R1_OBR_REMOTE:-origin}
     - R1_OBR_BRANCH=${R1_OBR_BRANCH:-master}
     - TOUR_REMOTE=${TOUR_REMOTE:-origin}
-    - TOUR_BRANCH=${TOUR_BRANCH:-master}
+    - TOUR_BRANCH=${TOUR_BRANCH:-jazzy}
+    - ROBOT_CODE=${ROBOT_CODE:-/usr/local/src/robot}
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
     - "/etc/hosts:/etc/hosts"
-    - "${HOME}/.config/yarp:/home/user1/.config/yarp:rw"
+    - "${HOME}/.config/yarp:/home/yarp-user/.config/yarp:rw"
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"

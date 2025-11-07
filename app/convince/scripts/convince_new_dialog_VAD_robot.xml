@@ -1,0 +1,197 @@
+<application>
+    <name>convince_new_dialog_VAD_robot</name>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context speechPipeline --from micAudio.ini --mic_sound_on_stop 0 --mic_start 1 --mic_min_samples 4000 --mic_max_samples 4000</parameters>
+        <node>r1-torso</node>
+    </module>
+
+    <module>
+        <name>python3</name>
+        <parameters>oww.py</parameters>
+        <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/aux_modules/speechProcessing/openWakeWord</workdir>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>sileroVAD</name>
+        <parameters></parameters>
+        <environment>YARP_LOG_PROCESS_LABEL=VAD</environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>python3</name>
+        <parameters>play_notification.py</parameters>
+        <node>r1-face</node>
+        <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/aux_modules/speechProcessing/wakeWordDetection</workdir>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context vadModule --from audioPlayer.ini</parameters>
+        <node>r1-face</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context convince --from madamaChat.ini</parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context convince --from poiMadamaChat.ini </parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context convince --from welcomeTalkChat.ini </parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context speechPipeline --from azureSynthesizer.ini</parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>yarprobotinterface</name>
+        <parameters>--context speechPipeline --from azureTranscription.ini</parameters>
+        <environment></environment>
+        <node>console-llm</node>
+    </module>
+
+    <module>
+        <name>ros2_scheduler_component</name>
+        <parameters>run scheduler_component scheduler_component conf/tours-with-italian-dates-in-chars.json TOUR_MADAMA_3</parameters>
+        <workdir>/home/user1/UC3</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_speech_to_text_component</name>
+        <parameters>run speech_to_text_component speech_to_text_component</parameters>
+        <workdir>/home/user1/UC3</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_text_to_speech_component</name>
+        <parameters>run text_to_speech_component text_to_speech_component --from text_to_speech_config.ini</parameters>
+        <workdir>/home/user1/UC3/src/components/text_to_speech_component/config</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>yarpActionsPlayer</name>
+        <parameters> --filename configuration.ini --execute</parameters>
+        <workdir>/home/user1/UC3/conf/animations/</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_dance_component</name>
+        <parameters>run dance_component dance_component movements.json</parameters>
+        <workdir>/home/user1/UC3/conf/</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_execute_dance_component</name>
+        <parameters>run execute_dance_component execute_dance_component</parameters>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_cartesian_pointing_component</name>
+        <parameters>run cartesian_pointing_component cartesian_pointing_component --context r1_cartesian_control --artworks yarp-contexts/contexts/r1_cartesian_control/artwork_coords.json</parameters>
+        <workdir>/home/user1/UC3/</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_cpp_dialog_component</name>
+        <parameters>run dialog_component dialog_component --from config.ini</parameters>
+        <workdir>/home/user1/UC3/src/components/dialog_component/cpp_dialog_component/config</workdir>
+        <node>bt</node>
+    </module>
+
+    <module>
+        <name>ros2_py_dialog_component</name>
+        <parameters>run py_interaction_cliserv service</parameters>
+        <workdir />
+        <node>bt</node>
+    </module>
+    
+    <module>
+        <name>ros2_dialog_skill</name>
+        <parameters>run dialog_skill dialog_skill</parameters>
+        <workdir />
+        <node>bt</node>
+    </module>
+
+    <connection>
+        <from>/audioRecorder_nws/audio:o</from>
+        <to>/wake/audio:i</to>
+    </connection>
+
+    <connection>
+        <from>/wake/audio:o</from>
+        <to>/vad/audio:i</to>
+    </connection>
+
+    <connection>
+        <from>/vad/rpc:o</from>
+        <to>/wake/rpc:i</to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/wake/notification:o</from>
+        <to>/wake_notification:i</to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+    
+    <connection>
+        <from>/wake/face:o</from>
+        <to>/faceExpressionImage/rpc </to>
+        <protocol>fast_tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/vad/audio:o</from>
+        <to>/SpeechToTextComponent/audio:i</to>
+    </connection>
+
+    <connection>
+        <from>/SpeechToTextComponent/text:o</from>
+        <to>/DialogComponent/SpeechToTextClient:i</to>
+    </connection>
+
+    <connection>
+        <from>/TextToSpeechComponent/batch:o</from>
+        <to>/DialogComponent/batch:i</to>
+    </connection>
+
+    <connection>
+        <from>/DialogComponent/audio:o</from>
+        <to>/audioPlayerWrapper/audio:i</to>
+    </connection>
+
+    <connection>
+        <from>/audioPlayerWrapper/status:o</from>
+        <to>/TextToSpeechComponent/audioPlayerWrapper/status:i</to>
+    </connection>
+
+    
+
+
+</application>
