@@ -31,16 +31,16 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch robot_state_publisher.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>robot_state_publisher_R1SN003.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
 
    <!-- Frame for external realsense -->
    <module>
-      <name>ros2</name>
-      <parameters>run tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
+      <name>ros2_run.sh</name>
+      <parameters>tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
       <node>r1-base</node>
    </module>
 
@@ -70,8 +70,8 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch amcl.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>amcl.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>r1-base</node>
    </module>
@@ -83,16 +83,16 @@
    </module>
 
    <module>
-      <name>ros2</name>
-      <parameters>launch navigation.launch.py</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>navigation.launch.py</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
    </module>
 
    <module>
 
-      <name>ros2</name>
-      <parameters>launch launch/costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml</parameters>
+      <name>ros2_launch.sh</name>
+      <parameters>launch/costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml</parameters>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/</workdir>
       <node>console</node>
    </module>
