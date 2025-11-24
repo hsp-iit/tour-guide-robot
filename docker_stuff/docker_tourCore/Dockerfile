@@ -33,7 +33,8 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     python3-colcon-common-extensions python3-flake8 python3-flake8-blind-except python3-flake8-builtins \
     python3-flake8-class-newline python3-flake8-comprehensions python3-flake8-deprecated python3-flake8-docstrings \
     python3-flake8-import-order python3-flake8-quotes python3-pytest python3-pytest-cov python3-pytest-repeat \
-    python3-pytest-rerunfailures python3-rosdep python3-vcstool python3-venv && rosdep init && rm -rf /var/lib/apt/lists/*
+    python3-pytest-rerunfailures python3-rosdep python3-vcstool python3-venv && rosdep init && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install yarp dependencies
 RUN apt-get update && apt-get install --fix-missing -y libode8 libace-dev libboost-filesystem-dev libboost-system-dev \
@@ -71,7 +72,8 @@ RUN mkdir Downloads && cd Downloads &&\
     wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
     unzip -q swig_4_2_1_ubuntu_24_04.zip && \
     sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
+    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share && \
+    cd .. && rm -rf Downloads
 
 
 # Build ycm
@@ -196,7 +198,8 @@ ENV CER_ROOT=${robotology_install_folder}/cer \
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
-    cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
+    cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash" && \
+    rm -rf build log
 
 # Ergocub software
 USER ${robotology_install_user}
@@ -218,6 +221,7 @@ RUN mkdir installed && \
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/${ros2_dev_remote}/yarp-devices-ros2 -b ${ros2_dev_branch} && \
     cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build" && \
+    rm -rf build log && \
     cd .. && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
 
 # YARP RPLidar Devices
@@ -231,7 +235,8 @@ ENV yarp-device-rpLidar_ROOT=${robotology_install_folder}/yarp-device-rplidar \
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/icub-contrib-common.git && \
-    cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
+    cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install && \
+    cd ${robotology_install_folder} && rm -rf icub-contrib-common
 ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/lib \
     ICUBcontrib_SHARE=${robotology_install_folder}/iCubContrib/share/ICUBcontrib
 
@@ -258,16 +263,18 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros
 
 # Groot and BT dependencies
 RUN sudo apt-get update && sudo apt-get install --fix-missing -y libgtest-dev libzmq3-dev libboost-dev qtbase5-dev libqt5svg5-dev libdw-dev && \
-cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo rm -rf /var/lib/apt/lists/*
+cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && \
+sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/BehaviorTree/Groot.git && \
 #RUN cd Groot && git submodule update --init --recursive && mkdir build && cd build && cmake .. && sudo make -j11
-    git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install
+    git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install && \
+    cd ${robotology_install_folder} && rm -rf libfvad
 
 # Navigation stuff
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake .. && \
+RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake .. && make -j11 && \
     cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
     /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
@@ -281,7 +288,7 @@ RUN yarp conf 192.168.100.10 10000
 RUN sudo apt-get update && sudo apt-get install --fix-missing -y cyclonedds-dev cyclonedds-tools \
 ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
 ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh && \
