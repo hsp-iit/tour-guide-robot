@@ -240,7 +240,7 @@ RUN git clone https://github.com/robotology/gz-sim-yarp-plugins && \
 # r1-models
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN mkdir installed && \
+RUN mkdir ${user1_home}/installed && \
     git clone https://github.com/icub-tech-iit/r1-models && \
     cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${user1_home}/installed && \
     cmake --build build && cmake --build build --target install
