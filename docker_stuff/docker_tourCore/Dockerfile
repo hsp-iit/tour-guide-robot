@@ -253,8 +253,9 @@ ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
     LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/ \
     YARP_COLORED_OUTPUT=1 \
     QT_X11_NO_MITSHM=1 \
-    PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
-    CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
+    PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
+    # PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
+    # CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -288,11 +289,12 @@ ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
 RUN yarp conf 192.168.100.10 10000
 
 # Possibly temporary ROS2 network middleware change
-RUN sudo apt-get update && sudo apt-get install --fix-missing -y cyclonedds-dev cyclonedds-tools \
-ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
-ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
-sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
-ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+# RUN sudo apt-get update && sudo apt-get install --fix-missing -y cyclonedds-dev cyclonedds-tools \
+# ros-${ros_distro}-cyclonedds-dbgsym ros-${ros_distro}-cyclonedds ros-${ros_distro}-rmw-cyclonedds-cpp \
+# ros-${ros_distro}-rmw-cyclonedds-cpp-dbgsym libcycloneddsidl0 && \
+# sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+# ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ENV RMW_IMPLEMENTATION=rmw_zenoh_cpp
 
 RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh && \
     echo ". /opt/ros/${ros_distro}/setup.bash" >> /home/user1/.entrypoint.sh && \
