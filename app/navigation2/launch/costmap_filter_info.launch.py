@@ -78,7 +78,7 @@ def generate_launch_description():
             emulate_tty=True,  # https://github.com/ros2/launch/issues/188
             parameters=[{'frame_id': "map"},
                         {'topic_name': "/keepout_filter_mask"},
-                        {'yaml_filename': "/usr/local/src/robot/tour-guide-robot/app/maps/cris_new_area_fixed_keepout_mask.yaml"}])
+                        {'yaml_filename': "/usr/local/src/robot/tour-guide-robot/app/maps/madama3keepout.yaml"}])
 
     start_costmap_filter_info_server_cmd = Node(
             package='nav2_map_server',
