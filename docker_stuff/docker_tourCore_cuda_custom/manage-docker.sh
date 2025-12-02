@@ -16,6 +16,10 @@ usage()
     echo "    -e, --repo  + \"repo_name\"          Build/run the image with the passed repository reference"
     echo "    -r, --ros_distro + \"distro_name\"   Build/run the image with the passed distro (the passed value will be also used to compose the image tag)"
     echo "    -y, --yarp_branch + \"yarp branch\"  Build/run the image with the passed yarp branch (the passed value, if different from \"master\", will be also used to compose the image tag)."
+    echo "        --inner_zenoh_router               If passed, the zenoh router configuration file in app/default_configs will be used, otherwise the one in ~/.config will be used."
+    echo "        --inner_zenoh_session              If passed, the zenoh session configuration file in app/default_configs will be used, otherwise the one in ~/.config will be used."
+    echo "        --zenoh_router_conf_path + \"path\"     If passed, the zenoh router configuration file will be copied from the specified path to the container. If not passed, the default one will be used."
+    echo "        --zenoh_session_conf_path + \"path\"    If passed, the zenoh session configuration file will be copied from the specified path to the container. If not passed, the default one will be used."
     echo "    -bi, --base-image + \"base_image\"   Build/run the image with the passed base image"
     echo "    -cv, --cuda-version + \"cuda_version\" Build/run the image with the passed cuda version"
     echo "                                       If not passed, the branch used will be \"master\""
@@ -118,6 +122,56 @@ get_opts()
                 shift
                 RUN_WITH_GPU=false
                 ;;
+            --inner_zenoh_router)
+                shift
+                ZENOH_ROUTER_PATH=$ZENOH_ROUTER_PATH_FBK
+                ;;
+            --inner_zenoh_session)
+                shift
+                ZENOH_SESSION_PATH=$ZENOH_SESSION_PATH_FBK
+                ;;
+            --zenoh_router_conf_path)
+                shift
+                if [[ -z $1 ]]; then
+                    echo "You must specify a path for the   zenoh router configuration file"
+                    usage
+                fi
+                ZENOH_ROUTER_CONF_PATH=$1
+                if [[ ! -f $ZENOH_ROUTER_CONF_PATH ]]; then
+                    echo "The zenoh router configuration file does not exist in the specified path: $ZENOH_ROUTER_CONF_PATH"
+                    echo "Using the default one: $ZENOH_ROUTER_CONF_PATH_DEF"
+                    ZENOH_ROUTER_CONF_PATH=$ZENOH_ROUTER_CONF_PATH_DEF
+                    if [[ ! -f $ZENOH_ROUTER_CONF_PATH ]]; then
+                        echo "The default zenoh router configuration file does not exist: $ZENOH_ROUTER_CONF_PATH"
+                        echo "Using the fallback one in the repository: $ZENOH_ROUTER_CONF_PATH_FBK"
+                        ZENOH_ROUTER_CONF_PATH=$ZENOH_ROUTER_CONF_PATH_FBK
+                    fi
+                else
+                    echo "Using the zenoh router configuration file in: $ZENOH_ROUTER_CONF_PATH"
+                fi
+                shift
+                ;;
+            --zenoh_session_conf_path)
+                shift
+                if [[ -z $1 ]]; then
+                    echo "You must specify a path for the zenoh session configuration file"
+                    usage
+                fi
+                ZENOH_SESSION_CONF_PATH=$1
+                if [[ ! -f $ZENOH_SESSION_CONF_PATH ]]; then
+                    echo "The zenoh session configuration file does not exist in the specified path: $ZENOH_SESSION_CONF_PATH"
+                    echo "Using the default one: $ZENOH_SESSION_CONF_PATH_DEF"
+                    ZENOH_SESSION_CONF_PATH=$ZENOH_SESSION_CONF_PATH_DEF
+                    if [[ ! -f $ZENOH_SESSION_CONF_PATH ]]; then
+                        echo "The default zenoh session configuration file does not exist: $ZENOH_SESSION_CONF_PATH"
+                        echo "Using the fallback one in the repository: $ZENOH_SESSION_CONF_PATH_FBK"
+                        ZENOH_SESSION_CONF_PATH=$ZENOH_SESSION_CONF_PATH_FBK
+                    fi
+                else
+                    echo "Using the zenoh session configuration file in: $ZENOH_SESSION_CONF_PATH"
+                fi
+                shift
+                ;;
             -h|--help)
                 usage
                 ;;
@@ -181,6 +235,8 @@ REPO_SET=false
 BASE_TAG=$BASE_TAG_DEF
 CUDA_VERSION=12.1
 CUDA_VERSION_SET=false
+ZENOH_ROUTER_PATH=$ZENOH_ROUTER_PATH_DEF
+ZENOH_SESSION_PATH=$ZENOH_SESSION_PATH_DEF
 
 ############################################################
 # Process the input options. Add options as needed.        #
@@ -201,14 +257,29 @@ fi
 
 COMPLETE_IMAGE_NAME="$IMAGE${JUNCTION}cuda$CUDA_VERSION"
 
+if [[ $JUST_PRINT == "true" ]]; then
+    if [[ $GONNA_BUILD == "true" ]]; then
+        echo "sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME ."
+    else
+        if [[ $RUN_WITH_GPU == "true" ]]; then
+            echo "sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $ZENOH_ROUTER_PATH:/home/user1/.config/zenoh_router.json5 -v $ZENOH_SESSION_PATH:/home/user1/.config/zenoh_session.json5 -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME"
+        elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
+            echo "sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $ZENOH_ROUTER_PATH:/home/user1/.config/zenoh_router.json5 -v $ZENOH_SESSION_PATH:/home/user1/.config/zenoh_session.json5 -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME"
+        else
+            echo "ERROR: You cannot run a nVidia based image without gpu support"
+        fi
+    fi
+    exit
+fi
+
 if [[ $GONNA_BUILD == "true" ]]; then
-    sudo docker build --build-arg base_img=$IMAGE --build-arg cuda_version=$CUDA_VERSION -t $COMPLETE_IMAGE_NAME .
+    sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
 else
     sudo xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
+        sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $ZENOH_ROUTER_PATH:/home/user1/.config/zenoh_router.json5 -v $ZENOH_SESSION_PATH:/home/user1/.config/zenoh_session.json5 -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
     elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
+        sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $ZENOH_ROUTER_PATH:/home/user1/.config/zenoh_router.json5 -v $ZENOH_SESSION_PATH:/home/user1/.config/zenoh_session.json5 -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
     else
         echo "ERROR: You cannot run a nVidia based image without gpu support"
     fi
