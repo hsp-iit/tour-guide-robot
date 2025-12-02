@@ -253,8 +253,9 @@ ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot \
     LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/ \
     YARP_COLORED_OUTPUT=1 \
     QT_X11_NO_MITSHM=1 \
-    PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
-    # PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
+    PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/ \
+    ZENOH_ROUTER_CONFIG_URI=${user1_home}/.config/zenoh_router.json5 \
+    ZENOH_SESSION_CONFIG_URI=${user1_home}/.config/zenoh_session.json5
     # CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
 
 # Manage yarp port

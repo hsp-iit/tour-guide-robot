@@ -261,6 +261,8 @@ ENV LD_LIBRARY_PATH=${robotology_install_folder}/yarp/build/lib/yarp/
 ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
+ENV ZENOH_ROUTER_CONFIG_URI=${user1_home}/.config/zenoh_router.json5
+ENV ZENOH_SESSION_CONFIG_URI=${user1_home}/.config/zenoh_session.json5
 # ENV CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
 
 # Manage yarp port
