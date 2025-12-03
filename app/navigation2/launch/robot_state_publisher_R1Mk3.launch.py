@@ -7,8 +7,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    r1_models_folder = os.environ.get('R1_MODELS_ROOT_DIR')
-    r1_model_name = os.environ.get('R1_MODEL_NAME', 'R1Mk3')
+    r1_models_folder = os.environ.get('R1_MODELS_SOURCE_DIR')
+    r1_model_name = os.environ.get('R1_MODEL_NAME', 'R1Mk3Gazebo')
 
     urdf = os.path.join(r1_models_folder,'urdf','R1Mk3','robots',r1_model_name,'model.urdf')
     urdf = os.path.abspath(urdf)
