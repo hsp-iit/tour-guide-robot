@@ -248,7 +248,7 @@ COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_
 
 if [[ $JUST_PRINT == "true" ]]; then
     if [[ $GONNA_BUILD == "true" ]]; then
-        echo "sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME ."
+        echo "sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg gazebo_version=$GZ_VERS --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME ."
     else
         if [[ $RUN_WITH_GPU == "true" ]]; then
             echo "sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $ZENOH_ROUTER_PATH:/home/user1/.config/zenoh_router.json5 -v $ZENOH_SESSION_PATH:/home/user1/.config/zenoh_session.json5 -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME"
@@ -262,7 +262,7 @@ if [[ $JUST_PRINT == "true" ]]; then
 fi
 
 if [[ $GONNA_BUILD == "true" ]]; then
-    sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
+    sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg gazebo_version=$GZ_VERS --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
 else
     sudo xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
