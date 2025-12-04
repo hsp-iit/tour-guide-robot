@@ -11,7 +11,7 @@ ARG gazebo_version=harmonic
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_UPDATED_ON=06_06_2024
+ENV DOCKER_UPDATED_ON=02_12_2025
 
 # Install essentials
 RUN apt-get update && apt-get install --fix-missing -y apt software-properties-common sudo psmisc lsb-release \
@@ -166,10 +166,10 @@ ENV navigation_ROOT=${robotology_install_folder}/navigation \
 
 
 # Gazebo
-RUN sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
-    sudo apt-get update && \
-    sudo apt-get install --fix-missing -y gz-${gazebo_version}
+# RUN sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+#     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
+#     sudo apt-get update && \
+#     sudo apt-get install --fix-missing -y gz-${gazebo_version}
 
 # Gz-sim plugins dependencies
 WORKDIR /home/${robotology_install_user}
@@ -187,10 +187,10 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/cer.git && \
     cd cer && mkdir build && cd build && cmake .. \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DENABLE_cermod_cerDoubleLidar=ON \
-            -DENABLE_cermod_cerOdometry=ON \
-            -DENABLE_cermod_tripodMotionControl=ON && make -j11
+    -DCMAKE_BUILD_TYPE=Release \
+    -DENABLE_cermod_cerDoubleLidar=ON \
+    -DENABLE_cermod_cerOdometry=ON \
+    -DENABLE_cermod_tripodMotionControl=ON && make -j11
 ENV CER_ROOT=${robotology_install_folder}/cer \
     CER_DIR=${robotology_install_folder}/cer/build
 
@@ -226,7 +226,7 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/gz-sim-yarp-plugins && \
     cd gz-sim-yarp-plugins && mkdir build && cd build && \
-cmake .. && make -j11
+    /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. && make -j11"
 
 # r1-models
 USER ${robotology_install_user}
