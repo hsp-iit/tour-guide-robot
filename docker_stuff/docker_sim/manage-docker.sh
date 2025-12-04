@@ -212,7 +212,8 @@ CYCLON_CONF_PATH=$CYCLON_CONF_PATH_DEF
 # Get the options
 get_opts $@
 
-if [[ $YARP_BRANCH != "master" ]]; then
+# It doesn't seem a good idea to increase the number of images that much. Let's keep only the yarp branch as variable for image building
+if [[ $YARP_SET == "true" ]]; then
     YARP_TAG=$YARP_BRANCH$JUNCTION
 fi
 COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX

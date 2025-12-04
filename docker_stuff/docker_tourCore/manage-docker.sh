@@ -181,7 +181,6 @@ BUILD_SUFFIX=$DEVEL_SUFFIX
 VERSION="1.0.0"
 ROS_DISTRO=$ROS_DEF
 YARP_BRANCH=$YARP_DEF
-YARP_TAG=""
 PARENT_SUFFIX=$UBUNTU_SUFFIX
 IMAGE_SET=false
 BUILD_SET=false
@@ -202,9 +201,9 @@ CYCLON_CONF_PATH=$CYCLON_CONF_PATH_DEF
 get_opts $@
 
 # It doesn't seem a good idea to increase the number of images that much. Let's keep only the yarp branch as variable for image building
-# if [[ $YARP_BRANCH != "master" ]]; then
-#     YARP_TAG=$YARP_BRANCH$JUNCTION
-# fi
+if [[ $YARP_SET == "true" ]]; then
+    YARP_TAG=$YARP_BRANCH$JUNCTION
+fi
 COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
 
 if [[ $JUST_PRINT == "true" ]]; then

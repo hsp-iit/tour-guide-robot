@@ -168,7 +168,6 @@ BASE_TAG_DEF="tourCore2"
 BUILD_SUFFIX=$DEVEL_SUFFIX
 VERSION="1.0.0"
 YARP_BRANCH=$YARP_DEF
-YARP_TAG=""
 PARENT_SUFFIX=$UBUNTU_SUFFIX
 IMAGE_SET=false
 BUILD_SET=false
@@ -189,7 +188,8 @@ CUDA_VERSION_SET=false
 # Get the options
 get_opts $@
 
-if [[ $YARP_BRANCH != "master" ]]; then
+# It doesn't seem a good idea to increase the number of images that much. Let's keep only the yarp branch as variable for image building
+if [[ $YARP_SET == "true" ]]; then
     YARP_TAG=$YARP_BRANCH$JUNCTION
 fi
 
