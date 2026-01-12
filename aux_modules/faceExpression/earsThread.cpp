@@ -90,7 +90,7 @@ void EarsThread::run()
     }
 
     float percentage = 0.5;
-
+    
     yarp::sig::AudioRecorderStatus *rec_status = m_audioStatusPort.read(false);
     if (rec_status)
     {
@@ -100,8 +100,9 @@ void EarsThread::run()
             yDebug("We got mic status %d",m_micIsEnabled);
     }
 
+
     yarp::sig::Sound* data_audio = m_audioRecPort.read(false);
-    if(m_doBars)
+    if(m_doBars && m_micIsEnabled)
     {
         if(data_audio){
             auto vec= data_audio->getChannel(0);
