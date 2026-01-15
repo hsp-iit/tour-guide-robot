@@ -1,0 +1,75 @@
+<application>
+  <name>FewShotActionReplication</name>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context navigation2 --from realsense2_remote.ini</parameters>
+    <node>r1-torso</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--context headSynchronizer --from faceDisplay.ini</parameters>
+    <node>r1-face</node>
+  </module>
+
+  <module>
+    <name>faceExpressionImage5GTour</name>
+    <parameters></parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>yarpActionsPlayer</name>
+    <parameters>--filename yarpActionPlayer_config.ini --execute</parameters>
+    <workdir>/home/r1-user/yarpActionsPlayerFiles/generic</workdir>
+    <node>r1-base</node>
+  </module>
+
+  <module>
+    <name>python</name>
+    <parameters>action_recognition_module.py</parameters>
+    <workdir>/home/user1/fbrand-few-shots/few-shot-console</workdir>
+    <node>few-shot-container</node>
+  </module>
+
+  <module>
+    <name>python</name>
+    <parameters>robot_behaviour.py</parameters>
+    <workdir>/home/user1/fbrand-few-shots/few-shot-console</workdir>
+    <node>few-shot-container</node>
+  </module>
+
+  <module>
+    <name>yarpview</name>
+    <parameters>--name /actionReconImage:i</parameters>
+    <node>few-shot-container</node>
+  </module>
+
+  <connection>
+    <from>/action_recognition/action:o</from>
+    <to>/action_recognition/action:i</to>
+  </connection>
+
+  <connection>
+    <from>/action_recognition/behaviour:o</from>
+    <to>/yarpActionsPlayer/rpc</to>
+  </connection>
+
+  <connection>
+    <from>/cer/realsense/rgbImage:o</from>
+    <to>/action_recognition/image:i</to>
+  </connection>
+
+  <connection>
+    <from>/cer/realsense/rgbImage:o</from>
+    <to>/actionReconImage:i</to>
+  </connection>
+
+  <connection>
+    <from>/faceExpressionImage/image:o</from>
+    <to>/robot/faceDisplay/image:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+</application>
