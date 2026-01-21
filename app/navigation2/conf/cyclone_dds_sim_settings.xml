@@ -7,10 +7,12 @@
          </Interfaces>
       </General>
       <Discovery>
-         <MaxAutoParticipantIndex>30</MaxAutoParticipantIndex>
+         <MaxAutoParticipantIndex>300</MaxAutoParticipantIndex>
          <ParticipantIndex>auto</ParticipantIndex>
          <Peers>
             <Peer address="localhost"/>
+	                <Peer address="172.17.0.1"/>
+
          </Peers>
       </Discovery>
    </Domain>

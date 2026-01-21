@@ -208,12 +208,12 @@ COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_
 
 if [[ $JUST_PRINT == "true" ]]; then
     if [[ $GONNA_BUILD == "true" ]]; then
-        echo "sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME ."
+        echo "docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME ."
     else
         if [[ $RUN_WITH_GPU == "true" ]]; then
-            echo "sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME"
+            echo "docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME"
         elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
-            echo "sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME"
+            echo "docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME"
         else
             echo "ERROR: You cannot run a nVidia based image without gpu support"
         fi
@@ -222,13 +222,13 @@ if [[ $JUST_PRINT == "true" ]]; then
 fi
 
 if [[ $GONNA_BUILD == "true" ]]; then
-    sudo docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
+    docker build --build-arg base_img=$IMAGE --build-arg ros_distro=$ROS_DISTRO --build-arg yarp_branch=$YARP_BRANCH --build-arg ros2_dev_branch=$ROS2_DEV_BRANCH --build-arg ros2_dev_remote=$ROS2_DEV_REMOTE  -t $COMPLETE_IMAGE_NAME .
 else
-    sudo xhost +
+    xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
+        docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME
     elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
-        sudo docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
+        docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $CYCLON_CONF_PATH:/home/user1/.config/cyclone_dds_settings.xml -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME
     else
         echo "ERROR: You cannot run a nVidia based image without gpu support"
     fi
