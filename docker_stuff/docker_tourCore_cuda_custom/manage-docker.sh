@@ -9,16 +9,18 @@ usage()
     echo "Syntax: ./build-docker.sh [options]"
     echo "options:"
     echo "    -b, --build                        Use the passed options to build a new image. If not passed, the options passed will be used to identify the image to run"
-    echo "    -c, --cuda                         Build/run the image from the nvidia cuda official image ($CUDA_DEF) and with the '$CUDA_SUFFIX' tag"
     echo "    -u, --ubuntu                       Build/run the image from the default ubuntu image ($UBUNTU_DEF) and with the '$UBUNTU_SUFFIX' tag"
+    echo "    -qt                                Build/run the image from the qt6 image ($QT_DEF) and with the '$QT_SUFFIX' tag"
+    echo "    -r, --ros-distro + \"ros_distro\"     Build/run the image with the passed ROS2 distro"
+    echo "                                       If not passed, the '$ROS_DEF' one will be used"
+    echo "        --sim                          Build/run the image with the 'sim' tag, to be used for simulation purposes (e.g. with Gazebo)"
     echo "    -s, --stable                       Build/run the image with the '$STABLE_SUFFIX' tag"
     echo "    -d, --devel                        Build/run the image with the '$DEVEL_SUFFIX' tag"
     echo "    -e, --repo  + \"repo_name\"          Build/run the image with the passed repository reference"
-    echo "    -r, --ros_distro + \"distro_name\"   Build/run the image with the passed distro (the passed value will be also used to compose the image tag)"
-    echo "    -y, --yarp_branch + \"yarp branch\"  Build/run the image with the passed yarp branch (the passed value, if different from \"master\", will be also used to compose the image tag)."
-    echo "    -bi, --base-image + \"base_image\"   Build/run the image with the passed base image"
     echo "    -cv, --cuda-version + \"cuda_version\" Build/run the image with the passed cuda version"
-    echo "                                       If not passed, the branch used will be \"master\""
+    echo "                                       If not passed, the '$CUDA_VERSION' one will be used"
+    echo "        --nogpu                        Run the image without gpu support (only for non nVidia based images)"
+    echo "    -p, --print                        Just print the command that would be executed to build/run the image"
     echo "    -h, --help                         See current help"
     echo "If the parent image is not specified (neither -u nor -c), the '$UBUNTU_DEF' one will be used"
     echo "If the build type is not specified (neither -d nor -s), the '$DEVEL_SUFFIX' tag will be used"
@@ -48,18 +50,31 @@ get_opts()
                     usage
                 fi
                 shift
-                IMAGE=$UBUNTU_DEF
-                PARENT_SUFFIX=$UBUNTU_SUFFIX
+                BASE_TAG=$UBUNTU_DEF
+                BASE_REPO=$UBUNTU_REPO
+                BASE_REPO_SET=true
                 IMAGE_SET=true
                 ;;
-            -c|--cuda)
+            -qt)
                 if [[ $IMAGE_SET == "true" ]]; then
                     echo "Image type already set"
                     usage
                 fi
                 shift
-                IMAGE=$CUDA_DEF
-                PARENT_SUFFIX=$CUDA_SUFFIX
+                BASE_TAG=$QT_DEF
+                BASE_REPO=$QT_REPO
+                BASE_REPO_SET=true
+                IMAGE_SET=true
+                ;;
+            --sim)
+                if [[ $IMAGE_SET == "true" ]]; then
+                    echo "Image type already set"
+                    usage
+                fi
+                shift
+                BASE_TAG=$SIM_DEF
+                BASE_REPO=$UBUNTU_REPO
+                BASE_REPO_SET=true
                 IMAGE_SET=true
                 ;;
             -s|--stable)
@@ -118,22 +133,15 @@ get_opts()
                 shift
                 RUN_WITH_GPU=false
                 ;;
+            -p|--print)
+                shift
+                JUST_PRINT=true
+                ;;
             -h|--help)
                 usage
                 ;;
             -v|--version)
                 version
-                ;;
-            -bi|--base-image)
-                if [[ $IMAGE_SET == "true" ]]; then
-                    echo "Base image already set"
-                    usage
-                fi
-                shift
-                IMAGE=$1
-                IMAGE_SET=true
-                GONNA_BUILD=true
-                shift
                 ;;
             -cv|--cuda-version)
                 if [[ $CUDA_VERSION_SET == "true" ]]; then
@@ -161,25 +169,27 @@ get_opts()
 ############################################################
 
 # Set default values
-source ../docker_mng_vars.sh
-BASE_TAG_DEF="tourCore2"
-
+. ../docker_mng_vars.sh
+UBUNTU_DEF="tourCore2_ubuntu24.04"
+SIM_DEF="tourSim2_ubuntu24.04"
+UBUNTU_REPO="elandini84/r1images"
+QT_DEF="tour_ubuntu_24.04_qt_6.8.3"
+QT_REPO="ste93/convince"
 #Set Variables
 BUILD_SUFFIX=$DEVEL_SUFFIX
 VERSION="1.0.0"
-YARP_BRANCH=$YARP_DEF
-PARENT_SUFFIX=$UBUNTU_SUFFIX
 IMAGE_SET=false
 BUILD_SET=false
 GONNA_BUILD=false
 RUN_WITH_GPU=true
+ROS_DISTRO=$ROS_DEF
 ROS_SET=false
-YARP_SET=false
-IMAGE="elandini84/r1images:tourCore2_ubuntu24.04_jazzy_stable"
+BASE_REPO=$UBUNTU_REPO
+BASE_REPO_SET=false
 REPO=$REPO_DEF
 REPO_SET=false
-BASE_TAG=$BASE_TAG_DEF
-CUDA_VERSION=12.1
+BASE_TAG=${UBUNTU_DEF}
+CUDA_VERSION=12.8
 CUDA_VERSION_SET=false
 
 ############################################################
@@ -188,21 +198,32 @@ CUDA_VERSION_SET=false
 # Get the options
 get_opts $@
 
-# It doesn't seem a good idea to increase the number of images that much. Let's keep only the yarp branch as variable for image building
-if [[ $YARP_SET == "true" ]]; then
-    YARP_TAG=$YARP_BRANCH$JUNCTION
-fi
-
 # if [[$IMAGE_SET == "true"]]; then
 #     COMPLETE_IMAGE_NAME="$IMAGE$JUNCTION$cuda$CUDA_VERSION"
 # else
 #     COMPLETE_IMAGE_NAME=$REPO$REPO_SEP$BASE_TAG$JUNCTION$PARENT_SUFFIX$JUNCTION$ROS_DISTRO$JUNCTION$YARP_TAG$BUILD_SUFFIX
 # fi
 
-COMPLETE_IMAGE_NAME="$IMAGE${JUNCTION}cuda$CUDA_VERSION"
+COMPLETE_IMAGE_NAME="${REPO}${REPO_SEP}${BASE_TAG}${JUNCTION}${ROS_DISTRO}${JUNCTION}cuda${JUNCTION}${CUDA_VERSION}${JUNCTION}${BUILD_SUFFIX}"
+BASE_IMAGE_NAME="${BASE_REPO}${REPO_SEP}${BASE_TAG}${JUNCTION}${ROS_DISTRO}${JUNCTION}${BUILD_SUFFIX}"
+
+if [[ $JUST_PRINT == "true" ]]; then
+    if [[ $GONNA_BUILD == "true" ]]; then
+        echo "docker build --build-arg base_img=$BASE_IMAGE_NAME --build-arg cuda_version=$CUDA_VERSION -t $COMPLETE_IMAGE_NAME ."
+    else
+        if [[ $RUN_WITH_GPU == "true" ]]; then
+            echo "docker run --rm -it --privileged --network host --pid host -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 --gpus all $COMPLETE_IMAGE_NAME"
+        elif [[ $RUN_WITH_GPU == "false" && $IMAGE == $UBUNTU_DEF ]]; then
+            echo "docker run --rm -it --privileged --network host --pid host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM=1 $COMPLETE_IMAGE_NAME"
+        else
+            echo "ERROR: You cannot run a nVidia based image without gpu support"
+        fi
+    fi
+    exit
+fi
 
 if [[ $GONNA_BUILD == "true" ]]; then
-    docker build --build-arg base_img=$IMAGE --build-arg cuda_version=$CUDA_VERSION -t $COMPLETE_IMAGE_NAME .
+    docker build --build-arg base_img=$BASE_IMAGE_NAME --build-arg cuda_version=$CUDA_VERSION -t $COMPLETE_IMAGE_NAME .
 else
     xhost +
     if [[ $RUN_WITH_GPU == "true" ]]; then
