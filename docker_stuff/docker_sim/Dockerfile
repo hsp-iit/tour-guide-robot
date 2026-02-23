@@ -16,7 +16,7 @@ ENV DOCKER_UPDATED_ON=02_12_2025
 # Install essentials
 RUN apt-get update && apt-get install --fix-missing -y apt software-properties-common sudo psmisc lsb-release \
     tmux nano geany vim wget curl build-essential git gitk cmake cmake-curses-gui autoconf xserver-xorg-video-dummy xserver-xorg-legacy \
-    net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales \
+    net-tools terminator libjpeg-dev ffmpeg apt-transport-https ca-certificates gnupg libace-dev ycm-cmake-modules locales mesa-utils \
     python3-setuptools python3-pip iproute2 python3-tornado python-dev-is-python3 lsof iftop iputils-ping gdb bash-completion btop pipx && rm -rf /var/lib/apt/lists/*
 
 RUN sed -i 's/allowed_users=console/allowed_users=anybody/' /etc/X11/Xwrapper.config
@@ -238,6 +238,7 @@ RUN mkdir ${user1_home}/installed && \
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
+RUN echo "source /opt/ros/${ros_distro}/setup.bash;" >> ${user1_home}/.bashrc
 ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins
 ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
 ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
@@ -253,6 +254,9 @@ ENV YARP_COLORED_OUTPUT=1
 ENV QT_X11_NO_MITSHM=1
 ENV PYTHONPATH=$PYTHONPATH:${robotology_install_folder}/yarp/bindings/build/lib/python3/
 ENV CYCLONEDDS_URI=${user1_home}/.config/cyclone_dds_settings.xml
+ENV __NV_PRIME_RENDER_OFFLOAD=1
+ENV __GLX_VENDOR_LIBRARY_NAME=nvidia
+ENV __VK_LAYER_NV_optimus=NVIDIA_only
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
