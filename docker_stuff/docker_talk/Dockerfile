@@ -186,7 +186,7 @@ RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/robo
     cmake -S . -B build
 
 #R1_OBJECT_RETRIEVAL app
-RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/hsp-iit/r1-object-retrieval && \
+RUN git clone --no-checkout --filter=blob:none https://github.com/hsp-iit/r1-object-retrieval && \
     cd r1-object-retrieval && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
     rm CMakeLists.txt && touch CMakeLists.txt && \
     echo "# Copyright: (C) 2025 iCub Facility Istituto Italiano di Tecnologia" >> CMakeLists.txt && \
