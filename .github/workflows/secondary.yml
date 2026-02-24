@@ -106,10 +106,10 @@ jobs:
       run: |
        if [ ${{ github.event_name }} == 'schedule' ]; then
           echo "Pushing custom cuda development image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_devel
+          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_devel
        elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
           echo "Pushing custom cuda stable image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_${{matrix.config.cuda_version}}_stable
+          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_stable
        else
           echo "Failure!"
           exit 1
