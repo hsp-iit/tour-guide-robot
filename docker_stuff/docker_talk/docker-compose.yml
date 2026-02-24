@@ -42,7 +42,7 @@ services:
 
 # Images
   r1-talk-ub24-v2.33-master:
-    image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
+    image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.36
     build:
       context: .
       dockerfile: Dockerfile
@@ -55,16 +55,16 @@ services:
           yarp_version: yarp-3.12
           uid: 1000
           gid: 1000
-          google_cloud_version: tags/2025.01.13
+          google_cloud_version: tags/2025.06.13
 
 # Containers
   r1-talk-ub24-v2.33-master-container:
-    image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
+    image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.36
     <<: *nlp
     container_name: r1-talk-ub24-v2-33-master-container
     command: terminator -g /home/yarp-user/.config/terminator/config
   r1-talk-ub24-v2.33-master-yarprun:
-    image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.33
+    image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.36
     <<: *nlp
     container_name: r1-talk-ub24-v2-33-master-yarprun
     command: bash -c "yarp conf 192.168.100.10 10000 && yarprun --server /console-llm --log"

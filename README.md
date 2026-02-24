@@ -4,7 +4,12 @@
 
 [![Docker build secondary](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/secondary.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/secondary.yml)
 
+
+---
+Only on workflow dispatch
+
 [![Docker build - Old](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/old.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/old.yml)
+---
 
 ## Overview
 
