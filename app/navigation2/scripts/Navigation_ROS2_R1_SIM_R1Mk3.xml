@@ -7,7 +7,7 @@
 
    <module>
       <name>ros2_launch.sh</name>
-      <parameters> r1Mk3_gz_sim.launch.py world:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/SIM_MADAMA/madama_clock.world use_sim_time:=true</parameters>
+      <parameters> r1Mk3_gz_sim.launch.py world:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/SIM_MADAMA/madama_clock_towers.world use_sim_time:=true</parameters>
       <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
       <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
       <node>console</node>
