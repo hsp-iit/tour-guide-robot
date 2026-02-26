@@ -79,60 +79,59 @@
 		<pose>0 0 0 0 0 0</pose>
 	  </include>	 
 	</model>
-
-	<model name="LASER1">
+  	<model name="LASER80">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.45760154724121 -20.30038070678711 0 0 0 3.1322459</pose>
+	    <pose>27.45760154724121 -20.30038070678711 0 0 0 0</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER2">
+	<model name="LASER81">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>0.4901876449584961 2.217283248901367 0 0 0 -1.4978951</pose>
+	    <pose>0.4901876449584961 2.217283248901367 0 0 0 -4.6378951</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER3">
+	<model name="LASER82">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>8.709918975830078 2.7057666778564453 0 0 0 -1.4825693</pose>
+	    <pose>8.709918975830078 2.7057666778564453 0 0 0 -4.62</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER4">
+	<model name="LASER83">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>15.82310676574707 2.7259035110473633 0 0 0 -1.5378542</pose>
+	    <pose>15.82310676574707 2.7259035110473633 0 0 0 -4.68</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER5">
+	<model name="LASER84">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.246578216552734 -0.6916893720626831 0 0 0 3.1337804</pose>
+	    <pose>27.246578216552734 -0.6916893720626831 0 0 0 0</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER6">
+	<model name="LASER85">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.58575439453125 -9.474111557006836 0 0 0 -3.130227</pose>
+	    <pose>27.58575439453125 -9.474111557006836 0 0 0 0</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER7">
+	<model name="LASER86">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.134639739990234 -31.891185760498047 0 0 0 3.0717905</pose>
+	    <pose>24.134639739990234 -31.191185760498047 0 0 0 -1.83</pose>
 	  </include>
 	</model>
 	
-	<model name="LASER8">
+	<model name="LASER87">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>6.548168182373047 -33.079505920410156 0 0 0 1.3943031</pose>
+	    <pose>6.548168182373047 -33.079505920410156 0 0 0 4.53</pose>
 	  </include>
 	</model>
 	
