@@ -236,6 +236,11 @@ RUN mkdir ${user1_home}/installed && \
     cd r1-models && cmake -S . -B build -DCMAKE_INSTALL_PREFIX=${user1_home}/installed && \
     cmake --build build && cmake --build build --target install
 
+# r1-models
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://gitlab.com/LIRS_Projects_archives/LIRS-HMLG.git
+
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
 RUN echo "source /opt/ros/${ros_distro}/setup.bash;" >> ${user1_home}/.bashrc
@@ -244,7 +249,7 @@ ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plug
 ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
 ENV GZ_SIM_SYSTEM_PLUGIN_PATH=${GZ_SIM_SYSTEM_PLUGIN_PATH}:${GZ_SIM_YARP_PLUGINS_DIR}/lib
 ENV R1_MODELS_SOURCE_DIR=${robotology_install_folder}/r1-models
-ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots:${robotology_install_folder}/gz-sim-yarp-plugins/build/models
+ENV GZ_SIM_RESOURCE_PATH=${GZ_SIM_RESOURCE_PATH}:${user1_home}/installed/share:${user1_home}/installed/share/R1Mk3/robots:${robotology_install_folder}/gz-sim-yarp-plugins/build/models:${robotology_install_folder}/LIRS-HMLG
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robotology_install_folder}/tour-guide-robot
 ENV ROBOT_CODE=${robotology_install_folder}
 ENV CER_SIM_ROOT_DIR=${ROBOT_CODE}/cer-sim
