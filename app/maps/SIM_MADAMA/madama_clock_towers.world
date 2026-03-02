@@ -82,56 +82,56 @@
   	<model name="LASER80">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.45760154724121 -20.30038070678711 0 0 0 0</pose>
+	    <pose>27.22760154724121 -19.5038070678711 0 0 0 0</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER81">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>0.4901876449584961 2.217283248901367 0 0 0 -4.6378951</pose>
+	    <pose>0.6401876449584961 2.217283248901367 0 0 0 -4.6378951</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER82">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>8.709918975830078 2.7057666778564453 0 0 0 -4.62</pose>
+	    <pose>8.429918975830078 2.6457666778564453 0 0 0 -4.62</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER83">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>15.82310676574707 2.7259035110473633 0 0 0 -4.68</pose>
+	    <pose>15.25310676574707 2.7259035110473633 0 0 0 -4.68</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER84">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.246578216552734 -0.6916893720626831 0 0 0 0</pose>
+	    <pose>26.606578216552734 -0.3416893720626831 0 0 0 0</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER85">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>27.58575439453125 -9.474111557006836 0 0 0 0</pose>
+	    <pose>27.12575439453125 -8.904111557006836 0 0 0 0</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER86">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>24.134639739990234 -31.191185760498047 0 0 0 -1.83</pose>
+	    <pose>24.334639739990234 -29.871185760498047 0 0 0 -1.83</pose>
 	  </include>
 	</model>
 	
 	<model name="LASER87">
 	  <include>
 	    <uri>model://lidarsensor</uri>
-	    <pose>6.548168182373047 -33.079505920410156 0 0 0 4.53</pose>
+	    <pose>7.138168182373047 -32.949505920410156 0 0 0 4.53</pose>
 	  </include>
 	</model>
 	
