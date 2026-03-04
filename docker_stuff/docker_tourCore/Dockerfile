@@ -292,6 +292,9 @@ RUN echo "#!/bin/bash" >> /home/user1/.entrypoint.sh && \
     chmod +x /home/user1/.entrypoint.sh && \
     sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/user1/.bashrc
 
+RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> ${user1_home}/.bashrc
+RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> ${user1_home}/.bashrc
+
 WORKDIR ${user1_home}
 #RUN sudo updatedb
 # Change the lidar devices permissions inside the docker to be able to start the devices with yarprobotinterface
