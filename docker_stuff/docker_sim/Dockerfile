@@ -243,7 +243,7 @@ RUN git clone https://gitlab.com/LIRS_Projects_archives/LIRS-HMLG.git
 
 # Set environmental variables
 RUN echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \$ '" >> ${user1_home}/.bashrc
-RUN echo "source /opt/ros/${ros_distro}/setup.bash;" >> ${user1_home}/.bashrc
+RUN echo "source /opt/ros/${ros_distro}/setup.bash" >> ${user1_home}/.bashrc
 RUN echo "source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash" >> ${user1_home}/.bashrc
 ENV GZ_SIM_YARP_PLUGINS_SOURCE_DIR=${robotology_install_folder}/gz-sim-yarp-plugins
 ENV GZ_SIM_YARP_PLUGINS_DIR=${GZ_SIM_YARP_PLUGINS_SOURCE_DIR}/build
