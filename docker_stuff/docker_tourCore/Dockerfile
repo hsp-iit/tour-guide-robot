@@ -67,11 +67,14 @@ RUN pip3 install --break-system-packages numpy bpytop
 
 # SWIG 4.21
 WORKDIR ${user1_home}
-RUN mkdir Downloads && cd Downloads &&\
-    wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
-    unzip -q swig_4_2_1_ubuntu_24_04.zip && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
+RUN mkdir -p Downloads && cd Downloads && \
+    # Build SWIG 4.2.1 from source to ensure proper architecture support (no prebuilt x86 binaries)
+    apt-get update && apt-get install --no-install-recommends -y flex bison libpcre3-dev pkg-config libpcre++-dev gettext build-essential automake libtool && \
+    wget -qO swig-4.2.1.tar.gz https://github.com/swig/swig/archive/refs/tags/v4.2.1.tar.gz && \
+    tar xzf swig-4.2.1.tar.gz && cd swig-4.2.1 && \
+    ./autogen.sh || true && ./configure && make -j$(nproc) && sudo make install && \
+    cd / && rm -rf /home/${robotology_install_user}/Downloads/swig-4.2.1* && \
+    apt-get remove --purge -y flex bison libpcre3-dev pkg-config libpcre++-dev gettext automake libtool && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 
 # Build ycm
