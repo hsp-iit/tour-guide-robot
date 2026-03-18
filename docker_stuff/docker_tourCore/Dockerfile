@@ -65,16 +65,24 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${roboto
 
 RUN pip3 install --break-system-packages numpy bpytop
 
-# SWIG 4.21
+# SWIG 4.2.1 - build from source as root to ensure compatibility with target architecture
+USER root
 WORKDIR ${user1_home}
+
+# 1) install build deps and download sources
 RUN mkdir -p Downloads && cd Downloads && \
-    # Build SWIG 4.2.1 from source to ensure proper architecture support (no prebuilt x86 binaries)
-    apt-get update && apt-get install --no-install-recommends -y flex bison libpcre3-dev pkg-config libpcre++-dev gettext build-essential automake libtool && \
+    apt-get update && apt-get install --no-install-recommends -y autoconf automake libtool libtool-bin m4 flex bison libpcre3-dev pkg-config gettext build-essential wget ca-certificates && \
     wget -qO swig-4.2.1.tar.gz https://github.com/swig/swig/archive/refs/tags/v4.2.1.tar.gz && \
-    tar xzf swig-4.2.1.tar.gz && cd swig-4.2.1 && \
-    ./autogen.sh || true && ./configure && make -j$(nproc) && sudo make install && \
-    cd / && rm -rf /home/${robotology_install_user}/Downloads/swig-4.2.1* && \
-    apt-get remove --purge -y flex bison libpcre3-dev pkg-config libpcre++-dev gettext automake libtool && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+    tar xzf swig-4.2.1.tar.gz
+
+# 2) run autogen in source tree
+RUN cd ${user1_home}/Downloads/swig-4.2.1 && ./autogen.sh || true
+
+# 3) configure, build, install and cleanup
+RUN cd ${user1_home}/Downloads/swig-4.2.1 && ./configure --prefix=/usr/ && make -j$(nproc) && make install && \
+    rm -rf /home/${robotology_install_user}/Downloads/swig-4.2.1* && rm -rf /var/lib/apt/lists/*
+
+USER ${robotology_install_user}
 
 
 # Build ycm
