@@ -169,7 +169,7 @@ cd /usr/local/src/robot/silero-vad/src/silero_vad/data
 sudo wget https://github.com/snakers4/silero-models/raw/master/models/silero_vad.onnx
 
 # Or download from alternative source
-sudo wget https://models.silero.ai/models/vad_models/silero_vad.onnx
+sudo wget https://huggingface.co/deepghs/silero-vad-onnx/resolve/main/silero_vad.onnx
 ```
 
 ### Model File Verification

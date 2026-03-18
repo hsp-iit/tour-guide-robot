@@ -1,4 +1,5 @@
 add_subdirectory(messages)
+add_subdirectory(speechMicController)
 if(WAKE_WORD)
     add_subdirectory(wakeWordDetection)
 endif()
