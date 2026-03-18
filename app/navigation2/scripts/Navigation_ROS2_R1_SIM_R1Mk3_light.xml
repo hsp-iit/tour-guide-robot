@@ -1,0 +1,115 @@
+<application>
+   <name>Navigation_ROS2_R1Mk3_SIM_light</name>
+   <dependencies>
+   </dependencies>
+
+   <!-- modules -->
+
+   <module>
+      <name>ros2_launch.sh</name>
+      <parameters> r1Mk3_gz_sim.launch.py world:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/SIM_MADAMA/madama_clock.world use_sim_time:=true</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2_launch.sh</name>
+      <parameters>robot_state_publisher_R1Mk3.launch.py use_sim_time:=true</parameters>
+      <environment>R1_MODEL_NAME=R1Mk3Gazebo_minContacts; YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>baseControl2</name>
+      <parameters>--context baseControl2_SIM --from baseControl2_r1mk3Sim.ini --skip_robot_interface_check</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>./set_navigation_position_r1mk3Sim.sh</name>
+      <parameters></parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/scripts/</workdir>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from pointCloudCreator_r1mk3_sim.ini</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from lidar_compressed_r1mk3_sim.ini</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from mapServer.ini</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2_launch.sh</name>
+      <parameters>amcl.launch.py use_sim_time:=true</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from localizationROS2_r1mk3_sim_madama.ini --init_map madama3</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2_launch.sh</name>
+      <parameters>navigation.launch.py use_sim_time:=true</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>ros2_launch.sh</name>
+      <parameters>costmap_filter_info.launch.py params_file:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/madama3keepout_params.yaml mask:=$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/maps/madama3keepout.yaml use_sim_time:=true</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/launch/</workdir>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>yarprobotinterface</name>
+      <parameters>--context navigation2 --from navigator2D.ini</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>headObstaclesScanner</name>
+      <parameters>--GENERAL::robot SIM_CER_ROBOT --GENERAL::head_mode trajectory --GENERAL::autoconnect --GENERAL::head_pitch 10 --HEAD::circle_range 1</parameters>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <module>
+      <name>rviz2</name>
+      <parameters>-d r1_visualizer.rviz --ros-args --remap use_sim_time:=true</parameters>
+      <workdir>$ENV{TOUR_GUIDE_ROBOT_SOURCE_DIR}/app/navigation2/conf/</workdir>
+      <environment>YARP_CLOCK=$ENV{YARP_DEF_CLOCK}</environment>
+      <node>console</node>
+   </module>
+
+   <!-- connections -->
+
+</application>
