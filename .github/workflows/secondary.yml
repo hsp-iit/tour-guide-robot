@@ -26,39 +26,29 @@ jobs:
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
     - name: Restart docker daemon
       run: sudo systemctl restart docker
-    - uses: actions/checkout@v4
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
+    - uses: actions/checkout@v6
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v4
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the talk Docker image
-      working-directory: ${{matrix.config.work_dir}}
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development talk image"
-          sudo rm -rf /opt/hostedtoolcache
-          docker compose build r1-talk-${{ matrix.config.ubuntu_version }}-${{ matrix.config.gcpp_version }}-master
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable talk image"
-          sudo rm -rf /opt/hostedtoolcache
-          docker compose build r1-talk-${{ matrix.config.ubuntu_version }}-${{ matrix.config.gcpp_version }}-master
-       else
-          echo "Failure!"
-          exit 1
-       fi
-    - name: Push tourCore2 image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing talk development image"
-          docker push elandini84/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing talk stable image"
-          docker push elandini84/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}
-       else
-          echo "Failure!"
-          exit 1
-       fi
+       registry: ghcr.io
+       username: ${{ github.actor }}
+       password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Free disk space
+      run: sudo rm -rf /opt/hostedtoolcache
+    - name: Build and push Docker talk image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ matrix.config.work_dir }}
+        file: ${{ matrix.config.work_dir }}/Dockerfile
+        build-args: |
+          base_img=${{ matrix.config.base_image }}${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+          cuda_version=${{ matrix.config.cuda_version }}
+          ubuntu_version=${{ matrix.config.ubuntu_version }}
+          gcpp_version=${{ matrix.config.gcpp_version }}
+        push: true
+        outputs: type=registry
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}}-${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
 
   build-cuda-docker:
     runs-on: ubuntu-latest
@@ -81,39 +71,28 @@ jobs:
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
     - name: Restart docker daemon
       run: sudo systemctl restart docker
-    - uses: actions/checkout@v4
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
+    - uses: actions/checkout@v6
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v4
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the tour core Docker image
-      working-directory: ${{matrix.config.work_dir}}
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development custom cuda image"
-          sudo rm -rf /opt/hostedtoolcache
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}}devel --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_devel .
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable custom cuda image"
-          sudo rm -rf /opt/hostedtoolcache
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}}stable --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_stable .
-       else
-          echo "Failure!"
-          exit 1
-       fi
-    - name: Push tourCore2 image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing custom cuda development image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_devel
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing custom cuda stable image"
-          docker push elandini84/r1images:tourCore2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_stable
-       else
-          echo "Failure!"
-          exit 1
-       fi
+       registry: ghcr.io
+       username: ${{ github.actor }}
+       password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Free disk space
+      run: sudo rm -rf /opt/hostedtoolcache
+    - name: Build and push tourCore2 Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ matrix.config.work_dir }}
+        file: ${{ matrix.config.work_dir }}/Dockerfile
+        build-args: |
+          base_img=${{ matrix.config.base_image }}${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+          cuda_version=${{ matrix.config.cuda_version }}
+        push: true
+        outputs: type=registry
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/r1images:tourCore2_${{ matrix.config.base_image_label }}_cuda_${{ matrix.config.cuda_version }}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+
   build-cuda-sim-docker:
     runs-on: ubuntu-latest
     strategy:
@@ -135,36 +114,25 @@ jobs:
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
     - name: Restart docker daemon
       run: sudo systemctl restart docker
-    - uses: actions/checkout@v4
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
+    - uses: actions/checkout@v6
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v4
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the tour core Docker image
-      working-directory: ${{matrix.config.work_dir}}
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Building development custom cuda image"
-          sudo rm -rf /opt/hostedtoolcache
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}}devel --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_devel .
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Building stable custom cuda image"
-          sudo rm -rf /opt/hostedtoolcache
-          sudo docker build --build-arg base_img=${{matrix.config.base_image}}stable --build-arg cuda_version=${{matrix.config.cuda_version}} -t elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_stable .
-       else
-          echo "Failure!"
-          exit 1
-       fi
-    - name: Push tourCore2 image
-      run: |
-       if [ ${{ github.event_name }} == 'schedule' ]; then
-          echo "Pushing custom cuda development image"
-          docker push elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_devel
-       elif [ ${{ github.event_name }} == 'workflow_dispatch' ]; then
-          echo "Pushing custom cuda stable image"
-          docker push elandini84/r1images:tourSim2_${{matrix.config.base_image_label}}_cuda_${{matrix.config.cuda_version}}_stable
-       else
-          echo "Failure!"
-          exit 1
-       fi
+       registry: ghcr.io
+       username: ${{ github.actor }}
+       password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Free disk space
+      run: sudo rm -rf /opt/hostedtoolcache
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ matrix.config.work_dir }}
+        file: ${{ matrix.config.work_dir }}/Dockerfile
+        build-args: |
+          base_img=${{ matrix.config.base_image }}${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+          cuda_version=${{ matrix.config.cuda_version }}
+        push: true
+        outputs: type=registry
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/r1images:tourSim2_${{ matrix.config.base_image_label }}_cuda_${{ matrix.config.cuda_version }}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+       
