@@ -48,7 +48,7 @@ jobs:
         push: true
         outputs: type=registry
         tags: |
-          ghcr.io/${{ github.repository_owner }}/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}}-${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+          ghcr.io/${{ github.repository_owner }}/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}-${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
 
   build-cuda-docker:
     runs-on: ubuntu-latest
