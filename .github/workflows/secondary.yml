@@ -20,11 +20,11 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
-    - name: Change docker to experimental mode
+    - name: Change Docker to experimental mode
       run: |
        sudo rm -rf /etc/docker/daemon.json
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart docker daemon
+    - name: Restart Docker daemon
       run: sudo systemctl restart docker
     - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
@@ -57,7 +57,7 @@ jobs:
          config:
          - {
             work_dir: "docker_stuff/docker_tourCore_cuda_custom",
-            base_image: "elandini84/r1images:tourCore2_ubuntu24.04_jazzy_",
+            base_image: "ghcr.io/hsp-iit/r1images:tourCore2_ubuntu24.04_jazzy_",
             cuda_version: "12.8",
             base_image_label: "ubuntu24.04_jazzy"
          }
@@ -65,11 +65,11 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
-    - name: Change docker to experimental mode
+    - name: Change Docker to experimental mode
       run: |
        sudo rm -rf /etc/docker/daemon.json
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart docker daemon
+    - name: Restart Docker daemon
       run: sudo systemctl restart docker
     - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
@@ -100,7 +100,7 @@ jobs:
          config:
          - {
             work_dir: "docker_stuff/docker_tourCore_cuda_custom",
-            base_image: "elandini84/r1images:tourSim2_ubuntu24.04_jazzy_",
+            base_image: "ghcr.io/hsp-iit/r1images:tourSim2_ubuntu24.04_jazzy_",
             cuda_version: "12.8",
             base_image_label: "ubuntu24.04_jazzy"
          }
@@ -108,11 +108,11 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
-    - name: Change docker to experimental mode
+    - name: Change Docker to experimental mode
       run: |
        sudo rm -rf /etc/docker/daemon.json
        echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart docker daemon
+    - name: Restart Docker daemon
       run: sudo systemctl restart docker
     - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
