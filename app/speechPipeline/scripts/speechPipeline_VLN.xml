@@ -1,0 +1,38 @@
+<application>
+  <name>speechPipelineForVLN</name>
+
+  <dependencies>
+  </dependencies>
+
+  <!-- recording audio from microphone -->
+  <module>
+    <name>yarprobotinterface</name>
+    <parameters>--config mic_yri.xml</parameters>
+    <node>laptop2</node>
+  </module>
+
+  <module>
+    <name>sileroVAD </name>
+    <parameters></parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
+    <name>yarprobotinterface </name>
+    <parameters>--context google --from googleTranscription.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <connection>
+    <from>/audioRecorder_nws/audio:o</from>
+    <to>/vad/audio:i</to>
+    <protocol>tcp+recv.portmonitor+file.soundfilter_resample+type.dll+channel.0+frequency.16000</protocol>
+  </connection>
+
+  <connection>
+    <from>/vad/audio:o</from>
+    <to>/speechTranscription_nws/sound:i </to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+</application>
