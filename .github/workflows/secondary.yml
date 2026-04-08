@@ -43,7 +43,7 @@ jobs:
         context: ${{ matrix.config.work_dir }}
         file: ${{ matrix.config.work_dir }}/Dockerfile
         build-args: |
-          base_img=${{ matrix.config.base_image }}${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+          base_img=${{ matrix.config.base_image }}
           cuda_version=${{ matrix.config.cuda_version }}
           ubuntu_version=${{ matrix.config.ubuntu_version }}
           vcpkg_tag=${{ matrix.config.vcpkg_tag }}
