@@ -1,0 +1,24 @@
+<!-- SPDX-FileCopyrightText: 2023 Istituto Italiano di Tecnologia (IIT) -->
+<!-- SPDX-License-Identifier: BSD-3-Clause -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<robot name="voiceBoxSynthesizer" build="2" portprefix="/ttsBot" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <devices>
+        <device name="voiceBoxSpeechSynthesis" type="voiceBoxSynthesizer">
+            <param name="voice" extern-name="voiceBox_voice">
+                Sara_001
+            </param>
+        </device>
+        <device name="synthesizerWrap" type="speechSynthesizer_nws_yarp">
+            <action phase="startup" level="5" type="attach">
+                <paramlist name="networks">
+                    <elem name="subdeviceVoiceBox">
+                        voiceBoxSpeechSynthesis
+                    </elem>
+                </paramlist>
+            </action>
+            <action phase="shutdown" level="5" type="detach" />
+        </device>
+    </devices>
+</robot>
