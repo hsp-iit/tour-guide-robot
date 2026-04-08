@@ -13,8 +13,10 @@ jobs:
          config:
          - {
             work_dir: "docker_stuff/docker_talk/",
+            base_image: "ubuntu:24.04",
             ubuntu_version: "ub24",
-            gcpp_version: "v2.33"
+            vcpkg_tag: "tags/2025.06.13",
+            gcpp_version: "v2.36"
          }
     steps:
     - name: Info
@@ -44,7 +46,7 @@ jobs:
           base_img=${{ matrix.config.base_image }}${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
           cuda_version=${{ matrix.config.cuda_version }}
           ubuntu_version=${{ matrix.config.ubuntu_version }}
-          gcpp_version=${{ matrix.config.gcpp_version }}
+          vcpkg_tag=${{ matrix.config.vcpkg_tag }}
         push: true
         outputs: type=registry
         tags: |
@@ -135,4 +137,4 @@ jobs:
         outputs: type=registry
         tags: |
           ghcr.io/${{ github.repository_owner }}/r1images:tourSim2_${{ matrix.config.base_image_label }}_cuda_${{ matrix.config.cuda_version }}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
-       
+

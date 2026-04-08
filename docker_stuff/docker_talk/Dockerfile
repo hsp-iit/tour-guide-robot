@@ -8,7 +8,7 @@ ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
 ARG uid="1000"
 ARG gid="1000"
-ARG google_cloud_version="tags/2025.01.13"
+ARG vcpkg_tag="tags/2025.01.13"
 ARG tour_branch="jazzy"
 
 # Non-interactive installation mode
