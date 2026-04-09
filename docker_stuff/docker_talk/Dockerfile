@@ -11,6 +11,7 @@ ARG gid="1000"
 ARG vcpkg_tag="tags/2025.01.13"
 ARG tour_branch="jazzy"
 ARG cuda_version="12.8"
+ARG ai_model_path="/home/yarp-user/models"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -53,11 +54,12 @@ USER ${user_name}
 ENV robotology_install_user=${user_name} \
     yarp_user_home=/home/${user_name} \
     robot_code=${robot_code}
-RUN sudo mkdir ${robot_code} && mkdir ${yarp-user_home}/Downloads && \
-    mkdir ${yarp-user_home}/userInstalled
+RUN sudo mkdir ${robot_code} && mkdir ${yarp_user_home}/Downloads && \
+    mkdir ${yarp_user_home}/userInstalled
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_code}
 
 ### Install CUDA ############################################# START ####
+WORKDIR ${yarp_user_home}/Downloads
 RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
 RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
 RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb
@@ -147,7 +149,7 @@ ENV YARP_ROOT=${robot_code}/yarp \
 
 # SWIG 4.21
 WORKDIR ${yarp_user_home}
-RUN sudo apt-get purge -y swig && mkdir Downloads && cd Downloads &&\
+RUN sudo apt-get purge -y swig && cd Downloads &&\
     wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
     unzip -q swig_4_2_1_ubuntu_24_04.zip && \
     sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
@@ -290,9 +292,7 @@ RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
    cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
-WORKDIR /home/${user_name}/Downloads
-# Install openai c++ dependencies
-RUN cd vcpkg && ./vcpkg install nlohmann-json
+WORKDIR ${robot_code}
 
     # Install openai c++ community library
 RUN git clone https://github.com/D7EAD/liboai.git && \
@@ -352,9 +352,12 @@ USER ${robotology_install_user}
 WORKDIR ${yarp_user_home}
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN curl -fsSL https://bun.sh/install | bash
+ENV BUN_INSTALL=${yarp_user_home}/.bun
+ENV PATH=${BUN_INSTALL}/bin:${PATH}
+
 RUN sudo apt update && sudo apt install -y just libwebkit2gtk-4.1-dev \
-  file \
-  libxdo-dev \
+  file python3.12-venv \
+  libxdo-dev nlohmann-json3-dev \
   libssl-dev \
   libayatana-appindicator3-dev \
   librsvg2-dev
@@ -362,41 +365,42 @@ WORKDIR ${robot_code}
 RUN git clone https://github.com/dscripka/openWakeWord && cd openWakeWord && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
-    pip install ."
+    pip install -e ."
 RUN git clone https://github.com/jamiepine/voicebox.git && cd voicebox && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
-    just setup && just build"
+    bun install"
 ### Install openWakeWord and voicebox python packages ############################## END ####
 
 ### Install whisper.cpp ############################### START ####
 WORKDIR ${robot_code}
-RUN git clone https://github.com/ggml-org/whisper.cpp && \
-    cd whisper.cpp && cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${yarp-user_home}/userInstalled \
-    -DGGML_CUDA=ON && \
-    cmake --build build -j8 && cmake --build build --target install
+RUN git clone https://github.com/ggml-org/whisper.cpp
+    # cd whisper.cpp && cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
+    # -DGGML_CUDA=ON && \
+    # cmake --build build -j8 && cmake --build build --target install
 ENV whisper_DIR=${yarp_user_home}/userInstalled \
     LD_LIBRARY_PATH=${yarp_user_home}/userInstalled/lib:${LD_LIBRARY_PATH}
 ### Install whisper.cpp ############################### END ####
 
 ### Offline vocal interaction devices ################################ START ####
 WORKDIR ${robot_code}
-RUN git clone https://github.com/elandini84/yarp-device-speechTranscription-whisper -b refactor/general_update && \
-    cd yarp-device-speechTranscription-whisper && \
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -Dwhisper_DIR=${yarp-user_home}/userInstalled && \
-    cmake --build build -j8
+RUN git clone https://github.com/elandini84/yarp-device-speechTranscription-whisper -b refactor/general_update
+    # cd yarp-device-speechTranscription-whisper && \
+    # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -Dwhisper_DIR=${yarp_user_home}/userInstalled && \
+    # cmake --build build -j8
 RUN git clone https://github.com/robotology/yarp-device-voicebox && \
     cd yarp-device-voicebox && \
     cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && \
     cmake --build build -j8
 RUN git clone https://github.com/robotology/yarp-device-llama2 && \
     cd yarp-device-llama2 && \
-    ./setup_submodule.sh && \
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DLLAMA_ALL_WARNINGS=ON \
-    -DGGML_CUDA=ON -DLLAMA_BUILD_COMMON=ON \
-    -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON && \
-    cmake --build build -j8
+    ./setup_submodule.sh
+    # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DLLAMA_ALL_WARNINGS=ON \
+    # -DGGML_CUDA=ON -DLLAMA_BUILD_COMMON=ON \
+    # -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON && \
+    # cmake --build build -j8
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp \
+    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ai_model_path} \
     PATH=${PATH}:${robot_code}/yarp-device-speechTranscription-whisper/build/bin:${robot_code}/yarp-device-voicebox/build/bin:${robot_code}/yarp-device-llama2/build/bin
 ### Offline vocal interaction devices ################################ END ####
 

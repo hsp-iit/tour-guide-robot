@@ -12,6 +12,7 @@ x-nlp: &nlp
     - TOUR_REMOTE=${TOUR_REMOTE:-origin}
     - TOUR_BRANCH=${TOUR_BRANCH:-jazzy}
     - ROBOT_CODE=${ROBOT_CODE:-/usr/local/src/robot}
+    - AI_MODEL_PATH=/home/yarp-user/models
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
     - "/etc/hosts:/etc/hosts"
@@ -19,10 +20,12 @@ x-nlp: &nlp
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"
+    - "${AI_MODEL_PATH}:/home/yarp-user/models:rw"
     - "./entrypoints/entrypoint_light.sh:/home/yarp-user/config/.entrypoint_light.sh"
     - "./entrypoints/entrypoint_heavy.sh:/home/yarp-user/config/.entrypoint_heavy.sh"
     - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
     - "./entrypoints/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
+    - "./entrypoints/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
   network_mode: host
   entrypoint: ["sh", "${ENTRY_POINT:-/home/yarp-user/config/.entrypoint_light.sh}"]
   ipc: host
@@ -57,15 +60,16 @@ services:
           gid: 1000
           vcpkg_tag: ${VCPKG_TAG:-tags/2025.06.13}
           cuda_version: ${CUDA_VERSION:-12.8}
+          ai_model_path: ${AI_MODEL_PATH:-/home/yarp-user/models}
 
 # Containers
   r1-talk-container:
     image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
-    container_name: r1-talk-ub24-v2-36-master-container
+    container_name: r1-talk-container
     command: terminator -g /home/yarp-user/.config/terminator/config
   r1-talk-yarprun:
     image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
-    container_name: r1-talk-ub24-v2-36-master-yarprun
+    container_name: r1-talk-yarprun
     command: bash -c "yarp conf 192.168.100.10 10000 && yarprun --server /console-llm --log"
