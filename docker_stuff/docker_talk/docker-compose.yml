@@ -41,32 +41,31 @@ x-nlp: &nlp
 services:
 
 # Images
-  r1-talk-ub24-v2.36-master:
-    #image: elandini84/r1_talk:ub24.04_vcpkg_gccpp_v2.36
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24}.04_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}-${BUILD_TYPE:-devel}
-    #ghcr.io/${{ github.repository_owner }}/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}-${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
+  r1-talk-image:
+    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24}.04_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     build:
       context: .
       dockerfile: Dockerfile
       args:
-          base_img: ubuntu:24.04
-          tour_branch: jazzy
-          llm_branch: master
-          robot_code: /usr/local/src/robot
+          base_img: ${BASE_TALK_IMG:-ubuntu:24.04}
+          tour_branch: ${TOUR_BRANCH:-jazzy}
+          llm_branch: ${LLM_BRANCH:-master}
+          robot_code: ${ROBOT_CODE:-/usr/local/src/robot}
           user_name: yarp-user
-          yarp_version: yarp-3.12
+          yarp_version: ${YARP_BRANCH:-yarp-3.12}
           uid: 1000
           gid: 1000
-          vcpkg_tag: tags/2025.06.13
+          vcpkg_tag: ${VCPKG_TAG:-tags/2025.06.13}
+          cuda_version: ${CUDA_VERSION:-12.8}
 
 # Containers
-  r1-talk-master-container:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}-${BUILD_TYPE:-devel}
+  r1-talk-container:
+    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
     container_name: r1-talk-ub24-v2-36-master-container
     command: terminator -g /home/yarp-user/.config/terminator/config
-  r1-talk-master-yarprun:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}-${BUILD_TYPE:-devel}
+  r1-talk-yarprun:
+    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
     container_name: r1-talk-ub24-v2-36-master-yarprun
     command: bash -c "yarp conf 192.168.100.10 10000 && yarprun --server /console-llm --log"
