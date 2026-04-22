@@ -17,7 +17,8 @@ jobs:
             ubuntu_version: "ub24",
             vcpkg_tag: "tags/2025.06.13",
             gcpp_version: "v2.36",
-            cuda_version: "12.8"
+            cuda_version: "12.8",
+            yarp_branch: "yarp-3.12"
          }
     steps:
     - name: Info
@@ -40,6 +41,7 @@ jobs:
           ubuntu_version=${{ matrix.config.ubuntu_version }}
           vcpkg_tag=${{ matrix.config.vcpkg_tag }}
           cuda_version=${{ matrix.config.cuda_version }}
+          yarp_branch=${{ matrix.config.yarp_branch }}
         push: true
         outputs: type=registry
         tags: |
