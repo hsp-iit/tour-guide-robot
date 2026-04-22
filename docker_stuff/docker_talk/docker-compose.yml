@@ -20,14 +20,14 @@ x-nlp: &nlp
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"
-    - "${AI_MODEL_PATH}:/home/yarp-user/models:rw"
+    - "${AI_MODEL_PATH:$HOME}:/home/yarp-user/models:rw"
     - "./entrypoints/entrypoint_light.sh:/home/yarp-user/config/.entrypoint_light.sh"
     - "./entrypoints/entrypoint_heavy.sh:/home/yarp-user/config/.entrypoint_heavy.sh"
     - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
     - "./entrypoints/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
     - "./entrypoints/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
   network_mode: host
-  entrypoint: ["sh", "${ENTRY_POINT:-/home/yarp-user/config/.entrypoint_light.sh}"]
+  entrypoint: ["sh", "${ENTRY_POINT:-/home/yarp-user/config/.entrypoint_cuda.sh}"]
   ipc: host
   pid: host
   privileged: true
