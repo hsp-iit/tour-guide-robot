@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-talk-docker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
          config:
@@ -53,7 +53,7 @@ jobs:
           ghcr.io/${{ github.repository_owner }}/r1_talk:${{ matrix.config.ubuntu_version }}.04_vcpkg_gccpp_${{ matrix.config.gcpp_version }}-${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
 
   build-cuda-docker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
          config:
@@ -96,7 +96,7 @@ jobs:
           ghcr.io/${{ github.repository_owner }}/r1images:tourCore2_${{ matrix.config.base_image_label }}_cuda_${{ matrix.config.cuda_version }}_${{ github.event_name == 'schedule' && 'devel' || 'stable' }}
 
   build-cuda-sim-docker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
          config:
