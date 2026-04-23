@@ -22,6 +22,8 @@ Detector::Detector(int vadFrequency,
                     const std::string modelPath,
                     std::string filteredAudioPortOutName,
                     std::string wakeWordClientPort,
+                    float speechProbEmaAlpha,
+                    float stopThresholdMargin,
                     int8_t vadReenableKeyword):
                     m_vadFrequency(vadFrequency),
                     m_vadGapAllowance(gapAllowance),
@@ -32,6 +34,8 @@ Detector::Detector(int vadFrequency,
                                     vadFrequency == 8000 ? 256 :
                                     throw std::runtime_error("Unsupported sample rate " + std::to_string(vadFrequency)
                                                             + ", must be 8kHz or 16kHz")),
+                    m_speechProbEmaAlpha(std::min(1.0f, std::max(0.0f, speechProbEmaAlpha))),
+                    m_stopThresholdMargin(std::max(0.0f, stopThresholdMargin)),
                     m_context((vadFrequency == 16000) ? 64 : 32, 0),
                     m_currentSoundBufferNorm(m_vadNumSamples, 0),
                     m_currentSoundBuffer(m_vadNumSamples, 0),
@@ -73,12 +77,14 @@ void Detector::init_onnx_model(const std::string& model_path) {
 
 void Detector::reset_states() {
     std::memset(m_state.data(), 0.0f, m_state.size() * sizeof(float));
+    m_smoothedSpeechProb = 0.0f;
+    m_hasSmoothedSpeechProb = false;
 };
 
 void Detector::predict(const std::vector<float> &data) {
     // Create ort tensors
     std::copy(m_context.begin(), m_context.end(), m_input.begin());
-    std::copy(m_currentSoundBuffer.begin(), m_currentSoundBuffer.end(), m_input.begin() + m_context.size());
+    std::copy(data.begin(), data.end(), m_input.begin() + m_context.size());
     Ort::Value input_ort = Ort::Value::CreateTensor<float>(
         m_memory_info, m_input.data(), m_input.size(), m_input_node_dims, 2);
     Ort::Value state_ort = Ort::Value::CreateTensor<float>(
@@ -103,7 +109,22 @@ void Detector::predict(const std::vector<float> &data) {
     float *stateN = m_ort_outputs[1].GetTensorMutableData<float>();
     std::memcpy(m_state.data(), stateN, m_size_state * sizeof(float));
 
-    bool isTalking = speech_prob > m_vadThreshold;
+    if (!m_hasSmoothedSpeechProb)
+    {
+        m_smoothedSpeechProb = speech_prob;
+        m_hasSmoothedSpeechProb = true;
+    }
+    else
+    {
+        m_smoothedSpeechProb =
+            m_speechProbEmaAlpha * speech_prob + (1.0f - m_speechProbEmaAlpha) * m_smoothedSpeechProb;
+    }
+
+    const float startThreshold = m_vadThreshold;
+    const float stopThreshold = std::max(0.0f, m_vadThreshold - m_stopThresholdMargin);
+    const bool isTalking = m_soundDetected ? (m_smoothedSpeechProb > stopThreshold)
+                                           : (m_smoothedSpeechProb > startThreshold);
+
     if (isTalking) {
         yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";
         m_soundDetected = true;
@@ -144,8 +165,8 @@ void Detector::predict(const std::vector<float> &data) {
 
     // copy last part into context for next input
     std::copy(
-        m_currentSoundBuffer.end() - m_context.size(),
-        m_currentSoundBuffer.end(),
+        data.end() - m_context.size(),
+        data.end(),
         m_context.begin()
     );
 };

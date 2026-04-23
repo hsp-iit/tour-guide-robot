@@ -19,6 +19,8 @@ private:
     static constexpr bool VAD_SAVE_GAP = true;
     static constexpr int VAD_GAP_ALLOWANCE_DEFAULT = 18; // In packets of 32 ms
     static constexpr int VAD_SAVE_PRIOR_TO_DETECTION = 15; // In packets of 32 ms
+    static constexpr float VAD_SPEECH_PROB_EMA_ALPHA = 0.35f;
+    static constexpr float VAD_STOP_THRESHOLD_MARGIN = 0.15f;
     const std::string MODEL_PATH = "/usr/local/src/robot/silero-vad/src/silero_vad/data/silero_vad.onnx";
 
     std::unique_ptr<SileroVADServer> m_rpcServer;
@@ -29,6 +31,8 @@ private:
     int m_vadGapAllowance{VAD_GAP_ALLOWANCE_DEFAULT};
     bool m_vadSaveGap{VAD_SAVE_GAP};
     int m_vadSavePriorToDetection{VAD_SAVE_PRIOR_TO_DETECTION};
+    float m_vadSpeechProbEmaAlpha{VAD_SPEECH_PROB_EMA_ALPHA};
+    float m_vadStopThresholdMargin{VAD_STOP_THRESHOLD_MARGIN};
     std::string m_modelPath = MODEL_PATH;
     yarp::os::BufferedPort<yarp::sig::Sound> m_audioPort;            /** The input port for receiving the microphone input. **/
     std::shared_ptr<Detector> m_audioProcessor;
