@@ -22,21 +22,12 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
-    - name: Change Docker to experimental mode
-      run: |
-       sudo rm -rf /etc/docker/daemon.json
-       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart Docker daemon
-      run: sudo systemctl restart docker
-    - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v4
       with:
        registry: ghcr.io
        username: ${{ github.actor }}
        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Free disk space
-      run: sudo rm -rf /opt/hostedtoolcache
     - name: Build and push Docker talk image
       uses: docker/build-push-action@v5
       with:
@@ -67,21 +58,12 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
-    - name: Change Docker to experimental mode
-      run: |
-       sudo rm -rf /etc/docker/daemon.json
-       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart Docker daemon
-      run: sudo systemctl restart docker
-    - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v4
       with:
        registry: ghcr.io
        username: ${{ github.actor }}
        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Free disk space
-      run: sudo rm -rf /opt/hostedtoolcache
     - name: Build and push tourCore2 Docker image
       uses: docker/build-push-action@v5
       with:
@@ -110,21 +92,12 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
-    - name: Change Docker to experimental mode
-      run: |
-       sudo rm -rf /etc/docker/daemon.json
-       echo '{"experimental": true}' | sudo tee -a /etc/docker/daemon.json
-    - name: Restart Docker daemon
-      run: sudo systemctl restart docker
-    - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v4
       with:
        registry: ghcr.io
        username: ${{ github.actor }}
        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Free disk space
-      run: sudo rm -rf /opt/hostedtoolcache
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
