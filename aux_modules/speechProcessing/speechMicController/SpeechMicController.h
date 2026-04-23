@@ -16,6 +16,7 @@
 #include <yarp/os/TypedReaderCallback.h>
 #include <yarp/os/RpcClient.h>
 #include <yarp/sig/AudioPlayerStatus.h>
+#include <chrono>
 
 class SoundCatcher : public yarp::os::TypedReaderCallback<yarp::sig::Sound>
 {
@@ -27,6 +28,8 @@ public:
 private:
     std::mutex m_mutex;
     yarp::os::RpcClient m_audiorecorderRPCPort;
+    int m_stopCooldownMs{200};
+    std::chrono::steady_clock::time_point m_lastStopCommandTime{};
 };
 
 class BufferCatcher : public yarp::os::TypedReaderCallback<yarp::sig::AudioPlayerStatus>
@@ -36,10 +39,21 @@ public:
     ~BufferCatcher() override;;
     bool configure(yarp::os::ResourceFinder& rf);
     void onRead(yarp::sig::AudioPlayerStatus& status) override;
+    void checkAndForceResumeIfTimedOut();
 private:
+    bool restartMicrophoneLocked(const char* reason);
+
     std::mutex          m_mutex;
     yarp::os::RpcClient m_audiorecorderRPCPort;
     bool                m_switchFlipped{false};
+    int                 m_resumeDelayMs{300};
+    int                 m_resumeWhenBufferLEQ{0};
+    int                 m_minIdleStatusesBeforeResume{1};
+    int                 m_idleStatusesCounter{0};
+    int                 m_forceResumeTimeoutMs{6000};
+    bool                m_resumePending{false};
+    std::chrono::steady_clock::time_point m_resumeAtTime{};
+    std::chrono::steady_clock::time_point m_lastPlayingStatusTime{};
 };
 
 class TranscriptionCatecher : public yarp::os::TypedReaderCallback<yarp::os::Bottle>

@@ -26,6 +26,12 @@
   </module>
 
   <module>
+    <name>speechMicController</name>
+    <parameters>--context speechPipeline --from speechMicController.ini</parameters>
+    <node>console-llm</node>
+  </module>
+
+  <module>
     <name>python3</name>
     <parameters>play_notification.py</parameters>
     <node>console-llm</node>
@@ -129,6 +135,30 @@
   <connection>
     <from>/speechSynthesizer_nws/sound:o</from>
     <to>/audioPlayerWrapper/audio:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/audioPlayerWrapper/status:o</from>
+    <to>/speechMicController/audioPlayStatus:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/speechSynthesizer_nws/sound:o</from>
+    <to>/speechMicController/sound:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/speechTranscription_nws/text:o</from>
+    <to>/speechMicController/transcription:i</to>
+    <protocol>fast_tcp</protocol>
+  </connection>
+
+  <connection>
+    <from>/speechMicController/microphone:rpc</from>
+    <to>/audioRecorder_nws/rpc</to>
     <protocol>fast_tcp</protocol>
   </connection>
 
