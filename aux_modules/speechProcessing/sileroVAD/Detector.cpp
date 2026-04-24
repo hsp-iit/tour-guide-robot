@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cstdint>
 #include <stdexcept>
+#include <yarp/os/Time.h>
 #include "Detector.h"
 
 YARP_LOG_COMPONENT(VADAUDIOPROCESSOR, "behavior_tour_robot.voiceActivationDetection.AudioProcessor", yarp::os::Log::TraceType)
@@ -21,6 +22,7 @@ Detector::Detector(int vadFrequency,
                     int vadSavePriorToDetection,
                     const std::string modelPath,
                     std::string filteredAudioPortOutName,
+                    std::string speechTimestampPortOutName,
                     std::string wakeWordClientPort,
                     float speechProbEmaAlpha,
                     float stopThresholdMargin,
@@ -61,6 +63,10 @@ Detector::Detector(int vadFrequency,
 
     if (!m_filteredAudioOutputPort.open(filteredAudioPortOutName)){
         yCError(VADAUDIOPROCESSOR) << "cannot open port" << wakeWordClientPort;
+    }
+
+    if (!m_speechTimestampOutputPort.open(speechTimestampPortOutName)){
+        yCError(VADAUDIOPROCESSOR) << "cannot open port" << speechTimestampPortOutName;
     }
 }
 
@@ -126,6 +132,13 @@ void Detector::predict(const std::vector<float> &data) {
                                            : (m_smoothedSpeechProb > startThreshold);
 
     if (isTalking) {
+        if (!m_soundDetected)
+        {
+            yarp::os::Bottle& timestampBottle = m_speechTimestampOutputPort.prepare();
+            timestampBottle.clear();
+            timestampBottle.addFloat64(yarp::os::Time::now());
+            m_speechTimestampOutputPort.write();
+        }
         yCDebug(VADAUDIOPROCESSOR) << "Voice detected adding to send buffer";
         m_soundDetected = true;
         m_soundToSend.push_back(m_currentSoundBuffer);

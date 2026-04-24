@@ -124,7 +124,7 @@ bool BufferCatcher::restartMicrophoneLocked(const char* reason)
 
 void BufferCatcher::onRead(yarp::sig::AudioPlayerStatus& status) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    yCInfo(SPEECH_MIC_CONTROLLER, "Received audio player status: %s", status.toString().c_str());
+    //yCInfo(SPEECH_MIC_CONTROLLER, "Received audio player status: %s", status.toString().c_str());
     const bool isPlaying = status.current_buffer_size > m_resumeWhenBufferLEQ;
 
     if(isPlaying && !m_switchFlipped)
