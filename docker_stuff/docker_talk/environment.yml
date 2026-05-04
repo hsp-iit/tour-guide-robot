@@ -1,7 +1,6 @@
 name: unified-voice-pipeline
 channels:
   - conda-forge
-  - defaults
 
 dependencies:
   - python=3.12
@@ -11,6 +10,7 @@ dependencies:
   - ffmpeg
   - libsndfile
   - git
+  - google-cloud-cpp=2.43.0
 
   - pip:
       # PyTorch CUDA 12.8 wheels

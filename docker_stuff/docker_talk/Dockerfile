@@ -8,7 +8,7 @@ ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
 ARG uid="1000"
 ARG gid="1000"
-ARG vcpkg_tag="tags/2025.01.13"
+# ARG vcpkg_tag="tags/2025.01.13"
 ARG tour_branch="jazzy"
 ARG cuda_version="12.8"
 ARG ai_model_path="/home/yarp-user/models"
@@ -271,52 +271,43 @@ EXPOSE 10000/tcp 10000/udp
 USER ${user_name}
 WORKDIR /home/${user_name}/
 
-### Install google from vcpkg ############################################# START ####
-WORKDIR /home/${user_name}/Downloads
-RUN git clone https://github.com/Microsoft/vcpkg.git && \
-    cd vcpkg && git checkout ${google_cloud_version} && ./bootstrap-vcpkg.sh -disableMetrics && \
-    ./vcpkg install --clean-after-build google-cloud-cpp[texttospeech] google-cloud-cpp[speech] google-cloud-cpp[dialogflow-cx]
-ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
-### Packaging google-cloud-cpp instructions ############################################### END ####
-
-ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json \
-    BUILD_SUFFIX=build
-
-WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
-   cd yarp-devices-google-cloud && cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/yarp-user/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake && \
-   cmake --build build
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
+# ### Install google from vcpkg ############################################# START ####
+# WORKDIR /home/${user_name}/Downloads
+# RUN git clone https://github.com/Microsoft/vcpkg.git && \
+#     cd vcpkg && git checkout ${google_cloud_version} && ./bootstrap-vcpkg.sh -disableMetrics && \
+#     ./vcpkg install --clean-after-build google-cloud-cpp[texttospeech] google-cloud-cpp[speech] google-cloud-cpp[dialogflow-cx]
+# ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
+# ### Packaging google-cloud-cpp instructions ############################################### END ####
 
 RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
-   cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
+cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
 WORKDIR ${robot_code}
 
-    # Install openai c++ community library
+# Install openai c++ community library
 RUN git clone https://github.com/D7EAD/liboai.git && \
-    cd liboai && cd liboai && \
-    cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=true && \
-    cd build && make -j8 && sudo make install
+cd liboai && cd liboai && \
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
+-DCMAKE_POSITION_INDEPENDENT_CODE=true && \
+cd build && make -j8 && sudo make install
 
 # Configure openai credentials
 RUN echo "set -a" >> /home/${user_name}/.bashrc && \
-    echo "source ~/.env/config.env" >> /home/${user_name}/.bashrc && \
-    echo "set +a" >> /home/${user_name}/.bashrc
+echo "source ~/.env/config.env" >> /home/${user_name}/.bashrc && \
+echo "set +a" >> /home/${user_name}/.bashrc
 
 # Install yarpGPT
 WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
-    cd yarp-devices-llm && mkdir build && \
-    cmake -B build -S . \
-    -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    -DLIBOAI_INSTALL_PATH=/home/${user_name}/Downloads/liboai && cd build && \
-    make -j8
+cd yarp-devices-llm && mkdir build && \
+cmake -B build -S . \
+-DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
+-DLIBOAI_INSTALL_PATH=/home/${user_name}/Downloads/liboai && cd build && \
+make -j8
 ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
-    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
-    PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
+YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
+PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
 
 # Set up ONNX Runtime
 WORKDIR ${robot_code}
@@ -332,8 +323,8 @@ RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
-    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
-    PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
+YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
+PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
 
 
 ### Miniforge and Python environment ############################## START ####
@@ -343,9 +334,20 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mini
 RUN /bin/bash -c "bash ${yarp_user_home}/Miniforge3-$(uname)-$(uname -m).sh -b"
 RUN ${yarp_user_home}/miniforge3/bin/conda init
 RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda env create -y -f ${TOUR_GUIDE_ROBOT_SOURCE_DIR}/docker_stuff/docker_talk/environment.yml && \
-    conda clean -afy"
+conda env create -y -f ${TOUR_GUIDE_ROBOT_SOURCE_DIR}/docker_stuff/docker_talk/environment.yml && \
+conda clean -afy"
 ### Miniforge and Python environment ############################## END ####
+
+ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json \
+    BUILD_SUFFIX=build
+
+WORKDIR ${robot_code}
+RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
+   cd yarp-devices-google-cloud && \
+   /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build \"
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
 
 ### Install openWakeWord and voicebox python packages ############################## START ####
 USER ${robotology_install_user}

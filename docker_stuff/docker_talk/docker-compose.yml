@@ -45,7 +45,7 @@ services:
 
 # Images
   r1-talk-image:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24}.04_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
+    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24}.04_vcpkg_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     build:
       context: .
       dockerfile: Dockerfile
@@ -58,18 +58,17 @@ services:
           yarp_version: ${YARP_BRANCH:-yarp-3.12}
           uid: 1000
           gid: 1000
-          vcpkg_tag: ${VCPKG_TAG:-tags/2025.06.13}
           cuda_version: ${CUDA_VERSION:-12.8}
           ai_model_path: ${AI_MODEL_PATH:-/home/yarp-user/models}
 
 # Containers
   r1-talk-container:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
+    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
     container_name: r1-talk-container
     command: terminator -g /home/yarp-user/.config/terminator/config
   r1-talk-yarprun:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.36}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
+    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
     container_name: r1-talk-yarprun
     command: bash -c "yarp conf 192.168.100.10 10000 && yarprun --server /console-llm --log"
