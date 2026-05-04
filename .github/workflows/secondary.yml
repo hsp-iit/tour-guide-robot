@@ -15,8 +15,7 @@ jobs:
             work_dir: "docker_stuff/docker_talk/",
             base_image: "ubuntu:24.04",
             ubuntu_version: "ub24",
-            vcpkg_tag: "tags/2025.06.13",
-            gcpp_version: "v2.36",
+            gcpp_version: "v2.43",
             cuda_version: "12.8",
             yarp_branch: "yarp-3.12"
          }
@@ -39,7 +38,6 @@ jobs:
           base_img=${{ matrix.config.base_image }}
           cuda_version=${{ matrix.config.cuda_version }}
           ubuntu_version=${{ matrix.config.ubuntu_version }}
-          vcpkg_tag=${{ matrix.config.vcpkg_tag }}
           cuda_version=${{ matrix.config.cuda_version }}
           yarp_version=${{ matrix.config.yarp_branch }}
         push: true
