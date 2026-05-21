@@ -20,7 +20,7 @@ x-nlp: &nlp
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"
-    - "${AI_MODEL_PATH:$HOME}:/home/yarp-user/models:rw"
+    - "${AI_MODEL_PATH:-$HOME}:/home/yarp-user/models:rw"
     - "./entrypoints/entrypoint_light.sh:/home/yarp-user/config/.entrypoint_light.sh"
     - "./entrypoints/entrypoint_heavy.sh:/home/yarp-user/config/.entrypoint_heavy.sh"
     - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
