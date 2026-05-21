@@ -75,6 +75,24 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
         m_vadSavePriorToDetection = rf.find("vad_save_prior_to_detection").asInt32();
     }
 
+    if (!rf.check("vad_speech_prob_ema_alpha", "vad_speech_prob_ema_alpha"))
+    {
+        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'vad_speech_prob_ema_alpha' parameter of " << VAD_SPEECH_PROB_EMA_ALPHA;
+    }
+    else
+    {
+        m_vadSpeechProbEmaAlpha = rf.find("vad_speech_prob_ema_alpha").asFloat32();
+    }
+
+    if (!rf.check("vad_stop_threshold_margin", "vad_stop_threshold_margin"))
+    {
+        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'vad_stop_threshold_margin' parameter of " << VAD_STOP_THRESHOLD_MARGIN;
+    }
+    else
+    {
+        m_vadStopThresholdMargin = rf.find("vad_stop_threshold_margin").asFloat32();
+    }
+
     if (!rf.check("model_path", "model_path"))
     {
         yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'model_path' parameter of " << MODEL_PATH;
@@ -99,6 +117,8 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
                                                     m_modelPath,
                                                     filteredAudioPortOutName,
                                                     wakeWordClientPort,
+                                                    m_vadSpeechProbEmaAlpha,
+                                                    m_vadStopThresholdMargin,
                                                     vadReenableKeyword);
 
     m_audioPort.useCallback(*m_audioProcessor);

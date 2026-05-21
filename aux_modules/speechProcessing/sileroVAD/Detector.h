@@ -30,6 +30,8 @@ public:
             const std::string modelPath,
             std::string filteredAudioPortOutName,
             std::string wakeWordClientPort,
+            float speechProbEmaAlpha,
+            float stopThresholdMargin,
             int8_t vadReenableKeyword = 0);
     using TypedReaderCallback<yarp::sig::Sound>::onRead;
     void onRead(yarp::sig::Sound& soundReceived) override;
@@ -41,11 +43,15 @@ private:
     const bool m_vadSaveGap;
     const int m_vadNumSamples;
     const int m_vadSavePriorToDetection;
+    const float m_speechProbEmaAlpha;
+    const float m_stopThresholdMargin;
 
     std::deque<std::vector<int16_t>> m_soundToSend;
     std::vector<float> m_currentSoundBufferNorm; // Normalised for silero model
     std::vector<int16_t> m_currentSoundBuffer; // Original for downstream processing/synthesis
     std::vector<float> m_context;
+    float m_smoothedSpeechProb{0.0f};
+    bool m_hasSmoothedSpeechProb{false};
     int m_fillCount; // keep track of up to what index the buffer is full
     int m_vadReenableKeyword; // If 1, reenable the keyword after each audio clip
     bool m_soundDetected{false};
