@@ -21,7 +21,7 @@ add_subdirectory(yarpmanager)
 add_subdirectory(Dialogue_demo)
 add_subdirectory(demo)
 add_subdirectory(convince)
-add_subdirectory(dialog_demo)
+add_subdirectory(dialog_with_gesture_demo)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 

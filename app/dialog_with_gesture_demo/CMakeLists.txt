@@ -5,7 +5,7 @@
 #                                                                              #
 ################################################################################
 
-set(appname dialog_demo)
+set(appname dialog_with_gesture_demo)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/scripts/*.xml)
 file(GLOB conf      ${CMAKE_CURRENT_SOURCE_DIR}/conf/*.ini)
