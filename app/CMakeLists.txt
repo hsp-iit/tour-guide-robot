@@ -22,6 +22,7 @@ add_subdirectory(Dialogue_demo)
 add_subdirectory(demo)
 add_subdirectory(convince)
 add_subdirectory(dialog_with_gesture_demo)
+add_subdirectory(tour_cris)
 
 file(GLOB apps      ${CMAKE_CURRENT_SOURCE_DIR}/*.xml)
 
