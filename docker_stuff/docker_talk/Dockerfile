@@ -283,32 +283,6 @@ RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
 cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
-WORKDIR ${robot_code}
-
-# Install openai c++ community library
-RUN git clone https://github.com/D7EAD/liboai.git && \
-cd liboai && cd liboai && \
-cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
--DCMAKE_POSITION_INDEPENDENT_CODE=true && \
-cd build && make -j8 && sudo make install
-
-# Configure openai credentials
-RUN echo "set -a" >> /home/${user_name}/.bashrc && \
-echo "source ~/.env/config.env" >> /home/${user_name}/.bashrc && \
-echo "set +a" >> /home/${user_name}/.bashrc
-
-# Install yarpGPT
-WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
-cd yarp-devices-llm && mkdir build && \
-cmake -B build -S . \
--DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
--DLIBOAI_INSTALL_PATH=/home/${user_name}/Downloads/liboai && cd build && \
-make -j8
-ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
-YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
-PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
-
 # Set up ONNX Runtime
 WORKDIR ${robot_code}
 RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
@@ -323,8 +297,8 @@ RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
-YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
-PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
+    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
+    PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
 
 
 ### Miniforge and Python environment ############################## START ####
@@ -338,15 +312,42 @@ conda env create -y -f ${TOUR_GUIDE_ROBOT_SOURCE_DIR}/docker_stuff/docker_talk/e
 conda clean -afy"
 ### Miniforge and Python environment ############################## END ####
 
+WORKDIR ${robot_code}
+
+# Install openai c++ community library
+RUN git clone https://github.com/D7EAD/liboai.git && \
+    cd liboai && cd liboai && \
+    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
+    cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=true && cd build && make -j$(nproc) && make install"
+
+# Configure openai credentials
+RUN echo "set -a" >> /home/${user_name}/.bashrc && \
+echo "source ~/.env/config.env" >> /home/${user_name}/.bashrc && \
+echo "set +a" >> /home/${user_name}/.bashrc
+
+# Install yarpGPT
+WORKDIR ${robot_code}
+RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
+    cd yarp-devices-llm && mkdir build && \
+    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
+    cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=true && cd build && make -j$(nproc)"
+ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
+YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
+PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
+
 ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json \
-    BUILD_SUFFIX=build
+BUILD_SUFFIX=build
 
 WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
-   cd yarp-devices-google-cloud && \
-   /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda activate unified-voice-pipeline && \
-    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build \"
+cd yarp-devices-google-cloud && \
+/bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+conda activate unified-voice-pipeline && \
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build \"
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
 
 ### Install openWakeWord and voicebox python packages ############################## START ####
@@ -363,10 +364,10 @@ RUN sudo apt update && sudo apt install -y just libwebkit2gtk-4.1-dev \
   libssl-dev \
   libayatana-appindicator3-dev \
   librsvg2-dev
-WORKDIR ${robot_code}
-RUN git clone https://github.com/dscripka/openWakeWord && cd openWakeWord && \
-    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda activate unified-voice-pipeline && \
+  WORKDIR ${robot_code}
+  RUN git clone https://github.com/dscripka/openWakeWord && cd openWakeWord && \
+  /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+  conda activate unified-voice-pipeline && \
     pip install -e ."
 RUN git clone https://github.com/jamiepine/voicebox.git && cd voicebox && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \

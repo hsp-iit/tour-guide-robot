@@ -11,6 +11,7 @@ dependencies:
   - libsndfile
   - git
   - google-cloud-cpp=2.43.0
+  - nlohmann_json
 
   - pip:
       # PyTorch CUDA 12.8 wheels
