@@ -7,7 +7,7 @@ SPDX-License-Identifier: BSD-3-Clause
 <robot name="WelcomeTalkLLMServer" build="2" portprefix="/welcome_talk_chat" xmlns:xi="http://www.w3.org/2001/XInclude">
     <devices>
         <device name="welcomeTalkChat" type="GPTDevice">
-            <param extern-name="welcome_talk_prompt_ctx" name="prompt_context">convince</param>
+            <param extern-name="welcome_talk_prompt_ctx" name="prompt_context">tour_cris</param>
             <param extern-name="welcome_talk_prompt" name="prompt_file">welcome_talk_prompt.txt</param>
         </device>
         <device name="LLM_nws" type="LLM_nws_yarp">
