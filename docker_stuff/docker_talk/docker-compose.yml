@@ -1,3 +1,20 @@
+x-r1-talk-image: &r1-talk-image ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
+
+x-r1-talk-build: &r1-talk-build
+  context: .
+  dockerfile: Dockerfile
+  args:
+    base_img: ${BASE_TALK_IMG:-ubuntu:24.04}
+    tour_branch: ${TOUR_BRANCH:-jazzy}
+    llm_branch: ${LLM_BRANCH:-master}
+    robot_code: ${ROBOT_CODE:-/usr/local/src/robot}
+    user_name: yarp-user
+    yarp_version: ${YARP_BRANCH:-yarp-3.12}
+    uid: 1000
+    gid: 1000
+    cuda_version: ${CUDA_VERSION:-12.8}
+    ai_model_path: ${AI_MODEL_PATH:-/home/yarp-user/models}
+
 x-nlp: &nlp
   environment:
     - DISPLAY=${DISPLAY}
@@ -13,6 +30,9 @@ x-nlp: &nlp
     - TOUR_BRANCH=${TOUR_BRANCH:-jazzy}
     - ROBOT_CODE=${ROBOT_CODE:-/usr/local/src/robot}
     - AI_MODEL_PATH=/home/yarp-user/models
+    - CUDA_REBUILD=${CUDA_REBUILD:-0}
+    - CUDA_BUILD_JOBS=${CUDA_BUILD_JOBS:-8}
+    - CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES:-native}
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
     - "/etc/hosts:/etc/hosts"
@@ -26,6 +46,11 @@ x-nlp: &nlp
     - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
     - "./entrypoints/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
     - "./entrypoints/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
+    # These named volumes survive "docker compose down --remove-orphans".
+    - cuda-user-installed:/home/yarp-user/userInstalled
+    - cuda-whisper-build:/usr/local/src/robot/whisper.cpp/build
+    - cuda-speech-transcription-build:/usr/local/src/robot/yarp-device-speechTranscription-whisper/build
+    - cuda-llama2-build:/usr/local/src/robot/yarp-device-llama2/build
   network_mode: host
   entrypoint: ["sh", "${ENTRY_POINT:-/home/yarp-user/config/.entrypoint_cuda.sh}"]
   ipc: host
@@ -45,30 +70,39 @@ services:
 
 # Images
   r1-talk-image:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24}.04_vcpkg_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-          base_img: ${BASE_TALK_IMG:-ubuntu:24.04}
-          tour_branch: ${TOUR_BRANCH:-jazzy}
-          llm_branch: ${LLM_BRANCH:-master}
-          robot_code: ${ROBOT_CODE:-/usr/local/src/robot}
-          user_name: yarp-user
-          yarp_version: ${YARP_BRANCH:-yarp-3.12}
-          uid: 1000
-          gid: 1000
-          cuda_version: ${CUDA_VERSION:-12.8}
-          ai_model_path: ${AI_MODEL_PATH:-/home/yarp-user/models}
+    profiles: ["build"]
+    image: *r1-talk-image
+    build: *r1-talk-build
+
+  r1-talk-cuda-build:
+    <<: *nlp
+    image: *r1-talk-image
+    build: *r1-talk-build
+    container_name: r1-talk-cuda-build
+    entrypoint: ["sh", "/home/yarp-user/config/.entrypoint_cuda.sh"]
+    command: ["true"]
+    restart: "no"
 
 # Containers
   r1-talk-container:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
+    image: *r1-talk-image
     container_name: r1-talk-container
-    command: terminator -g /home/yarp-user/.config/terminator/config
+    depends_on:
+      r1-talk-cuda-build:
+        condition: service_completed_successfully
+    command: ["terminator", "-g", "/home/yarp-user/.config/terminator/config"]
   r1-talk-yarprun:
-    image: ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_vcpkg_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
     <<: *nlp
+    image: *r1-talk-image
     container_name: r1-talk-yarprun
-    command: bash -c "yarp conf 192.168.100.10 10000 && yarprun --server /console-llm --log"
+    depends_on:
+      r1-talk-cuda-build:
+        condition: service_completed_successfully
+    command: ["bash", "-lc", "yarp conf 192.168.100.10 10000 && yarprun --server /console-llm --log"]
+
+volumes:
+  cuda-user-installed:
+  cuda-whisper-build:
+  cuda-speech-transcription-build:
+  cuda-llama2-build:

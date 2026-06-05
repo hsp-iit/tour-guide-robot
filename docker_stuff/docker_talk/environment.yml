@@ -12,6 +12,7 @@ dependencies:
   - git
   - google-cloud-cpp=2.43.0
   - nlohmann_json
+  - openssl
 
   - pip:
       # PyTorch CUDA 12.8 wheels
@@ -60,6 +61,7 @@ dependencies:
       # yarp-mcp-client
       # ----------------------------
       - mcp[cli]>=1.15.0
+      - fastmcp
       - openai>=1.109.1
       - ollama>=0.6.0
       - python-dotenv>=1.1.1

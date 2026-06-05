@@ -296,10 +296,12 @@ RUN git clone https://github.com/snakers4/silero-vad
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
-ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
-    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
-    PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
 
+ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
+YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
+PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
+
+COPY ./environment.yml ${robot_code}/tour-guide-robot/docker_stuff/docker_talk/environment.yml
 
 ### Miniforge and Python environment ############################## START ####
 USER ${robotology_install_user}
@@ -334,7 +336,7 @@ RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} &&
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
     cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=true && cd build && make -j$(nproc)"
+    -DCMAKE_POSITION_INDEPENDENT_CODE=true -DCMAKE_PREFIX_PATH=${yarp_user_home}/userInstalled && cd build && make -j$(nproc)"
 ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
 YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
 PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
@@ -347,7 +349,7 @@ RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
 cd yarp-devices-google-cloud && \
 /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
 conda activate unified-voice-pipeline && \
-cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build \"
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=\${CONDA_PREFIX} && cmake --build build -- -j \$(nproc)"
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
 
 ### Install openWakeWord and voicebox python packages ############################## START ####
@@ -402,9 +404,10 @@ RUN git clone https://github.com/robotology/yarp-device-llama2 && \
     # -DGGML_CUDA=ON -DLLAMA_BUILD_COMMON=ON \
     # -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON && \
     # cmake --build build -j8
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp \
-    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ai_model_path} \
-    PATH=${PATH}:${robot_code}/yarp-device-speechTranscription-whisper/build/bin:${robot_code}/yarp-device-voicebox/build/bin:${robot_code}/yarp-device-llama2/build/bin
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ai_model_path}
+ENV PATH=${PATH}:${robot_code}/yarp-device-speechTranscription-whisper/build/bin:${robot_code}/yarp-device-voicebox/build/bin:${robot_code}/yarp-device-llama2/build/bin
+ENV VOICEBOX=${robot_code}/voicebox
 ### Offline vocal interaction devices ################################ END ####
 
 ### YARP MCP repos ############################################# START ####
