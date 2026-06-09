@@ -8,8 +8,10 @@ ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
 ARG uid="1000"
 ARG gid="1000"
-ARG vcpkg_tag="tags/2025.01.13"
+# ARG vcpkg_tag="tags/2025.01.13"
 ARG tour_branch="jazzy"
+ARG cuda_version="12.8"
+ARG ai_model_path="/home/yarp-user/models"
 
 # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -49,26 +51,57 @@ RUN useradd -l -u 33334 -G sudo -md /home/${user_name} -s /bin/bash -p ${user_na
 
 # Set ENV
 USER ${user_name}
-RUN sudo mkdir ${robot_code}
 ENV robotology_install_user=${user_name} \
     yarp_user_home=/home/${user_name} \
     robot_code=${robot_code}
+RUN sudo mkdir ${robot_code} && mkdir ${yarp_user_home}/Downloads && \
+    mkdir ${yarp_user_home}/userInstalled
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_code}
 
-# Miniforge installation
-USER ${robotology_install_user}
-WORKDIR ${yarp_user_home}
-RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-RUN /bin/bash -c "bash ${yarp_user_home}/Miniforge3-$(uname)-$(uname -m).sh -b"
-RUN ${yarp_user_home}/miniforge3/bin/conda init
-RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda create -y -n openwakeword python=3.11 && \
-    conda clean -afy"
-RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
-    conda activate openwakeword && \
-    pip install numpy bpytop openwakeword ipython && \
-    conda clean -afy"
+### Install CUDA ############################################# START ####
+WORKDIR ${yarp_user_home}/Downloads
+RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
+# Iterate over all the Ubuntu versions to find the latest CUDA version, starting from the most recent
+RUN for ubuntu_v in 2404 2204 2004; do \
+        # print the current CUDA version and Ubuntu version (useful if building with --progress=plain --no-cache option)
+        echo "Looking for CUDA version "$cuda_version" in Ubuntu $ubuntu_v"; \
+        echo "Looking into: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/"; \
+        # extract cuda major and minor versions from the full version string
+        CUDA_MAJOR=$(echo "$cuda_version" | cut -d. -f1) && CUDA_MINOR=$(echo "$cuda_version" | cut -d. -f2) && \
+        # get the latest version of the specified major and minor versions
+        CUDA_FILE=$(curl -s https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/ | grep -oP "(?<=href=')[^']+" | grep "^cuda-$CUDA_MAJOR-$CUDA_MINOR" | tail -1); \
+        if [ -n "$CUDA_FILE" ]; then \
+            echo "Found CUDA file: $CUDA_FILE"; \
+            # get the latest version of the keyring
+            CUDA_KEYRING=$(curl -s https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/ | grep -oP "(?<=href=')[^']+" | grep "^cuda-keyring" | tail -1); \
+            # download the keyring
+            wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu$ubuntu_v/x86_64/$CUDA_KEYRING; \
+            break; \
+        fi; \
+    done; \
+    # check if the CUDA version was found, otherwise exit
+    if [ -z "$CUDA_FILE" ]; then \
+        echo "CUDA version not found"; \
+        exit 1; \
+    fi
+
+# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+RUN sudo dpkg -i cuda-keyring*.deb
+RUN sudo apt-get update
+# RUN sudo apt-get upgrade -y
+RUN CUDA_MAJOR=$(echo "$cuda_version" | cut -d. -f1) && CUDA_MINOR=$(echo "$cuda_version" | cut -d. -f2) && \
+    sudo apt-get install -y cuda-toolkit-$CUDA_MAJOR-$CUDA_MINOR
+
+ENV PATH=/usr/local/cuda-$cuda_version/bin${PATH:+:${PATH}}
+ENV LD_LIBRARY_PATH=/usr/local/cuda-$cuda_version/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+RUN rm cuda*
+### Install CUDA ############################################# END ####
+
+### Yarp related installations ############################### START ####
 # Build ycm
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
@@ -77,9 +110,17 @@ RUN git clone https://github.com/robotology/ycm.git -b master && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
-ENV YCM_DIR=${robot_code}/ycm/build
+    ENV YCM_DIR=${robot_code}/ycm/build
 
-# Build YARP
+# SWIG 4.21
+WORKDIR ${yarp_user_home}
+RUN sudo apt-get purge -y swig && cd Downloads &&\
+    wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
+    unzip -q swig_4_2_1_ubuntu_24_04.zip && \
+    sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
+    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
+
+    # Build YARP
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
@@ -108,82 +149,79 @@ RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
     -DENABLE_yarppm_depthimage_compression_zlib=ON \
     -DENABLE_yarppm_image_compression_ffmpeg=ON \
     -DENABLE_yarppm_depthimage_to_mono=ON \
-    -DENABLE_yarppm_depthimage_to_rgb=ON && \
+    -DENABLE_yarppm_depthimage_to_rgb=ON \
+    -DYARP_COMPILE_BINDINGS=ON \
+    -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && \
+
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=ON && \
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=OFF
 ENV YARP_ROOT=${robot_code}/yarp \
     YARP_DIR=${robot_code}/yarp/build
 
-# SWIG 4.21
-WORKDIR ${yarp_user_home}
-RUN sudo apt-get purge -y swig && mkdir Downloads && cd Downloads &&\
-    wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
-    unzip -q swig_4_2_1_ubuntu_24_04.zip && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
 
 # YARP bindings
-USER ${robotology_install_user}
-WORKDIR ${robot_code}
-RUN cd yarp && cd bindings &&  mkdir build && cd build && \
-    cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
+# USER ${robotology_install_user}
+# WORKDIR ${robot_code}
+# RUN cd yarp && cd bindings &&  mkdir build && cd build && \
+#     cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
 
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
+##### Commented out since it does not seem to have an actual use (to be tested)
 #CER app
-RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/robotology/cer && \
-    cd cer && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
-    rm CMakeLists.txt && touch CMakeLists.txt && \
-    echo "# Copyright: (C) 2025 HSP Istituto Italiano di Tecnologia" > CMakeLists.txt && \
-    echo "# Authors: Ettore Landini" >> CMakeLists.txt && \
-    echo "# CopyPolicy: Released under the terms of the GNU GPL v2.0." >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "# Prepare a device library called \"cermod\"." >> CMakeLists.txt && \
-    echo "# A test executable called \"cermoddev\" will also be produced." >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "cmake_minimum_required(VERSION 3.5)" >> CMakeLists.txt && \
-    echo "project(CER LANGUAGES CXX C VERSION 1.0.0)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "set(VARS_PREFIX \"CER\")" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "set(CMAKE_CXX_EXTENSIONS OFF)" >> CMakeLists.txt && \
-    echo "set(CMAKE_CXX_STANDARD 11)" >> CMakeLists.txt && \
-    echo "set(CMAKE_CXX_STANDARD_REQUIRED 11)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "set_property(GLOBAL PROPERTY USE_FOLDERS ON)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "list(APPEND CMAKE_MODULE_PATH \"\${CMAKE_SOURCE_DIR}/cmake\")" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "find_package(YCM)" >> CMakeLists.txt && \
-    echo "find_package(YARP 3.11.100 REQUIRED COMPONENTS os sig dev math idl_tools)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "find_package(IPOPT)" >> CMakeLists.txt && \
-    echo "if(NOT IPOPT_FOUND)" >> CMakeLists.txt && \
-    echo "    message(WARNING \"IPOPT library was not found, some kinematics module will not be available.\")" >> CMakeLists.txt && \
-    echo "endif()" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "include(GNUInstallDirs)" >> CMakeLists.txt && \
-    echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_BINDIR}\")" >> CMakeLists.txt && \
-    echo "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
-    echo "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL \"\${PROJECT_NAME} is always built with dynamic plugins\")" >> CMakeLists.txt && \
-    echo "yarp_configure_external_installation(\${PROJECT_NAME} WITH_PLUGINS)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "include(AddInstallRPATHSupport)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "add_install_rpath_support(LIB_DIRS \"\${CMAKE_INSTALL_FULL_LIBDIR}\"" >> CMakeLists.txt && \
-    echo "                          BIN_DIRS \"\${CMAKE_INSTALL_FULL_BINDIR}\"" >> CMakeLists.txt && \
-    echo "                                   \"\${CMAKE_INSTALL_PREFIX}/\${CER_DYNAMIC_PLUGINS_INSTALL_DIR}\"" >> CMakeLists.txt && \
-    echo "                          USE_LINK_PATH)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "# Everything is configured now, we can start adding source code" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "add_subdirectory(app)" >> CMakeLists.txt && \
-    echo "" >> CMakeLists.txt && \
-    echo "include(AddUninstallTarget)" >> CMakeLists.txt && \
-    cmake -S . -B build
+# RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/robotology/cer && \
+#     cd cer && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
+#     rm CMakeLists.txt && touch CMakeLists.txt && \
+#     echo "# Copyright: (C) 2025 HSP Istituto Italiano di Tecnologia" > CMakeLists.txt && \
+#     echo "# Authors: Ettore Landini" >> CMakeLists.txt && \
+#     echo "# CopyPolicy: Released under the terms of the GNU GPL v2.0." >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "# Prepare a device library called \"cermod\"." >> CMakeLists.txt && \
+#     echo "# A test executable called \"cermoddev\" will also be produced." >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "cmake_minimum_required(VERSION 3.5)" >> CMakeLists.txt && \
+#     echo "project(CER LANGUAGES CXX C VERSION 1.0.0)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "set(VARS_PREFIX \"CER\")" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "set(CMAKE_CXX_EXTENSIONS OFF)" >> CMakeLists.txt && \
+#     echo "set(CMAKE_CXX_STANDARD 11)" >> CMakeLists.txt && \
+#     echo "set(CMAKE_CXX_STANDARD_REQUIRED 11)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "set_property(GLOBAL PROPERTY USE_FOLDERS ON)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "list(APPEND CMAKE_MODULE_PATH \"\${CMAKE_SOURCE_DIR}/cmake\")" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "find_package(YCM)" >> CMakeLists.txt && \
+#     echo "find_package(YARP 3.11.100 REQUIRED COMPONENTS os sig dev math idl_tools)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "find_package(IPOPT)" >> CMakeLists.txt && \
+#     echo "if(NOT IPOPT_FOUND)" >> CMakeLists.txt && \
+#     echo "    message(WARNING \"IPOPT library was not found, some kinematics module will not be available.\")" >> CMakeLists.txt && \
+#     echo "endif()" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "include(GNUInstallDirs)" >> CMakeLists.txt && \
+#     echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_BINDIR}\")" >> CMakeLists.txt && \
+#     echo "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
+#     echo "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL \"\${PROJECT_NAME} is always built with dynamic plugins\")" >> CMakeLists.txt && \
+#     echo "yarp_configure_external_installation(\${PROJECT_NAME} WITH_PLUGINS)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "include(AddInstallRPATHSupport)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "add_install_rpath_support(LIB_DIRS \"\${CMAKE_INSTALL_FULL_LIBDIR}\"" >> CMakeLists.txt && \
+#     echo "                          BIN_DIRS \"\${CMAKE_INSTALL_FULL_BINDIR}\"" >> CMakeLists.txt && \
+#     echo "                                   \"\${CMAKE_INSTALL_PREFIX}/\${CER_DYNAMIC_PLUGINS_INSTALL_DIR}\"" >> CMakeLists.txt && \
+#     echo "                          USE_LINK_PATH)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "# Everything is configured now, we can start adding source code" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "add_subdirectory(app)" >> CMakeLists.txt && \
+#     echo "" >> CMakeLists.txt && \
+#     echo "include(AddUninstallTarget)" >> CMakeLists.txt && \
+#     cmake -S . -B build
 
 #R1_OBJECT_RETRIEVAL app
 RUN git clone --no-checkout --filter=blob:none https://github.com/hsp-iit/r1-object-retrieval && \
@@ -229,7 +267,7 @@ ENV PATH=$PATH:$YARP_DIR/bin \
     LD_LIBRARY_PATH=${robot_code}/yarp/build/lib/yarp/ \
     YARP_COLORED_OUTPUT=1 \
     QT_X11_NO_MITSHM=1 \
-    PYTHONPATH=$PYTHONPATH:${YARP_ROOT}/bindings/build/lib/python3/
+    PYTHONPATH=$PYTHONPATH:${YARP_DIR}/lib/python3/
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -237,54 +275,17 @@ EXPOSE 10000/tcp 10000/udp
 USER ${user_name}
 WORKDIR /home/${user_name}/
 
-### Install google from vcpkg ############################################# START ####
-WORKDIR /home/${user_name}/Downloads
-RUN git clone https://github.com/Microsoft/vcpkg.git && \
-    cd vcpkg && git checkout ${google_cloud_version} && ./bootstrap-vcpkg.sh -disableMetrics && \
-    ./vcpkg install --clean-after-build google-cloud-cpp[texttospeech] google-cloud-cpp[speech] google-cloud-cpp[dialogflow-cx]
-ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
-### Packaging google-cloud-cpp instructions ############################################### END ####
-
-ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json \
-    BUILD_SUFFIX=build
-
-WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
-   cd yarp-devices-google-cloud && cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/yarp-user/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake && \
-   cmake --build build
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
+# ### Install google from vcpkg ############################################# START ####
+# WORKDIR /home/${user_name}/Downloads
+# RUN git clone https://github.com/Microsoft/vcpkg.git && \
+#     cd vcpkg && git checkout ${google_cloud_version} && ./bootstrap-vcpkg.sh -disableMetrics && \
+#     ./vcpkg install --clean-after-build google-cloud-cpp[texttospeech] google-cloud-cpp[speech] google-cloud-cpp[dialogflow-cx]
+# ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
+# ### Packaging google-cloud-cpp instructions ############################################### END ####
 
 RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
-   cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
+cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
-
-WORKDIR /home/${user_name}/Downloads
-# Install openai c++ dependencies
-RUN cd vcpkg && ./vcpkg install nlohmann-json
-
-    # Install openai c++ community library
-RUN git clone https://github.com/D7EAD/liboai.git && \
-    cd liboai && cd liboai && \
-    cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=true && \
-    cd build && make -j8 && sudo make install
-
-# Configure openai credentials
-RUN echo "set -a" >> /home/${user_name}/.bashrc && \
-    echo "source ~/.env/config.env" >> /home/${user_name}/.bashrc && \
-    echo "set +a" >> /home/${user_name}/.bashrc
-
-# Install yarpGPT
-WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
-    cd yarp-devices-llm && mkdir build && \
-    cmake -B build -S . \
-    -DCMAKE_TOOLCHAIN_FILE=/home/${user_name}/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake \
-    -DLIBOAI_INSTALL_PATH=/home/${user_name}/Downloads/liboai && cd build && \
-    make -j8
-ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
-    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
-    PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
 
 # Set up ONNX Runtime
 WORKDIR ${robot_code}
@@ -299,12 +300,131 @@ RUN git clone https://github.com/snakers4/silero-vad
 RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
-ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
-    YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
-    PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
 
-RUN echo "conda activate openwakeword" >> /home/${user_name}/.bashrc && \
+ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
+YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
+PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
+
+COPY ./environment.yml ${robot_code}/tour-guide-robot/docker_stuff/docker_talk/environment.yml
+
+### Miniforge and Python environment ############################## START ####
+USER ${robotology_install_user}
+WORKDIR ${yarp_user_home}
+RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+RUN /bin/bash -c "bash ${yarp_user_home}/Miniforge3-$(uname)-$(uname -m).sh -b"
+RUN ${yarp_user_home}/miniforge3/bin/conda init
+RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+conda env create -y -f ${TOUR_GUIDE_ROBOT_SOURCE_DIR}/docker_stuff/docker_talk/environment.yml && \
+conda clean -afy"
+### Miniforge and Python environment ############################## END ####
+
+WORKDIR ${robot_code}
+
+# Install openai c++ community library
+RUN git clone https://github.com/D7EAD/liboai.git && \
+    cd liboai && cd liboai && \
+    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
+    cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=true && cd build && make -j$(nproc) && make install"
+
+# Configure openai credentials
+RUN echo "set -a" >> /home/${user_name}/.bashrc && \
+echo "source ~/.env/config.env" >> /home/${user_name}/.bashrc && \
+echo "set +a" >> /home/${user_name}/.bashrc
+
+# Install yarpGPT
+WORKDIR ${robot_code}
+RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
+    cd yarp-devices-llm && mkdir build && \
+    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
+    cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=true -DCMAKE_PREFIX_PATH=${yarp_user_home}/userInstalled && cd build && make -j$(nproc)"
+ENV YARP_DEVICES_LLM_DIR=${robot_code}/yarp-devices-llm/build \
+YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-llm/build/share/yarp:${robot_code}/yarp-devices-llm/build/share \
+PATH=$PATH:${robot_code}/yarp-devices-llm/build/bin
+
+ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/hsp_google.json \
+BUILD_SUFFIX=build
+
+WORKDIR ${robot_code}
+RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
+cd yarp-devices-google-cloud && \
+/bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+conda activate unified-voice-pipeline && \
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=\${CONDA_PREFIX} && cmake --build build -- -j \$(nproc)"
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
+
+### Install openWakeWord and voicebox python packages ############################## START ####
+USER ${robotology_install_user}
+WORKDIR ${yarp_user_home}
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN curl -fsSL https://bun.sh/install | bash
+ENV BUN_INSTALL=${yarp_user_home}/.bun
+ENV PATH=${BUN_INSTALL}/bin:${PATH}
+
+RUN sudo apt update && sudo apt install -y just libwebkit2gtk-4.1-dev \
+  file python3.12-venv \
+  libxdo-dev nlohmann-json3-dev \
+  libssl-dev \
+  libayatana-appindicator3-dev \
+  librsvg2-dev
+  WORKDIR ${robot_code}
+  RUN git clone https://github.com/dscripka/openWakeWord && cd openWakeWord && \
+  /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+  conda activate unified-voice-pipeline && \
+    pip install -e ."
+RUN git clone https://github.com/jamiepine/voicebox.git && cd voicebox && \
+    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
+    bun install"
+### Install openWakeWord and voicebox python packages ############################## END ####
+
+### Install whisper.cpp ############################### START ####
+WORKDIR ${robot_code}
+RUN git clone https://github.com/ggml-org/whisper.cpp
+    # cd whisper.cpp && cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
+    # -DGGML_CUDA=ON && \
+    # cmake --build build -j8 && cmake --build build --target install
+ENV whisper_DIR=${yarp_user_home}/userInstalled \
+    LD_LIBRARY_PATH=${yarp_user_home}/userInstalled/lib:${LD_LIBRARY_PATH}
+### Install whisper.cpp ############################### END ####
+
+### Offline vocal interaction devices ################################ START ####
+WORKDIR ${robot_code}
+RUN git clone https://github.com/elandini84/yarp-device-speechTranscription-whisper -b refactor/general_update
+    # cd yarp-device-speechTranscription-whisper && \
+    # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -Dwhisper_DIR=${yarp_user_home}/userInstalled && \
+    # cmake --build build -j8
+RUN git clone https://github.com/robotology/yarp-device-voicebox && \
+    cd yarp-device-voicebox && \
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build build -j8
+RUN git clone https://github.com/robotology/yarp-device-llama2 && \
+    cd yarp-device-llama2 && \
+    ./setup_submodule.sh
+    # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DLLAMA_ALL_WARNINGS=ON \
+    # -DGGML_CUDA=ON -DLLAMA_BUILD_COMMON=ON \
+    # -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON && \
+    # cmake --build build -j8
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp
+ENV TEST=1
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ai_model_path}
+ENV PATH=${PATH}:${robot_code}/yarp-device-speechTranscription-whisper/build/bin:${robot_code}/yarp-device-voicebox/build/bin:${robot_code}/yarp-device-llama2/build/bin
+ENV VOICEBOX=${robot_code}/voicebox
+### Offline vocal interaction devices ################################ END ####
+
+### YARP MCP repos ############################################# START ####
+WORKDIR ${robot_code}
+RUN git clone https://github.com/hsp-iit/yarp-mcpServers.git && \
+    git clone https://github.com/hsp-iit/yarp-mcpClient-generalPurpose.git
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-mcpClient-generalPurpose/resources:${robot_code}/yarp-mcpServers/resources
+### YARP MCP repos ############################################# END ####
+
+
+RUN echo "conda activate unified-voice-pipeline" >> /home/${user_name}/.bashrc && \
     sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/${user_name}/.bashrc
 
 WORKDIR ${yarp_user_home}
-CMD bash && conda activate openwakeword
+CMD bash && conda activate unified-voice-pipeline
