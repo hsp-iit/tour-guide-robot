@@ -2,7 +2,7 @@ ARG base_img="ubuntu:24.04"
 FROM $base_img
 LABEL maintainer="Ettore Landini"
 
-ARG yarp_version="master"
+ARG yarp_version="yarp-3.12"
 ARG user_name="yarp-user"
 ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
@@ -41,7 +41,8 @@ RUN apt-get update && apt-get install -y libode8 libace-dev libboost-filesystem-
     liblapack-dev libmumps-dev qml-module-qtmultimedia qml-module-qtquick-dialogs qml-module-qtquick-controls \
     qml-module-qt-labs-settings libqcustomplot-dev qml-module-qt-labs-folderlistmodel libedit-dev \
     libeigen3-dev libjpeg-dev libsimbody-dev libxml2-dev libjs-underscore portaudio19-dev libgtkmm-2.4-dev \
-    libi2c-dev libv4l-dev libsqlite3-0 libsqlite3-dev libsoxr-dev libpulse-dev pulseaudio-utils alsa-utils
+    libi2c-dev libv4l-dev libsqlite3-0 libsqlite3-dev libsoxr-dev libpulse-dev pulseaudio-utils alsa-utils \
+    meson
 
 # Create user: ${user_name}
 USER root
@@ -168,61 +169,6 @@ ENV YARP_ROOT=${robot_code}/yarp \
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
 
-##### Commented out since it does not seem to have an actual use (to be tested)
-#CER app
-# RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/robotology/cer && \
-#     cd cer && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
-#     rm CMakeLists.txt && touch CMakeLists.txt && \
-#     echo "# Copyright: (C) 2025 HSP Istituto Italiano di Tecnologia" > CMakeLists.txt && \
-#     echo "# Authors: Ettore Landini" >> CMakeLists.txt && \
-#     echo "# CopyPolicy: Released under the terms of the GNU GPL v2.0." >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "# Prepare a device library called \"cermod\"." >> CMakeLists.txt && \
-#     echo "# A test executable called \"cermoddev\" will also be produced." >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "cmake_minimum_required(VERSION 3.5)" >> CMakeLists.txt && \
-#     echo "project(CER LANGUAGES CXX C VERSION 1.0.0)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "set(VARS_PREFIX \"CER\")" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "set(CMAKE_CXX_EXTENSIONS OFF)" >> CMakeLists.txt && \
-#     echo "set(CMAKE_CXX_STANDARD 11)" >> CMakeLists.txt && \
-#     echo "set(CMAKE_CXX_STANDARD_REQUIRED 11)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "set_property(GLOBAL PROPERTY USE_FOLDERS ON)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "list(APPEND CMAKE_MODULE_PATH \"\${CMAKE_SOURCE_DIR}/cmake\")" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "find_package(YCM)" >> CMakeLists.txt && \
-#     echo "find_package(YARP 3.11.100 REQUIRED COMPONENTS os sig dev math idl_tools)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "find_package(IPOPT)" >> CMakeLists.txt && \
-#     echo "if(NOT IPOPT_FOUND)" >> CMakeLists.txt && \
-#     echo "    message(WARNING \"IPOPT library was not found, some kinematics module will not be available.\")" >> CMakeLists.txt && \
-#     echo "endif()" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "include(GNUInstallDirs)" >> CMakeLists.txt && \
-#     echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_BINDIR}\")" >> CMakeLists.txt && \
-#     echo "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
-#     echo "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL \"\${PROJECT_NAME} is always built with dynamic plugins\")" >> CMakeLists.txt && \
-#     echo "yarp_configure_external_installation(\${PROJECT_NAME} WITH_PLUGINS)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "include(AddInstallRPATHSupport)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "add_install_rpath_support(LIB_DIRS \"\${CMAKE_INSTALL_FULL_LIBDIR}\"" >> CMakeLists.txt && \
-#     echo "                          BIN_DIRS \"\${CMAKE_INSTALL_FULL_BINDIR}\"" >> CMakeLists.txt && \
-#     echo "                                   \"\${CMAKE_INSTALL_PREFIX}/\${CER_DYNAMIC_PLUGINS_INSTALL_DIR}\"" >> CMakeLists.txt && \
-#     echo "                          USE_LINK_PATH)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "# Everything is configured now, we can start adding source code" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "add_subdirectory(app)" >> CMakeLists.txt && \
-#     echo "" >> CMakeLists.txt && \
-#     echo "include(AddUninstallTarget)" >> CMakeLists.txt && \
-#     cmake -S . -B build
-
 #R1_OBJECT_RETRIEVAL app
 RUN git clone --no-checkout --filter=blob:none https://github.com/hsp-iit/r1-object-retrieval && \
     cd r1-object-retrieval && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
@@ -303,6 +249,7 @@ RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; c
 
 ENV TOUR_GUIDE_ROBOT_SOURCE_DIR=${robot_code}/tour-guide-robot \
 YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/tour-guide-robot/build/share/tour-guide-robot \
+ROBOT_CODE=${robot_code} \
 PATH=${PATH}:${robot_code}/tour-guide-robot/build/bin
 
 COPY ./environment.yml ${robot_code}/tour-guide-robot/docker_stuff/docker_talk/environment.yml
@@ -355,6 +302,17 @@ cd yarp-devices-google-cloud && \
 conda activate unified-voice-pipeline && \
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=\${CONDA_PREFIX} && cmake --build build -- -j \$(nproc)"
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-google-cloud/build/share/yarp:${robot_code}/yarp-devices-google-cloud/build/share/
+
+# WebRTC audio processing repo (used for audio echo cancellation)
+WORKDIR ${robot_code}
+RUN git clone https://gitlab.freedesktop.org/pulseaudio/webrtc-audio-processing/ && \
+    cd webrtc-audio-processing && meson . build -Dprefix=$PWD/install && ninja -C build && ninja -C build install
+
+# AEC baseline that works based on WebRTC
+WORKDIR ${robot_code}
+RUN git clone https://github.com/hsp-iit/aec_baseline && \
+    cd aec_baseline && mkdir build && cd build && export WEBRTC_AUDIO_PROCESSING_ROOT=${robot_code}/webrtc-audio-processing/install && \
+    cmake .. && make -j4
 
 ### Install openWakeWord and voicebox python packages ############################## START ####
 USER ${robotology_install_user}
