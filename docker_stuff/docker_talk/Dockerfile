@@ -110,9 +110,17 @@ RUN git clone https://github.com/robotology/ycm.git -b master && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
     make -j11
-ENV YCM_DIR=${robot_code}/ycm/build
+    ENV YCM_DIR=${robot_code}/ycm/build
 
-# Build YARP
+# SWIG 4.21
+WORKDIR ${yarp_user_home}
+RUN sudo apt-get purge -y swig && cd Downloads &&\
+    wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
+    unzip -q swig_4_2_1_ubuntu_24_04.zip && \
+    sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
+    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
+
+    # Build YARP
 USER ${robotology_install_user}
 WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
@@ -141,25 +149,21 @@ RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
     -DENABLE_yarppm_depthimage_compression_zlib=ON \
     -DENABLE_yarppm_image_compression_ffmpeg=ON \
     -DENABLE_yarppm_depthimage_to_mono=ON \
-    -DENABLE_yarppm_depthimage_to_rgb=ON && \
+    -DENABLE_yarppm_depthimage_to_rgb=ON \
+    -DYARP_COMPILE_BINDINGS=ON \
+    -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && \
+
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=ON && \
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=OFF
 ENV YARP_ROOT=${robot_code}/yarp \
     YARP_DIR=${robot_code}/yarp/build
 
-# SWIG 4.21
-WORKDIR ${yarp_user_home}
-RUN sudo apt-get purge -y swig && cd Downloads &&\
-    wget -nv https://github.com/robotology/robotology-vcpkg-ports/releases/download/storage/swig_4_2_1_ubuntu_24_04.zip && \
-    unzip -q swig_4_2_1_ubuntu_24_04.zip && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/bin/* /usr/bin && \
-    sudo mv swig_4_2_1_ubuntu_24_04_install/share/swig /usr/share
 
 # YARP bindings
-USER ${robotology_install_user}
-WORKDIR ${robot_code}
-RUN cd yarp && cd bindings &&  mkdir build && cd build && \
-    cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
+# USER ${robotology_install_user}
+# WORKDIR ${robot_code}
+# RUN cd yarp && cd bindings &&  mkdir build && cd build && \
+#     cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
 
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
@@ -263,7 +267,7 @@ ENV PATH=$PATH:$YARP_DIR/bin \
     LD_LIBRARY_PATH=${robot_code}/yarp/build/lib/yarp/ \
     YARP_COLORED_OUTPUT=1 \
     QT_X11_NO_MITSHM=1 \
-    PYTHONPATH=$PYTHONPATH:${YARP_ROOT}/bindings/build/lib/python3/
+    PYTHONPATH=$PYTHONPATH:${YARP_DIR}/lib/python3/
 
 # Manage yarp port
 EXPOSE 10000/tcp 10000/udp
@@ -405,6 +409,7 @@ RUN git clone https://github.com/robotology/yarp-device-llama2 && \
     # -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON && \
     # cmake --build build -j8
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp
+ENV TEST=1
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ai_model_path}
 ENV PATH=${PATH}:${robot_code}/yarp-device-speechTranscription-whisper/build/bin:${robot_code}/yarp-device-voicebox/build/bin:${robot_code}/yarp-device-llama2/build/bin
 ENV VOICEBOX=${robot_code}/voicebox

@@ -13,7 +13,7 @@ x-r1-talk-build: &r1-talk-build
     uid: 1000
     gid: 1000
     cuda_version: ${CUDA_VERSION:-12.8}
-    ai_model_path: ${AI_MODEL_PATH:-/home/yarp-user/models}
+    ai_model_path: /home/yarp-user/models
 
 x-nlp: &nlp
   environment:
@@ -29,7 +29,7 @@ x-nlp: &nlp
     - TOUR_REMOTE=${TOUR_REMOTE:-origin}
     - TOUR_BRANCH=${TOUR_BRANCH:-jazzy}
     - ROBOT_CODE=${ROBOT_CODE:-/usr/local/src/robot}
-    - AI_MODEL_PATH=/home/yarp-user/models
+    - AI_MODELS_PATH=/home/yarp-user/models
     - CUDA_REBUILD=${CUDA_REBUILD:-0}
     - CUDA_BUILD_JOBS=${CUDA_BUILD_JOBS:-8}
     - CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES:-native}
@@ -40,7 +40,7 @@ x-nlp: &nlp
     - "${HOME}/.config/credentials/google-credentials/hsp_google.json:/home/yarp-user/.config/google-credential/hsp_google.json"
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"
-    - "${AI_MODEL_PATH:-$HOME}:/home/yarp-user/models:rw"
+    - "${AI_MODELS_PATH:-$HOME}:/home/yarp-user/models:rw"
     - "./entrypoints/entrypoint_light.sh:/home/yarp-user/config/.entrypoint_light.sh"
     - "./entrypoints/entrypoint_heavy.sh:/home/yarp-user/config/.entrypoint_heavy.sh"
     - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
