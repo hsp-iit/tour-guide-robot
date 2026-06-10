@@ -313,6 +313,7 @@ WORKDIR ${robot_code}
 RUN git clone https://github.com/hsp-iit/aec_baseline && \
     cd aec_baseline && mkdir build && cd build && export WEBRTC_AUDIO_PROCESSING_ROOT=${robot_code}/webrtc-audio-processing/install && \
     cmake .. && make -j4
+ENV PATH=$PATH:${robot_code}/aec_baseline/build
 
 ### Install openWakeWord and voicebox python packages ############################## START ####
 USER ${robotology_install_user}
@@ -328,15 +329,48 @@ RUN sudo apt update && sudo apt install -y just libwebkit2gtk-4.1-dev \
   libssl-dev \
   libayatana-appindicator3-dev \
   librsvg2-dev
-  WORKDIR ${robot_code}
-  RUN git clone https://github.com/dscripka/openWakeWord && cd openWakeWord && \
-  /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
-  conda activate unified-voice-pipeline && \
+WORKDIR ${robot_code}
+RUN git clone https://github.com/dscripka/openWakeWord && cd openWakeWord && \
+    /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+    conda activate unified-voice-pipeline && \
     pip install -e ."
 RUN git clone https://github.com/jamiepine/voicebox.git && cd voicebox && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
     bun install"
+WORKDIR ${robot_code}/voicebox
+
+RUN /bin/bash -c 'set -euo pipefail; \
+    source "${yarp_user_home}/miniforge3/etc/profile.d/conda.sh"; \
+    conda activate unified-voice-pipeline; \
+    setsid bun run dev:server & \
+    server_pid=$!; \
+    cleanup() { \
+      kill -TERM -"$server_pid" 2>/dev/null || true; \
+      sleep 2; \
+      kill -KILL -"$server_pid" 2>/dev/null || true; \
+      wait "$server_pid" 2>/dev/null || true; \
+    }; \
+    trap cleanup EXIT; \
+    for i in $(seq 1 60); do \
+      if curl -fsS http://localhost:17493/ >/dev/null 2>&1; then break; fi; \
+      sleep 1; \
+      if [ "$i" = 60 ]; then echo "voicebox server did not start"; exit 1; fi; \
+    done; \
+    curl -fsS -X POST http://localhost:17493/profiles \
+      -H "Content-Type: application/json" \
+      --max-time 30 \
+      -d "{\"name\":\"Sarah_001\",\"description\":\"\",\"language\":\"en\",\"voice_type\":\"preset\",\"preset_engine\":\"kokoro\",\"preset_voice_id\":\"af_sarah\",\"design_prompt\":null,\"default_engine\":\"kokoro\"}"; \
+    curl -fsS -X POST http://localhost:17493/profiles \
+      -H "Content-Type: application/json" \
+      --max-time 30 \
+      -d "{\"name\":\"Sara_001\",\"description\":\"\",\"language\":\"it\",\"voice_type\":\"preset\",\"preset_engine\":\"kokoro\",\"preset_voice_id\":\"if_sara\",\"design_prompt\":null,\"default_engine\":\"kokoro\"}"; \
+    cleanup; \
+    if ss -ltnp | grep -q ":17493"; then \
+      echo "ERROR: port 17493 still in use after cleanup"; \
+      ss -ltnp | grep ":17493" || true; \
+      exit 1; \
+    fi'
 ### Install openWakeWord and voicebox python packages ############################## END ####
 
 ### Install whisper.cpp ############################### START ####
@@ -380,6 +414,11 @@ RUN git clone https://github.com/hsp-iit/yarp-mcpServers.git && \
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-mcpClient-generalPurpose/resources:${robot_code}/yarp-mcpServers/resources
 ### YARP MCP repos ############################################# END ####
 
+### Install ollama ################################ START ####
+WORKDIR ${yarp_user_home}/Downloads
+RUN sudo apt update && sudo apt install -y zstd
+RUN curl -fsSL https://ollama.com/install.sh | sh
+### Install ollama ################################ END ####
 
 RUN echo "conda activate unified-voice-pipeline" >> /home/${user_name}/.bashrc && \
     sed -i '/^case \$- in$/,/^esac$/s/^/#/' /home/${user_name}/.bashrc

@@ -15,7 +15,7 @@ x-r1-talk-build: &r1-talk-build
     cuda_version: ${CUDA_VERSION:-12.8}
     ai_model_path: /home/yarp-user/models
 
-x-nlp: &nlp
+x-talk: &talk
   environment:
     - DISPLAY=${DISPLAY}
     - XAUTHORITY=/home/yarp-user/.Xauthority
@@ -46,6 +46,7 @@ x-nlp: &nlp
     - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
     - "./entrypoints/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
     - "./entrypoints/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
+    - "/usr/share/ollama/.ollama/models:/usr/share/ollama/.ollama/models"
     # These named volumes survive "docker compose down --remove-orphans".
     - cuda-user-installed:/home/yarp-user/userInstalled
     - cuda-whisper-build:/usr/local/src/robot/whisper.cpp/build
@@ -75,7 +76,7 @@ services:
     build: *r1-talk-build
 
   r1-talk-cuda-build:
-    <<: *nlp
+    <<: *talk
     image: *r1-talk-image
     build: *r1-talk-build
     container_name: r1-talk-cuda-build
@@ -85,7 +86,7 @@ services:
 
 # Containers
   r1-talk-container:
-    <<: *nlp
+    <<: *talk
     image: *r1-talk-image
     container_name: r1-talk-container
     depends_on:
@@ -93,7 +94,7 @@ services:
         condition: service_completed_successfully
     command: ["terminator", "-g", "/home/yarp-user/.config/terminator/config"]
   r1-talk-yarprun:
-    <<: *nlp
+    <<: *talk
     image: *r1-talk-image
     container_name: r1-talk-yarprun
     depends_on:
