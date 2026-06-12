@@ -2,7 +2,7 @@ ARG base_img="ubuntu:24.04"
 FROM $base_img
 LABEL maintainer="Ettore Landini"
 
-ARG yarp_version="yarp-3.12"
+ARG yarp_version="master"
 ARG user_name="yarp-user"
 ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
