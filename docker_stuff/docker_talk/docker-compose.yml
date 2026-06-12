@@ -9,7 +9,7 @@ x-r1-talk-build: &r1-talk-build
     llm_branch: ${LLM_BRANCH:-master}
     robot_code: ${ROBOT_CODE:-/usr/local/src/robot}
     user_name: yarp-user
-    yarp_version: ${YARP_BRANCH:-yarp-3.12}
+    yarp_version: ${YARP_BRANCH:-master}
     uid: 1000
     gid: 1000
     cuda_version: ${CUDA_VERSION:-12.8}
