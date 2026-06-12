@@ -17,7 +17,7 @@ jobs:
             ubuntu_version: "ub24",
             gcpp_version: "v2.43",
             cuda_version: "12.8",
-            yarp_branch: "yarp-3.12"
+            yarp_branch: "master"
          }
     steps:
     - name: Info
