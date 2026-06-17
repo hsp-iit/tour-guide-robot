@@ -269,12 +269,12 @@ bool headScanner::configure(yarp::os::ResourceFinder &rf)
     {
         tmp[i] = 50.0;
     }
-    ipos->setRefAccelerations(tmp.data());
+    ipos->setTrajAccelerations(tmp);
 
     for (i = 0; i < nj; i++)
     {
         tmp[i] = head_speed;
-        ipos->setRefSpeed(i, tmp[i]);
+        ipos->setTrajSpeed(i, tmp[i]);
     }
 
     // fisrst read all encoders
@@ -302,7 +302,7 @@ bool headScanner::configure(yarp::os::ResourceFinder &rf)
     bool done = false;
     while (!done && cont_enc_lim < 50)
     {
-        ipos->checkMotionDone(&done);
+        ipos->checkMotionDone(done);
         Time::delay(0.1);
         cont_enc_lim++;
     }
