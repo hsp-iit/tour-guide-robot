@@ -269,7 +269,7 @@ bool headScanner::configure(yarp::os::ResourceFinder &rf)
     {
         tmp[i] = 50.0;
     }
-    ipos->setTrajAccelerations(tmp);
+    ipos->setTrajAccelerations(tmp.data());
 
     for (i = 0; i < nj; i++)
     {
