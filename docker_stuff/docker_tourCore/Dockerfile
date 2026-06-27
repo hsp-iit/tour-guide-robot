@@ -200,12 +200,12 @@ RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
     cd cer-sim/colcon_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build; source ${robotology_install_folder}/cer-sim/colcon_ws/install/local_setup.bash"
 
 # Ergocub software
-# USER ${robotology_install_user}
-# WORKDIR ${robotology_install_folder}
-# RUN git clone https://github.com/mesh-iit/ergocub-software && \
-#     cd ergocub-software && \
-#     cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
-# ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
+USER ${robotology_install_user}
+WORKDIR ${robotology_install_folder}
+RUN git clone https://github.com/elandini84/ergocub-software -b YARP4 && \
+    cd ergocub-software && \
+    cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
+ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
 
 # r1-models
 USER ${robotology_install_user}
