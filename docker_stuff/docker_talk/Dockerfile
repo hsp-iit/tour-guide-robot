@@ -282,7 +282,7 @@ echo "set +a" >> /home/${user_name}/.bashrc
 
 # Install yarpGPT
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
+RUN git clone https://github.com/elandini84/yarp-devices-llm -b YARP4 && \
     cd yarp-devices-llm && mkdir build && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
@@ -296,7 +296,7 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/
 BUILD_SUFFIX=build
 
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
+RUN git clone https://github.com/robotology/yarp-devices-google-cloud -b YARP4 && \
 cd yarp-devices-google-cloud && \
 /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
 conda activate unified-voice-pipeline && \
@@ -389,11 +389,11 @@ RUN git clone https://github.com/elandini84/yarp-device-speechTranscription-whis
     # cd yarp-device-speechTranscription-whisper && \
     # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -Dwhisper_DIR=${yarp_user_home}/userInstalled && \
     # cmake --build build -j8
-RUN git clone https://github.com/robotology/yarp-device-voicebox && \
+RUN git clone https://github.com/robotology/yarp-device-voicebox -b YARP4 && \
     cd yarp-device-voicebox && \
     cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && \
     cmake --build build -j8
-RUN git clone https://github.com/robotology/yarp-device-llama2 && \
+RUN git clone https://github.com/robotology/yarp-device-llama2 -b YARP4 && \
     cd yarp-device-llama2 && \
     ./setup_submodule.sh
     # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DLLAMA_ALL_WARNINGS=ON \
