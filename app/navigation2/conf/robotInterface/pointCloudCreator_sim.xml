@@ -3,7 +3,7 @@
 <robot name="CER-SIM-DEPTH" prefix="CER-SIM-DEPTH" xmlns:xi="http://www.w3.org/2001/XInclude">
    <devices>
 
-       <device xmlns:xi="http://www.w3.org/2001/XInclude"  name="depth_nwc_yarp" type="RGBDSensorClient">
+       <device xmlns:xi="http://www.w3.org/2001/XInclude"  name="depth_nwc_yarp" type="RGBDSensor_nwc_yarp">
  
            <param name="remoteImagePort">/SIM_CER_ROBOT/depthCamera/rgbImage:o</param>
            <param name="remoteDepthPort">/SIM_CER_ROBOT/depthCamera/depthImage:o</param>
@@ -28,7 +28,7 @@
            <action phase="shutdown" level="5" type="detach" />
        </device>
        
-       <!-- <device xmlns:xi="http://www.w3.org/2001/XInclude" name="RGBDWrapperyarp_repeater" type="rgbdSensor_nws_yarp">
+       <!-- <device xmlns:xi="http://www.w3.org/2001/XInclude" name="RGBDWrapperyarp_repeater" type="RGBDSensor_nws_yarp">
 		<param name="period"> 0.1 </param>
 		<param name="name">    /cer/realsense_repeater </param>
 		<action phase="startup" level="5" type="attach">

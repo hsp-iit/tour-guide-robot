@@ -23,7 +23,7 @@
 	      <param name="stereoMode"> true </param>
      </device>
 	      
-	  <device xmlns:xi="http://www.w3.org/2001/XInclude" name="RGBDWrapperyarp" type="rgbdSensor_nws_yarp">
+	  <device xmlns:xi="http://www.w3.org/2001/XInclude" name="RGBDWrapperyarp" type="RGBDSensor_nws_yarp">
 	      <param name="period"> 0.033 </param>
 	      <param name="name">    /cer/realsense </param>
 	      <action phase="startup" level="5" type="attach">
