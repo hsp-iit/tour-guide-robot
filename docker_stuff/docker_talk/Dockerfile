@@ -10,7 +10,7 @@ ARG uid="1000"
 ARG gid="1000"
 # ARG vcpkg_tag="tags/2025.01.13"
 ARG tour_branch="jazzy"
-ARG cuda_version="12.8"
+ARG cuda_version="13.0"
 ARG ai_model_path="/home/yarp-user/models"
 
 # Non-interactive installation mode
@@ -60,10 +60,16 @@ RUN sudo mkdir ${robot_code} && mkdir ${yarp_user_home}/Downloads && \
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_code}
 
 ### Install CUDA ############################################# START ####
+# RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+# RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+# RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb\
 WORKDIR ${yarp_user_home}/Downloads
-RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
-RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb
+RUN wget -O libtinfo5.deb \
+        http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb \
+    && sudo apt-get update \
+    && sudo apt-get install -y ./libtinfo5.deb \
+    && rm -f libtinfo5.deb \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 # Iterate over all the Ubuntu versions to find the latest CUDA version, starting from the most recent
 RUN for ubuntu_v in 2404 2204 2004; do \
@@ -243,7 +249,7 @@ ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1
 WORKDIR ${robot_code}
 RUN git clone https://github.com/snakers4/silero-vad
 
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b upgrade/yarp-4
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 
