@@ -1,4 +1,4 @@
-x-r1-talk-image: &r1-talk-image ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
+x-r1-talk-image: &r1-talk-image ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-13.0}_${BUILD_TYPE:-devel}
 
 x-r1-talk-build: &r1-talk-build
   context: .
@@ -12,7 +12,7 @@ x-r1-talk-build: &r1-talk-build
     yarp_version: ${YARP_BRANCH:-master}
     uid: 1000
     gid: 1000
-    cuda_version: ${CUDA_VERSION:-12.8}
+    cuda_version: ${CUDA_VERSION:-13.0}
     ai_model_path: /home/yarp-user/models
 
 x-talk: &talk
