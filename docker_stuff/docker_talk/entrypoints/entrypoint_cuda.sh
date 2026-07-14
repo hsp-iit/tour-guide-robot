@@ -72,6 +72,10 @@ cmake --build build --parallel "${BUILD_JOBS}"
 cd "${ROBOT_CODE}/yarp-device-llama2"
 cmake -B build -S . \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+    -DCMAKE_CUDA_STANDARD=17 \
+    -DCMAKE_CUDA_STANDARD_REQUIRED=ON \
     -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH_VALUE}" \
     -DCMAKE_CUDA_ARCHITECTURES="${CUDA_ARCHITECTURES}" \
     -DLLAMA_ALL_WARNINGS=ON \
@@ -80,6 +84,7 @@ cmake -B build -S . \
     -DLLAMA_BUILD_EXAMPLES=ON \
     -DLLAMA_BUILD_SERVER=ON \
     -DBUILD_TESTING=OFF
+
 cmake --build build --parallel "${BUILD_JOBS}"
 
 date -u +"%Y-%m-%dT%H:%M:%SZ" > "${STAMP_FILE}"
