@@ -1,20 +1,7 @@
 #!/bin/bash
-echo "set pos 0 16.0511" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 1 9.1" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 2 14.2878" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 3 61.5511" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 4 0.0109864" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 5 0.0329591" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 6 0.0" | yarp write ... /r1mk3Sim/right_arm/rpc:i
-echo "set pos 7 0.0" | yarp write ... /r1mk3Sim/right_arm/rpc:i
 
-echo "set pos 0 16.0511" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 1 9.1" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 2 14.2878" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 3 61.5511" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 4 0.0109864" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 5 0.0329591" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 6 0.0" | yarp write ... /r1mk3Sim/left_arm/rpc:i
-echo "set pos 7 0.0" | yarp write ... /r1mk3Sim/left_arm/rpc:i
+echo "positionMoveGroupRPC (0 1 2 3 4 5 6 7) (16.0511 9.1 14.2878 61.5511 0.0109864 0.0329591 0.0 0.0)" | yarp write ... /cer/right_arm/nws/rpc:i
 
-echo "set pos 0 0.012" | yarp write ... /r1mk3Sim/torso/rpc:i
+echo "positionMoveGroupRPC (0 1 2 3 4 5 6 7) (16.0511 9.1 14.2878 61.5511 0.0109864 0.03 0.0 0.0)" | yarp write ... /cer/left_arm/nws/rpc:i
+
+echo "positionMoveOneRPC 0 0.012" | yarp write ... /cer/torso/nws/rpc:i
