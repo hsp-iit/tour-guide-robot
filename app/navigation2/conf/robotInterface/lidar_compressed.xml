@@ -12,6 +12,20 @@
         <action phase="shutdown" level="5" type="detach" />
     </device>
 
+    <device xmlns:xi="http://www.w3.org/2001/XInclude" name="sender_yarp" type="rangefinder2D_nws_yarp">
+
+        <param name="name"> /cer/laser_local </param>
+        <param name="period"> 0.01 </param>
+     
+        <action phase="startup" level="6" type="attach">
+           <paramlist name="networks">
+              <elem name="cer_laser">  recev </elem>
+           </paramlist>
+        </action>
+     
+        <action phase="shutdown" level="5" type="detach" />
+    </device>
+
     <device xmlns:xi="http://www.w3.org/2001/XInclude" name="sender" type="rangefinder2D_nws_ros2">
         <param name="period"> 0.01 </param>
      
@@ -27,5 +41,6 @@
      
         <action phase="shutdown" level="5" type="detach" />
     </device>
+    
 </devices>
 </robot>
