@@ -235,12 +235,12 @@ WORKDIR /home/${user_name}/
 # ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
 # ### Packaging google-cloud-cpp instructions ############################################### END ####
 
+WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
 cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
 # Set up ONNX Runtime
-WORKDIR ${robot_code}
 RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
 RUN tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
 ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1
