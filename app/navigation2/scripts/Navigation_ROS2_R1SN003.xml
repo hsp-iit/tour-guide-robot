@@ -122,4 +122,10 @@
       <to>/baseControl/input/joystick/data:i</to>
       <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
    </connection>
+
+   <connection>
+      <from>/cer/laser:o</from>
+      <to>/laser_client_repeater:i</to>
+      <protocol>fast-tcp</protocol>
+   </connection>
 </application>
