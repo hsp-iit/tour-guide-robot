@@ -20,7 +20,7 @@
 
    <module>
       <name>yarprobotinterface</name>
-      <parameters>--context navigation2 --from pointCloudCreator.ini</parameters>
+      <parameters>--context navigation2 --from pointCloudCreator_nws_ros2.ini</parameters>
       <node>console</node>
    </module>
 
@@ -40,7 +40,7 @@
    <!-- Frame for external realsense -->
    <module>
       <name>ros2_run.sh</name>
-      <parameters>tf2_ros static_transform_publisher 0 0 0.05 0 0 0 1 depth_center extra_camera_tf</parameters>
+      <parameters>tf2_ros static_transform_publisher 0 -0.05 0.0 0 0 0 1 depth_rgb extra_camera_tf</parameters>
       <node>r1-base</node>
    </module>
 
@@ -121,5 +121,11 @@
       <from>/joystickCtrl:o</from>
       <to>/baseControl/input/joystick/data:i</to>
       <protocol>tcp+recv.portmonitor+type.dll+file.joy2vel</protocol>
+   </connection>
+
+   <connection>
+      <from>/cer/laser:o</from>
+      <to>/laser_client_repeater:i</to>
+      <protocol>fast_tcp</protocol>
    </connection>
 </application>

@@ -1,4 +1,4 @@
-x-r1-talk-image: &r1-talk-image ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-12.8}_${BUILD_TYPE:-devel}
+x-r1-talk-image: &r1-talk-image ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-13.0}_${BUILD_TYPE:-devel}
 
 x-r1-talk-build: &r1-talk-build
   context: .
@@ -9,10 +9,10 @@ x-r1-talk-build: &r1-talk-build
     llm_branch: ${LLM_BRANCH:-master}
     robot_code: ${ROBOT_CODE:-/usr/local/src/robot}
     user_name: yarp-user
-    yarp_version: ${YARP_BRANCH:-yarp-3.12}
+    yarp_version: ${YARP_BRANCH:-master}
     uid: 1000
     gid: 1000
-    cuda_version: ${CUDA_VERSION:-12.8}
+    cuda_version: ${CUDA_VERSION:-13.0}
     ai_model_path: /home/yarp-user/models
 
 x-talk: &talk
@@ -41,9 +41,6 @@ x-talk: &talk
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"
     - "${AI_MODELS_PATH:-$HOME}:/home/yarp-user/models:rw"
-    - "./entrypoints/entrypoint_light.sh:/home/yarp-user/config/.entrypoint_light.sh"
-    - "./entrypoints/entrypoint_heavy.sh:/home/yarp-user/config/.entrypoint_heavy.sh"
-    - "./entrypoints/entrypoint_empty.sh:/home/yarp-user/config/.entrypoint_empty.sh"
     - "./entrypoints/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
     - "./entrypoints/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
     - "/usr/share/ollama/.ollama/models:/usr/share/ollama/.ollama/models"

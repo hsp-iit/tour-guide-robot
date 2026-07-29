@@ -112,4 +112,10 @@
 
    <!-- connections -->
 
+   <connection>
+      <from>/r1mk3Sim/laser:o</from>
+      <to>/laser_client_repeater:i</to>
+      <protocol>fast_tcp</protocol>
+   </connection>
+
 </application>

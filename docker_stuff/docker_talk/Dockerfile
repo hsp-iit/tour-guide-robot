@@ -2,7 +2,7 @@ ARG base_img="ubuntu:24.04"
 FROM $base_img
 LABEL maintainer="Ettore Landini"
 
-ARG yarp_version="yarp-3.12"
+ARG yarp_version="master"
 ARG user_name="yarp-user"
 ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
@@ -10,7 +10,7 @@ ARG uid="1000"
 ARG gid="1000"
 # ARG vcpkg_tag="tags/2025.01.13"
 ARG tour_branch="jazzy"
-ARG cuda_version="12.8"
+ARG cuda_version="13.0"
 ARG ai_model_path="/home/yarp-user/models"
 
 # Non-interactive installation mode
@@ -60,10 +60,16 @@ RUN sudo mkdir ${robot_code} && mkdir ${yarp_user_home}/Downloads && \
 RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_code}
 
 ### Install CUDA ############################################# START ####
+# RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+# RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+# RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb\
 WORKDIR ${yarp_user_home}/Downloads
-RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
-RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb
+RUN wget -O libtinfo5.deb \
+        http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb \
+    && sudo apt-get update \
+    && sudo apt-get install -y ./libtinfo5.deb \
+    && rm -f libtinfo5.deb \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 # Iterate over all the Ubuntu versions to find the latest CUDA version, starting from the most recent
 RUN for ubuntu_v in 2404 2204 2004; do \
@@ -229,12 +235,12 @@ WORKDIR /home/${user_name}/
 # ENV VCPKG_ROOT=/home/${user_name}/Downloads/vcpkg
 # ### Packaging google-cloud-cpp instructions ############################################### END ####
 
+WORKDIR ${robot_code}
 RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
 cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
 # Set up ONNX Runtime
-WORKDIR ${robot_code}
 RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
 RUN tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
 ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1
@@ -243,7 +249,7 @@ ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1
 WORKDIR ${robot_code}
 RUN git clone https://github.com/snakers4/silero-vad
 
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b $tour_branch
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b upgrade/yarp-4
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 
@@ -282,7 +288,7 @@ echo "set +a" >> /home/${user_name}/.bashrc
 
 # Install yarpGPT
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-llm -b ${llm_branch} && \
+RUN git clone https://github.com/elandini84/yarp-devices-llm -b YARP4 && \
     cd yarp-devices-llm && mkdir build && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
@@ -296,7 +302,7 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/
 BUILD_SUFFIX=build
 
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-google-cloud && \
+RUN git clone https://github.com/robotology/yarp-devices-google-cloud -b YARP4 && \
 cd yarp-devices-google-cloud && \
 /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
 conda activate unified-voice-pipeline && \
@@ -389,11 +395,11 @@ RUN git clone https://github.com/elandini84/yarp-device-speechTranscription-whis
     # cd yarp-device-speechTranscription-whisper && \
     # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -Dwhisper_DIR=${yarp_user_home}/userInstalled && \
     # cmake --build build -j8
-RUN git clone https://github.com/robotology/yarp-device-voicebox && \
+RUN git clone https://github.com/robotology/yarp-device-voicebox -b YARP4 && \
     cd yarp-device-voicebox && \
     cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && \
     cmake --build build -j8
-RUN git clone https://github.com/robotology/yarp-device-llama2 && \
+RUN git clone https://github.com/robotology/yarp-device-llama2 -b YARP4 && \
     cd yarp-device-llama2 && \
     ./setup_submodule.sh
     # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DLLAMA_ALL_WARNINGS=ON \

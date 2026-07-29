@@ -18,7 +18,7 @@ jobs:
              base_image: "nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04",
              base_image_label: "cuda.12.8.1-cudnn",
              work_dir: "docker_stuff/docker_tourCore/",
-             yarp_branch: "yarp-3.12",
+             yarp_branch: "master",
              ros2_dev_branch: "master"
           }
 
@@ -63,7 +63,7 @@ jobs:
              base_image: "nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04",
              base_image_label: "cuda.12.8.1-cudnn",
              work_dir: "docker_stuff/docker_sim/",
-             yarp_branch: "yarp-3.12",
+             yarp_branch: "master",
              ros2_dev_branch: "master"
           }
 

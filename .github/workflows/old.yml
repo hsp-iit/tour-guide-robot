@@ -16,7 +16,7 @@ jobs:
               base_image: "ubuntu:22.04",
               base_image_label: "ubuntu22.04",
               work_dir: "docker_stuff/docker_tourCore_old/",
-              yarp_branch: "yarp-3.12",
+              yarp_branch: "master",
               ros2_dev_branch: "master"
             }
           - {
@@ -24,7 +24,7 @@ jobs:
              base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
              base_image_label: "cuda.11.7.1-cudnn8",
              work_dir: "docker_stuff/docker_tourCore_old/",
-             yarp_branch: "yarp-3.12",
+             yarp_branch: "master",
              ros2_dev_branch: "master"
           }
 
@@ -69,7 +69,7 @@ jobs:
               base_image: "ubuntu:22.04",
               base_image_label: "ubuntu22.04",
               work_dir: "docker_stuff/docker_sim_old/",
-              yarp_branch: "yarp-3.12",
+              yarp_branch: "master",
               ros2_dev_branch: "master"
             }
           - {
@@ -77,7 +77,7 @@ jobs:
               base_image: "nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04",
               base_image_label: "cuda.11.7.1-cudnn8",
               work_dir: "docker_stuff/docker_sim_old/",
-              yarp_branch: "yarp-3.12",
+              yarp_branch: "master",
               ros2_dev_branch: "master"
           }
           - {
@@ -85,7 +85,7 @@ jobs:
              base_image: "ste93/convince:ubuntu_22.04_qt_6.8.3",
              base_image_label: "ubuntu_22.04_qt_6.8.3",
              work_dir: "docker_stuff/docker_sim_old/",
-             yarp_branch: "yarp-3.12",
+             yarp_branch: "master",
              ros2_dev_branch: "master"
            }
 

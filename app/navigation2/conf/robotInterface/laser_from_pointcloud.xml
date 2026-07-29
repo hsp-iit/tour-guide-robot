@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+
+<robot name="laser_from_pointcloud">
+
+<devices>
+
+    <!-- Virtual laser -->
+    <device name="virtualLaser" type="laserFromPointCloud">
+
+        <!-- device-specific parameters -->
+
+        <param name="period">0.02</param>
+
+        <param name="min_angle">0</param>
+        <param name="max_angle">360</param>
+        <param name="resolution">1</param>
+
+        <param name="min_distance">0.10</param>
+        <param name="max_distance">5.0</param>
+
+        <!-- clipping -->
+        <param name="floor_height">0.10</param>
+        <param name="ceiling_height">2.0</param>
+
+        <!-- THIS IS MANDATORY -->
+        <group name="TRANSFORM_CLIENT">
+
+            <param name="testxml_context">ros2_frameTransform_config</param>
+
+            <param name="testxml_from">ftc_sub_ros2.xml</param>
+
+            <param name="local_rpc">/laserFromPointCloud/transformClient/rpc</param>
+
+        </group>
+
+        <group name="RGBD_SENSOR_CLIENT">
+        
+            <param name="localImagePort">/laserFromPointCloud/rgbdClient/Image:i</param>
+            <param name="localDepthPort">/laserFromPointCloud/rgbdClient/Depth:i</param>
+            <param name="remoteImagePort">/cer/realsense_repeater/rgbImage:o</param>
+            <param name="remoteDepthPort">/cer/realsense_repeater/depthImage:o</param>
+            <param name="localRpcPort">/laserFromPointCloud/rgbdClient/rpc:o</param>
+            <param name="remoteRpcPort">/cer/realsense_repeater/rpc:i</param>
+        </group>
+
+        <group name="Z_CLIPPING_PLANES">
+
+            <param name="floor_height">0.10</param>
+            <param name="ceiling_height">2.0</param>
+            <param name="max_distance">5.0</param>
+            <param name="ground_frame_id">mobile_base_body_link</param>
+            <param name="camera_frame_id">extra_camera_tf</param>
+
+        </group>
+
+    </device>
+
+    <!-- YARP publisher -->
+
+    <device name="laserYarp" type="rangefinder2D_nws_yarp">
+
+        <param name="name">/virtualLaser_nws</param>
+
+        <action phase="startup"
+                level="5"
+                type="attach">
+
+            <paramlist name="networks">
+                <elem name="laser">
+                    virtualLaser
+                </elem>
+            </paramlist>
+
+        </action>
+
+    </device>
+
+    <!-- ROS2 publisher -->
+
+    <device name="laserRos" type="rangefinder2D_nws_ros2">
+
+        <param name="node_name">virtual_laser</param>
+
+        <param name="topic_name">/virtual_scan</param>
+
+        <param name="frame_id">virtual_base_scan</param>
+
+        <action phase="startup"
+                level="6"
+                type="attach">
+
+            <paramlist name="networks">
+                <elem name="laser">
+                    virtualLaser
+                </elem>
+            </paramlist>
+
+        </action>
+
+    </device>
+
+</devices>
+
+</robot>
