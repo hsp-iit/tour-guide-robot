@@ -216,7 +216,7 @@ ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
 # Ergocub software
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/ergocub-software -b YARP4 && \
+RUN git clone https://github.com/elandini84/ergocub-software -b fix/yarp4_getAxes && \
     cd ergocub-software && \
     cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
 ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
@@ -224,7 +224,7 @@ ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
 # Gz-sim Plugins
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/gz-sim-yarp-plugins && \
+RUN git clone https://github.com/elandini84/gz-sim-yarp-plugins -b fix/yarp4 && \
     cd gz-sim-yarp-plugins && mkdir build && cd build && \
     /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DBUILD_gz-sim-yarp-worldinterface-system=ON && make -j11"
 
@@ -274,7 +274,7 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} /opt/ros
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop && mkdir build && cd build && cmake .. && \
     git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install && \
-    cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b upgrade/yarp-4 && \
+    cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
     /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
