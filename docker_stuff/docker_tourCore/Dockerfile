@@ -139,26 +139,21 @@ ENV icub_firmware_shared_ROOT=${robotology_install_folder}/icub-firmware-shared 
 # Build icub-main
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/icub-main.git -b yarp4 && \
-    cd icub-main && mkdir build && cd build && \
+RUN git clone https://github.com/robotology/icub-main.git -b yarp4
+RUN cd icub-main && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DALLOW_DEVICE_PARAM_PARSER_GENERATION=ON \
-    -DENABLE_icubmod_cartesiancontrollerserver=ON \
-    -DENABLE_icubmod_cartesiancontrollerclient=ON \
     -DENABLE_icubmod_bcbBattery=${battery} \
     -DENABLE_icubmod_bmsBattery=${battery} \
+    -DENABLE_icubmod_cartesiancontrollerserver=ON \
+    -DENABLE_icubmod_cartesiancontrollerclient=ON \
     -DENABLE_icubmod_embObjBattery=${battery} \
-    -DENABLE_icubmod_embObjAnalogSensor=ON \
     -DENABLE_icubmod_embObjFTsensor=ON \
     -DENABLE_icubmod_embObjIMU=ON \
-    -DENABLE_icubmod_embObjInertials=ON \
     -DENABLE_icubmod_embObjMais=ON \
     -DENABLE_icubmod_embObjMotionControl=ON \
-    -DENABLE_icubmod_embObjMultiEnc=ON \
-    -DENABLE_icubmod_embObjPSC=ON \
     -DENABLE_icubmod_embObjSkin=ON \
-    -DENABLE_icubmod_embObjStrain=ON \
     -DENABLE_icubmod_parametricCalibrator=ON \
     -DENABLE_icubmod_parametricCalibratorEth=ON \
     -DICUBMAIN_COMPILE_SIMULATORS=OFF \
@@ -202,7 +197,7 @@ RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
 # Ergocub software
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/ergocub-software -b YARP4 && \
+RUN git clone https://github.com/elandini84/ergocub-software -b fix/yarp4_getAxes && \
     cd ergocub-software && \
     cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
 ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
@@ -269,8 +264,7 @@ RUN git clone https://github.com/BehaviorTree/Groot.git && \
 # Navigation stuff
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop  && mkdir build && cd build && cmake .. && \
-    # cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
-    cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b upgrade/yarp-4 && \
+    cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
     /bin/bash -c "export ONNX_PATH=${robotology_install_folder}/onnxruntime-linux-x64-1.20.1; source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
