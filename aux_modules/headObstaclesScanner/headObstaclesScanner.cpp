@@ -257,8 +257,8 @@ bool headScanner::configure(yarp::os::ResourceFinder &rf)
     }
 
     // get axes
-    int nj = 0;
-    ipos->getAxes(&nj);
+    size_t nj = 0;
+    ipos->getAxes(nj);
     encoders.resize(nj);
     tmp.resize(nj);
     command.resize(nj);
