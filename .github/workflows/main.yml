@@ -19,7 +19,7 @@ jobs:
               base_image_label: "ubuntu24.04",
               work_dir: "docker_stuff/docker_tourCore/",
               yarp_branch: "master",
-              ros2_dev_branch: "master"
+              ros2_dev_branch: "YARP4"
             }
           - {
              ros2_distro: "jazzy",
@@ -27,7 +27,7 @@ jobs:
              base_image_label: "ubuntu_24.04_qt_6.8.3",
              work_dir: "docker_stuff/docker_tourCore/",
              yarp_branch: "master",
-             ros2_dev_branch: "master"
+             ros2_dev_branch: "YARP4"
           }
     permissions:
       contents: read
@@ -76,7 +76,7 @@ jobs:
               base_image_label: "ubuntu24.04",
               work_dir: "docker_stuff/docker_sim/",
               yarp_branch: "master",
-              ros2_dev_branch: "master",
+              ros2_dev_branch: "YARP4",
               gazebo_version: "harmonic"
             }
           - {
@@ -85,7 +85,7 @@ jobs:
               base_image_label: "ubuntu_24.04_qt_6.8.3",
               work_dir: "docker_stuff/docker_sim/",
               yarp_branch: "master",
-              ros2_dev_branch: "master",
+              ros2_dev_branch: "YARP4",
               gazebo_version: "harmonic"
           }
     permissions:
