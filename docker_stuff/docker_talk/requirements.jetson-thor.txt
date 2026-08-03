@@ -1,0 +1,66 @@
+# Install this only after installing the NVIDIA JetPack/NGC-matched PyTorch
+# and torchaudio builds for Jetson Thor. Do not add the generic PyTorch CUDA
+# wheel index here: those wheels are not the Jetson Thor target.
+
+--find-links https://k2-fsa.github.io/icefall/piper_phonemize.html
+
+# ----------------------------
+# voicebox backend
+# ----------------------------
+fastapi>=0.118.0
+uvicorn[standard]>=0.37.0
+pydantic>=2.5.0
+sqlalchemy>=2.0.0
+alembic>=1.13.0
+transformers>=4.36.0,<=4.57.6
+accelerate>=0.26.0
+huggingface_hub>=0.20.0
+qwen-tts>=0.0.5
+linacodec @ git+https://github.com/ysharma3501/LinaCodec.git
+Zipvoice @ git+https://github.com/ysharma3501/LuxTTS.git
+conformer>=0.3.2
+diffusers>=0.29.0
+omegaconf
+pykakasi
+resemble-perth>=1.0.1
+s3tokenizer
+spacy-pkuseg
+pyloudnorm
+kokoro>=0.9.4
+misaki[en]>=0.9.4
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+httpx>=0.28.1
+python-multipart>=0.0.6
+
+# ----------------------------
+# yarp-mcp-client
+# ----------------------------
+mcp[cli]>=1.15.0
+openai>=1.109.1
+ollama>=0.6.0
+python-dotenv>=1.1.1
+
+# ----------------------------
+# openwakeword core requirements
+# ----------------------------
+# This keeps the openwakeword path CPU-ONNX by default. If you want
+# GPU/TensorRT ONNX Runtime on Thor, install a Jetson/Thor-compatible
+# onnxruntime-gpu build separately and remove this line.
+onnxruntime>=1.10.0,<2
+ai-edge-litert>=2.0.2,<3; platform_system == "Linux"
+speexdsp-ns>=0.1.2,<1; platform_system == "Linux"
+
+# ----------------------------
+# useful openwakeword full extras
+# ----------------------------
+mutagen>=1.46.0,<2
+torchinfo>=1.8.0,<2
+torchmetrics>=0.11.4,<1
+speechbrain>=0.5.14,<1
+audiomentations>=0.30.0,<1
+torch-audiomentations>=0.11.0,<1
+acoustics>=0.2.6,<1
+pronouncing>=0.2.0,<1
+datasets>=2.14.4,<3
+deep-phonemizer==0.0.19
+

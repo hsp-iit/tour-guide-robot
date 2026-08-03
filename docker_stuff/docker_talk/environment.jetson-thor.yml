@@ -1,0 +1,30 @@
+name: unified-voice-pipeline-thor
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+  - pip
+
+  # Runtime/system libraries with good linux-aarch64 coverage on conda-forge.
+  - ffmpeg
+  - libsndfile
+  - git
+  - google-cloud-cpp=2.43.0
+
+  # Keep numeric/audio foundations in conda so pip does not need to build them
+  # on the Jetson during the later Python package install.
+  - numpy>=1.26,<2
+  - scipy>=1.11,<2
+  - scikit-learn>=1,<2
+  - numba>=0.60,<0.61
+  - librosa>=0.10
+  - soundfile>=0.12
+  - pillow>=10
+  - pyyaml>=6,<7
+  - protobuf>=3.20,<4
+  - requests>=2,<3
+  - tqdm>=4.64,<5
+  - wheel
+  - setuptools
+
