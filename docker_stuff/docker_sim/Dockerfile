@@ -216,7 +216,7 @@ ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
 # Ergocub software
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/ergocub-software -b fix/yarp4_getAxes && \
+RUN git clone https://github.com/mesh-iit/ergocub-software && \
     cd ergocub-software && \
     cmake -S . -B build -DENABLE_couplingXCubHandMk5=ON -DCOMPILE_ergoCubModels=ON && cmake --build build
 ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
