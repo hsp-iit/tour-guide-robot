@@ -249,7 +249,7 @@ ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1
 WORKDIR ${robot_code}
 RUN git clone https://github.com/snakers4/silero-vad
 
-RUN git clone https://github.com/hsp-iit/tour-guide-robot -b upgrade/yarp-4
+RUN git clone https://github.com/hsp-iit/tour-guide-robot -b ${tour_branch}
 RUN /bin/bash -c "export ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON -DSILERO_VAD=ON; make -j11"
 
 
