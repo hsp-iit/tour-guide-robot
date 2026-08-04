@@ -95,7 +95,16 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
 
     if (!rf.check("model_path", "model_path"))
     {
-        yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'model_path' parameter of " << MODEL_PATH;
+        if((!rf.check("silero_context")) || (!rf.check("silero_from")))
+        {
+            yCDebug(VADAUDIOPROCESSORCREATOR) << "Using default 'model_path' parameter of " << MODEL_PATH;
+        }
+        else
+        {
+            yarp::os::ResourceFinder modelFinder;
+            modelFinder.setDefaultContext(rf.find("silero_context").asString());
+            m_modelPath = modelFinder.findFileByName(rf.find("silero_from").asString());
+        }
     }
     else
     {
