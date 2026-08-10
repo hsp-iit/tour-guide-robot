@@ -17,6 +17,11 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
                                        "The name of the input port for the audio.")
                                   .asString();
 
+    std::string speechTimestampPortOutName = rf.check("speech_start_timestamp_output_port_name",
+                                                yarp::os::Value("/vad/speech_start_timestamp:o"),
+                                                "The name of the output port for speech start timestamps.")
+                                            .asString();
+
     std::string wakeWordClientPort = rf.check("wake_word_client_port_name", yarp::os::Value("/vad/rpc:o"),
                                             "Name of rpc port to inform wake detector when audio clip is done")
                                        .asString();
@@ -125,6 +130,7 @@ bool VoiceActivationDetectionModule::configure(yarp::os::ResourceFinder &rf)
                                                     m_vadSavePriorToDetection,
                                                     m_modelPath,
                                                     filteredAudioPortOutName,
+                                                    speechTimestampPortOutName,
                                                     wakeWordClientPort,
                                                     m_vadSpeechProbEmaAlpha,
                                                     m_vadStopThresholdMargin,

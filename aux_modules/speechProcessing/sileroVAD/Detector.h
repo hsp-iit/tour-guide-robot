@@ -9,6 +9,7 @@
 #include <yarp/os/TypedReaderCallback.h>
 #include <yarp/os/LogStream.h>
 #include <yarp/os/RpcClient.h>
+#include <yarp/os/Bottle.h>
 
 #include <functional>
 #include <cmath>
@@ -29,6 +30,7 @@ public:
             int vadSavePriorToDetection,
             const std::string modelPath,
             std::string filteredAudioPortOutName,
+            std::string speechTimestampPortOutName,
             std::string wakeWordClientPort,
             float speechProbEmaAlpha,
             float stopThresholdMargin,
@@ -57,6 +59,7 @@ private:
     bool m_soundDetected{false};
     std::string m_filteredAudioPortOutName;
     yarp::os::BufferedPort<yarp::sig::Sound> m_filteredAudioOutputPort; /** The output port for sending the filtered audio. **/
+    yarp::os::BufferedPort<yarp::os::Bottle> m_speechTimestampOutputPort; /** The output port for sending speech start timestamps. **/
     std::deque<yarp::sig::Sound> m_soundToProcess;
 
     int m_gapCounter = 0;
