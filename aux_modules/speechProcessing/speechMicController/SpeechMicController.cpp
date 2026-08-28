@@ -31,7 +31,7 @@ void SoundCatcher::onRead(yarp::sig::Sound& soundReceived) {
     yarp::os::Bottle req_stop{"stopRecording_RPC"};
     reply.clear();
     m_audiorecorderRPCPort.write(red_rec, reply);
-    yCInfo(SPEECH_MIC_CONTROLLER, "isReconrding_RPC reply: %s", reply.toString().c_str());
+    // yCInfo(SPEECH_MIC_CONTROLLER, "isReconrding_RPC reply: %s", reply.toString().c_str());
     if(reply.get(1).asString() == "ok")
     {
         yCInfo(SPEECH_MIC_CONTROLLER, "Microphone is recording, stopping it");
@@ -68,10 +68,36 @@ bool BufferCatcher::configure(yarp::os::ResourceFinder& rf)
 
 void BufferCatcher::onRead(yarp::sig::AudioPlayerStatus& status) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    yCInfo(SPEECH_MIC_CONTROLLER, "Received audio player status: %s", status.toString().c_str());
+    // yCInfo(SPEECH_MIC_CONTROLLER, "Received audio player status: %s", status.toString().c_str());
     if(status.current_buffer_size > 0 && !m_switchFlipped)
     {
         yCInfo(SPEECH_MIC_CONTROLLER, "Audio is playing, stopping microphone");
+        yarp::os::Bottle red_rec{"isRecording_RPC"};
+        yarp::os::Bottle reply;
+        yarp::os::Bottle req_stop{"stopRecording_RPC"};
+        reply.clear();
+        m_audiorecorderRPCPort.write(red_rec, reply);
+        yCInfo(SPEECH_MIC_CONTROLLER, "isReconrding_RPC reply: %s", reply.toString().c_str());
+        if(reply.get(1).asString() == "ok")
+        {
+            yCInfo(SPEECH_MIC_CONTROLLER, "Microphone is recording, stopping it");
+            reply.clear();
+            m_audiorecorderRPCPort.write(req_stop,reply);
+            if (!reply.isNull() && reply.get(0).asString() == "nack")
+            {
+                yCError(SPEECH_MIC_CONTROLLER, "BufferCatcher::onRead. Orchestrator returned NACK when restarting microphone.");
+                return;
+            }
+            else if(reply.isNull())
+            {
+                yCError(SPEECH_MIC_CONTROLLER, "BufferCatcher::onRead. No reply received when restarting microphone.");
+                return;
+            }
+        }
+        else
+        {
+            yCInfo(SPEECH_MIC_CONTROLLER, "Microphone is not recording, no need to stop it");
+        }
         m_switchFlipped = true;
     }
     else if(status.current_buffer_size == 0 && m_switchFlipped)
@@ -117,7 +143,7 @@ bool TranscriptionCatecher::configure(yarp::os::ResourceFinder& rf)
 
 void TranscriptionCatecher::onRead(yarp::os::Bottle& transcription) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    yCInfo(SPEECH_MIC_CONTROLLER, "Received transcription: %s", transcription.toString().c_str());
+    // yCInfo(SPEECH_MIC_CONTROLLER, "Received transcription: %s", transcription.toString().c_str());
     if(transcription.get(0).asString() == "")
     {
         yCInfo(SPEECH_MIC_CONTROLLER, "Empty transcription received, ignoring");
