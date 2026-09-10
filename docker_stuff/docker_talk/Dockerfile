@@ -2,7 +2,7 @@ ARG base_img="ubuntu:24.04"
 FROM $base_img
 LABEL maintainer="Ettore Landini"
 
-ARG yarp_version="master"
+ARG yarp_version="yarp-4.0"
 ARG user_name="yarp-user"
 ARG robot_code="/usr/local/src/robot"
 ARG llm_branch="master"
@@ -65,7 +65,7 @@ RUN sudo chown -R ${robotology_install_user}:${robotology_install_user} ${robot_
 # RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb\
 WORKDIR ${yarp_user_home}/Downloads
 RUN wget -O libtinfo5.deb \
-        http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb \
+        http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.3_amd64.deb \
     && sudo apt-get update \
     && sudo apt-get install -y ./libtinfo5.deb \
     && rm -f libtinfo5.deb \
