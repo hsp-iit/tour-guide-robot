@@ -153,8 +153,10 @@ void eyeContactManager::resetNeck()
         prop.put("control-frame", "depth");
         prop.put("target-type", "angular");
         prop.put("target-location", b2.get(0));
+        yarp::os::Bottle toSend;
+        toSend.fromString(prop.toString());
 
-        if (m_pGazeControl.write(prop))
+        if (m_pGazeControl.write(toSend))
         {
             m_isHeadReset = true;
             yCInfo(EYE_CONTACT) << "Reset neck position succesfully";
@@ -273,5 +275,7 @@ bool eyeContactManager::lookAtPixel(std::string mode, double px, double py)
     b3.addFloat64(px);
     b3.addFloat64(py);
     p.put("target-location", b2.get(0));
-    return m_pGazeControl.write(p);
+    yarp::os::Bottle toSend;
+    toSend.fromString(p.toString());
+    return m_pGazeControl.write(toSend);
 }
