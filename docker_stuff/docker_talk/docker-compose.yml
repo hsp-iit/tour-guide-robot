@@ -9,7 +9,7 @@ x-r1-talk-build: &r1-talk-build
     llm_branch: ${LLM_BRANCH:-master}
     robot_code: ${ROBOT_CODE:-/usr/local/src/robot}
     user_name: yarp-user
-    yarp_version: ${YARP_BRANCH:-yarp-4.0}
+    yarp_version: ${YARP_BRANCH:-master}
     uid: 1000
     gid: 1000
     cuda_version: ${CUDA_VERSION:-13.0}
@@ -41,8 +41,8 @@ x-talk: &talk
     - "${HOME}/.config/credentials/azure-credentials/config.env:/home/yarp-user/.env/config.env"
     - "${PORCUPINE_CONFIG:-/usr/local/src}/:/usr/local/src/robot/.config/porcupine"
     - "${AI_MODELS_PATH:-$HOME}:/home/yarp-user/models:rw"
-    - "./entrypoints/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
-    - "./entrypoints/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
+    - "./env_config/entrypoint_porcupine.sh:/home/yarp-user/config/.entrypoint_porcupine.sh"
+    - "./env_config/entrypoint_cuda.sh:/home/yarp-user/config/.entrypoint_cuda.sh"
     - "/usr/share/ollama/.ollama/models:/usr/share/ollama/.ollama/models"
     # These named volumes survive "docker compose down --remove-orphans".
     - cuda-user-installed:/home/yarp-user/userInstalled
@@ -101,6 +101,10 @@ services:
 
 volumes:
   cuda-user-installed:
+    name: ${BUILD_TYPE:-devel}-cuda-user-installed
   cuda-whisper-build:
+    name: ${BUILD_TYPE:-devel}-cuda-whisper-build
   cuda-speech-transcription-build:
+    name: ${BUILD_TYPE:-devel}-cuda-speech-transcription-build
   cuda-llama2-build:
+    name: ${BUILD_TYPE:-devel}-cuda-llama2-build

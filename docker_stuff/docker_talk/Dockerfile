@@ -2,10 +2,9 @@ ARG base_img="ubuntu:24.04"
 FROM $base_img
 LABEL maintainer="Ettore Landini"
 
-ARG yarp_version="yarp-4.0"
+ARG yarp_version="master"
 ARG user_name="yarp-user"
 ARG robot_code="/usr/local/src/robot"
-ARG llm_branch="master"
 ARG uid="1000"
 ARG gid="1000"
 # ARG vcpkg_tag="tags/2025.01.13"
@@ -159,7 +158,6 @@ RUN git clone https://github.com/robotology/yarp.git -b $yarp_version && \
     -DENABLE_yarppm_depthimage_to_rgb=ON \
     -DYARP_COMPILE_BINDINGS=ON \
     -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && \
-
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=ON && \
     make -j11 && cmake .. -DALLOW_IDL_GENERATION=OFF
 ENV YARP_ROOT=${robot_code}/yarp \
@@ -195,7 +193,7 @@ RUN git clone --no-checkout --filter=blob:none https://github.com/hsp-iit/r1-obj
     echo "list(APPEND CMAKE_MODULE_PATH \"\${CMAKE_SOURCE_DIR}/cmake\")" >> CMakeLists.txt && \
     echo "" >> CMakeLists.txt && \
     echo "find_package(YCM)" >> CMakeLists.txt && \
-    echo "find_package(YARP 3.11 REQUIRED)" >> CMakeLists.txt && \
+    echo "find_package(YARP 4.0.0 REQUIRED)" >> CMakeLists.txt && \
     echo "" >> CMakeLists.txt && \
     echo "include(GNUInstallDirs)" >> CMakeLists.txt && \
     echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_BINDIR}\")" >> CMakeLists.txt && \
@@ -208,6 +206,60 @@ RUN git clone --no-checkout --filter=blob:none https://github.com/hsp-iit/r1-obj
     echo "# Everything is configured now, we can start adding source code" >> CMakeLists.txt && \
     echo "add_subdirectory(app)" >> CMakeLists.txt && \
     echo "" >> CMakeLists.txt
+
+#CER app
+RUN git clone --no-checkout --depth 1 --filter=blob:none https://github.com/robotology/cer -b ${yarp_version} && \
+    cd cer && git sparse-checkout init --cone && git sparse-checkout set app && git checkout && \
+    rm CMakeLists.txt && touch CMakeLists.txt && \
+    echo "# Copyright: (C) 2025 HSP Istituto Italiano di Tecnologia" > CMakeLists.txt && \
+    echo "# Authors: Ettore Landini" >> CMakeLists.txt && \
+    echo "# CopyPolicy: Released under the terms of the GNU GPL v2.0." >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "# Prepare a device library called \"cermod\"." >> CMakeLists.txt && \
+    echo "# A test executable called \"cermoddev\" will also be produced." >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "cmake_minimum_required(VERSION 3.5)" >> CMakeLists.txt && \
+    echo "project(CER LANGUAGES CXX C VERSION 1.0.0)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set(VARS_PREFIX \"CER\")" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set(CMAKE_CXX_EXTENSIONS OFF)" >> CMakeLists.txt && \
+    echo "set(CMAKE_CXX_STANDARD 11)" >> CMakeLists.txt && \
+    echo "set(CMAKE_CXX_STANDARD_REQUIRED 11)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set_property(GLOBAL PROPERTY USE_FOLDERS ON)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "list(APPEND CMAKE_MODULE_PATH \"\${CMAKE_SOURCE_DIR}/cmake\")" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "find_package(YCM)" >> CMakeLists.txt && \
+    echo "find_package(YARP 4.0.0 REQUIRED COMPONENTS os sig dev math idl_tools)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "find_package(IPOPT)" >> CMakeLists.txt && \
+    echo "if(NOT IPOPT_FOUND)" >> CMakeLists.txt && \
+    echo "    message(WARNING \"IPOPT library was not found, some kinematics module will not be available.\")" >> CMakeLists.txt && \
+    echo "endif()" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "include(GNUInstallDirs)" >> CMakeLists.txt && \
+    echo "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_BINDIR}\")" >> CMakeLists.txt && \
+    echo "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
+    echo "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"\${CMAKE_BINARY_DIR}/\${CMAKE_INSTALL_LIBDIR}\")" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "set(YARP_FORCE_DYNAMIC_PLUGINS TRUE CACHE INTERNAL \"\${PROJECT_NAME} is always built with dynamic plugins\")" >> CMakeLists.txt && \
+    echo "yarp_configure_external_installation(\${PROJECT_NAME} WITH_PLUGINS)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "include(AddInstallRPATHSupport)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "add_install_rpath_support(LIB_DIRS \"\${CMAKE_INSTALL_FULL_LIBDIR}\"" >> CMakeLists.txt && \
+    echo "                          BIN_DIRS \"\${CMAKE_INSTALL_FULL_BINDIR}\"" >> CMakeLists.txt && \
+    echo "                                   \"\${CMAKE_INSTALL_PREFIX}/\${CER_DYNAMIC_PLUGINS_INSTALL_DIR}\"" >> CMakeLists.txt && \
+    echo "                          USE_LINK_PATH)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "# Everything is configured now, we can start adding source code" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "add_subdirectory(app)" >> CMakeLists.txt && \
+    echo "" >> CMakeLists.txt && \
+    echo "include(AddUninstallTarget)" >> CMakeLists.txt && \
+    cmake -S . -B build
 
 
 # Set environmental variables
@@ -236,7 +288,7 @@ WORKDIR /home/${user_name}/
 # ### Packaging google-cloud-cpp instructions ############################################### END ####
 
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-azure-openai && \
+RUN git clone https://github.com/robotology/yarp-devices-azure-openai -b ${yarp_version} && \
 cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
@@ -266,7 +318,7 @@ WORKDIR ${yarp_user_home}
 RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 RUN /bin/bash -c "bash ${yarp_user_home}/Miniforge3-$(uname)-$(uname -m).sh -b"
 RUN ${yarp_user_home}/miniforge3/bin/conda init
-RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
+RUN /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && echo 'Conda initialized successfully' && \
 conda env create -y -f ${TOUR_GUIDE_ROBOT_SOURCE_DIR}/docker_stuff/docker_talk/environment.yml && \
 conda clean -afy"
 ### Miniforge and Python environment ############################## END ####
@@ -288,7 +340,7 @@ echo "set +a" >> /home/${user_name}/.bashrc
 
 # Install yarpGPT
 WORKDIR ${robot_code}
-RUN git clone https://github.com/elandini84/yarp-devices-llm -b YARP4 && \
+RUN git clone https://github.com/robotology/yarp-devices-llm && \
     cd yarp-devices-llm && mkdir build && \
     /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
     conda activate unified-voice-pipeline && \
@@ -302,7 +354,7 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/home/${user_name}/.config/google-credential/
 BUILD_SUFFIX=build
 
 WORKDIR ${robot_code}
-RUN git clone https://github.com/robotology/yarp-devices-google-cloud -b YARP4 && \
+RUN git clone https://github.com/robotology/yarp-devices-google-cloud -b ${yarp_version} && \
 cd yarp-devices-google-cloud && \
 /bin/bash -c "source ${yarp_user_home}/miniforge3/etc/profile.d/conda.sh && \
 conda activate unified-voice-pipeline && \
@@ -384,41 +436,39 @@ WORKDIR ${robot_code}
 RUN git clone https://github.com/ggml-org/whisper.cpp
     # cd whisper.cpp && cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${yarp_user_home}/userInstalled \
     # -DGGML_CUDA=ON && \
-    # cmake --build build -j8 && cmake --build build --target install
+    # cmake --build build -- -j $(nproc) && cmake --build build --target install
 ENV whisper_DIR=${yarp_user_home}/userInstalled \
     LD_LIBRARY_PATH=${yarp_user_home}/userInstalled/lib:${LD_LIBRARY_PATH}
 ### Install whisper.cpp ############################### END ####
 
 ### Offline vocal interaction devices ################################ START ####
 WORKDIR ${robot_code}
-RUN git clone https://github.com/elandini84/yarp-device-speechTranscription-whisper -b refactor/general_update
+RUN git clone https://github.com/robotology/yarp-device-speechTranscription-whisper
     # cd yarp-device-speechTranscription-whisper && \
     # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -Dwhisper_DIR=${yarp_user_home}/userInstalled && \
-    # cmake --build build -j8
-RUN git clone https://github.com/robotology/yarp-device-voicebox -b YARP4 && \
+    # cmake --build build -- -j $(nproc)
+RUN git clone https://github.com/robotology/yarp-device-voicebox -b ${yarp_version} && \
     cd yarp-device-voicebox && \
     cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && \
-    cmake --build build -j8
-RUN git clone https://github.com/robotology/yarp-device-llama2 -b YARP4 && \
+    cmake --build build -- -j8
+
+RUN git clone https://github.com/robotology/yarp-device-kokoro -b ${yarp_version} && \
+    cd yarp-device-kokoro && \
+    cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build build -- -j $(nproc)
+
+RUN git clone https://github.com/robotology/yarp-device-llama2 && \
     cd yarp-device-llama2 && \
     ./setup_submodule.sh
     # cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DLLAMA_ALL_WARNINGS=ON \
     # -DGGML_CUDA=ON -DLLAMA_BUILD_COMMON=ON \
     # -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON && \
-    # cmake --build build -j8
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp
-ENV TEST=1
+    # cmake --build build -- -j $(nproc)
+ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-device-speechTranscription-whisper/build/share/yarp:${robot_code}/yarp-device-voicebox/build/share/yarp:${robot_code}/yarp-device-llama2/build/share/yarp:${robot_code}/yarp-device-kokoro/build/share/yarp
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${ai_model_path}
 ENV PATH=${PATH}:${robot_code}/yarp-device-speechTranscription-whisper/build/bin:${robot_code}/yarp-device-voicebox/build/bin:${robot_code}/yarp-device-llama2/build/bin
 ENV VOICEBOX=${robot_code}/voicebox
 ### Offline vocal interaction devices ################################ END ####
-
-### YARP MCP repos ############################################# START ####
-WORKDIR ${robot_code}
-RUN git clone https://github.com/hsp-iit/yarp-mcpServers.git && \
-    git clone https://github.com/hsp-iit/yarp-mcpClient-generalPurpose.git
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-mcpClient-generalPurpose/resources:${robot_code}/yarp-mcpServers/resources
-### YARP MCP repos ############################################# END ####
 
 ### Install ollama ################################ START ####
 WORKDIR ${yarp_user_home}/Downloads
