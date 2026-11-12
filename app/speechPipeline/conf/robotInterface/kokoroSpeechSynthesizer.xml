@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+SPDX-FileCopyrightText: 2026 Istituto Italiano di Tecnologia (IIT)
+SPDX-License-Identifier: BSD-3-Clause
+-->
+<!DOCTYPE robot PUBLIC "-//YARP//DTD yarprobotinterface 3.0//EN" "http://www.yarp.it/DTD/yarprobotinterfaceV3.0.dtd">
+<!--
+  yarprobotinterface configuration for the Kokoro speech synthesizer device.
+
+  Launch it with the yarprobotinterface (a YARP server must be running first):
+
+      yarprobotinterface -c resource/robotInterface/kokoroSpeechSynthesizer.xml
+
+  If the plugin or the config is not found from the current directory, point
+  YARP_DATA_DIRS at the install/build share directories, for example:
+
+      export YARP_DATA_DIRS=/path/to/yarp/prefix/share/yarp:$PWD/build/share/yarp
+
+  The defaults below reproduce a plain `yarpdev` run with the
+  kokoroSpeechSynthesizer device (English, af_heart voice, unit speed).
+  See KokoroSpeechSynthesizer_params.md for the full list of accepted
+  parameters and their default values.
+-->
+<robot name="kokoroSpeechSynthesizer" build="2" portprefix="" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <devices>
+    <device name="kokoroTTS" type="kokoroSpeechSynthesizer">
+      <!-- Python interpreter containing the kokoro package (default: python3). -->
+      <param name="python_executable">
+        python3
+      </param>
+
+      <!-- Path to kokoro_worker.py. If omitted, the built/installed worker is
+           used automatically (set only to point at a custom worker). -->
+      <!-- <param name="worker_script">/path/to/kokoro_worker.py</param> -->
+
+      <!-- Hugging Face model repository used by Kokoro. -->
+      <!-- <param name="model_repository">hexgrad/Kokoro-82M</param> -->
+
+      <!-- PyTorch execution device, e.g. cpu or cuda. Empty lets it choose. -->
+      <!-- <param name="torch_device">cpu</param> -->
+
+      <!-- Speech language: en, en-gb, es, fr, hi, it, ja, pt-br, zh, or a
+           Kokoro language code. -->
+      <param name="language">
+        en-US
+      </param>
+
+      <!-- Kokoro voice name, e.g. af_heart or bf_emma. Defaults to the
+           language default if omitted. -->
+      <param name="voice">
+        af_heart
+      </param>
+
+      <!-- Speech speed in the range (0, 4]. -->
+      <param name="speed">
+        1.0
+      </param>
+
+      <!-- Stored for ISpeechSynthesizer compatibility (not applied by Kokoro). -->
+      <!-- <param name="pitch">0.0</param> -->
+    </device>
+
+    <!-- YARP network wrapper server: exposes the kokoro device over YARP
+         ports so remote clients can use it through ISpeechSynthesizer_nwc_yarp.
+         With the `name` below it opens /kokoroTTS/rpc, /kokoroTTS/text:i and
+         /kokoroTTS/sound:o. Change `name` if a different port prefix is
+         desired. -->
+    <device name="KokoroTTS_nws" type="speechSynthesizer_nws_yarp">
+      <action phase="startup" level="5" type="attach">
+        <paramlist name="networks">
+          <elem name="subdeviceKokoro">
+            kokoroTTS
+          </elem>
+        </paramlist>
+      </action>
+      <action phase="shutdown" level="5" type="detach" />
+    </device>
+  </devices>
+</robot>
