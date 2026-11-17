@@ -53,7 +53,7 @@ The image comes in two flavours, selected through the env files in [env_config/]
 | Variable | [devel.env](env_config/devel.env) | [stable.env](env_config/stable.env) |
 |----------|-----------------------------------|-------------------------------------|
 | `YARP_BRANCH` | `master` | `yarp-4.0` |
-| `BUILD_TYPE` | `devel` | `stable` |
+| `BUILD_TYPE` | `devel` | `yarp-4.0` |
 | `TOUR_BRANCH` | `jazzy` | `jazzy` |
 | `R1_OBR_REMOTE` / `R1_OBR_BRANCH` | `origin` / `master` | `origin` / `master` |
 | `TOUR_REMOTE` | `origin` | `origin` |
