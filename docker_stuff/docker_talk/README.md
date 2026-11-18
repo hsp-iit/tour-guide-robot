@@ -79,7 +79,7 @@ The resulting image tag is:
 ghcr.io/hsp-iit/r1_talk:${UB_VERSION:-ub24.04}_gccpp_${GCCPP_VERSION:-v2.43}_cuda_${CUDA_VERSION:-13.0}_${BUILD_TYPE:-devel}
 ```
 
-i.e. `ghcr.io/hsp-iit/r1_talk:ub24.04_gccpp_v2.43_cuda_13.0_devel` or `ghcr.io/hsp-iit/r1_talk:ub24.04_gccpp_v2.43_cuda_13.0_stable`.
+i.e. `ghcr.io/hsp-iit/r1_talk:ub24.04_gccpp_v2.43_cuda_13.0_devel` or `ghcr.io/hsp-iit/r1_talk:ub24.04_gccpp_v2.43_cuda_13.0_yarp-4.0` (the stable tag ends with the YARP branch, so it is always clear which stable YARP version the image contains).
 
 ### Dockerfile build arguments
 
