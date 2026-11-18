@@ -4,7 +4,7 @@ This Docker environment provides the complete robotics stack for the R1 Tour Gui
 
 ## Docker Image Contents
 
-The Docker image (`elandini84/r1images:tourCore2_*`) includes:
+The Docker image (`ghcr.io/hsp-iit/r1images:tourCore2_*`) includes:
 
 - **Base System**: Ubuntu 24.04 with development tools and X11 support
 - **ROS2 Framework**: Complete ROS2 installation (Jazzy by default) with Navigation2, SLAM, and Gazebo
@@ -12,169 +12,186 @@ The Docker image (`elandini84/r1images:tourCore2_*`) includes:
 - **Robotology Stack**:
   - YCM (YARP CMake Modules)
   - iCub-main with cartesian controllers and sensor modules
-  - CER (Collaborative Effort Robot) components
+  - CER (Collaborative Effort Robot) components (from the `elandini84/cer` fork)
   - Ergocub software and R1 robot models
 - **Navigation Components**: Advanced navigation stack with ROS2 integration
 - **Simulation Environment**: CER-SIM with ROS2 support and Gazebo integration
 - **Hardware Interfaces**: RPLidar support and YARP-ROS2 device bridges
-- **Development Tools**: Groot (BehaviorTree visualization), web teleop, CMake, Git, and debugging tools
+- **Development Tools**: Groot sources (BehaviorTree visualization, not built), web teleop sources (configured, not built), CMake, Git, and debugging tools
 - **Network Middleware**: CycloneDDS for improved ROS2 communication
 
 ## Prerequisites
 
-- Docker installed
-- NVIDIA Docker runtime (for GPU support with CUDA images)
+- Docker Engine and Docker Compose v2 (`--env-file` must be repeatable, i.e. Compose >= 2.17, to combine [cuda.env](env_config/cuda.env) with a flavour env file)
+- NVIDIA Container Toolkit (for the default GPU-enabled container and for CUDA-based images)
 - X11 forwarding capability
-- CycloneDDS configuration file (optional, uses default if not provided)
+- CycloneDDS configuration file (optional, the one in the repository is used as fallback)
 
-## Building the Docker Image
+## Folder layout
 
-### Using the Management Script (Recommended)
-
-The `manage-docker.sh` script provides a convenient interface for building and running the Docker containers:
-
-```bash
-# Make the script executable
-chmod +x manage-docker.sh
-
-# Build with default options (Ubuntu 24.04, Jazzy, devel tag)
-./manage-docker.sh --build
-
-# Build with specific options
-./manage-docker.sh --build --ubuntu --ros_distro jazzy --yarp_branch yarp-3.12 --devel
+```text
+docker_tourCore/
+├── Dockerfile
+├── docker-compose.yml
+├── start_tourCore_devel.sh      # starts the devel flavour
+├── start_tourCore_stable.sh     # starts the stable flavour
+├── common/xorg.conf
+└── env_config/
+    ├── devel.env                # compose variables for the devel flavour
+    ├── stable.env               # compose variables for the stable flavour
+    ├── cuda.env                 # overrides the base image with the nvidia/cuda one
+    └── select_dds_conf.sh       # picks the CycloneDDS configuration file to mount
 ```
 
-### Using Docker Build Directly
+## Devel vs stable
+
+The image comes in two flavours, selected through the env files in [env_config/](env_config/):
+
+- **devel**: built from the development branches (`master` for YARP and the YARP-dependent repositories)
+- **stable**: built from a stable YARP release branch. The YARP branch is part of the image tag, so it is always clear which stable YARP version an image contains
+
+| Variable | [devel.env](env_config/devel.env) | [stable.env](env_config/stable.env) |
+|----------|-----------------------------------|-------------------------------------|
+| `BASE_IMG` / `BASE_IMG_LABEL` | `ubuntu:24.04` / `ubuntu24.04` | `ubuntu:24.04` / `ubuntu24.04` |
+| `ROS_DISTRO` | `jazzy` | `jazzy` |
+| `YARP_BRANCH` | `master` | `yarp-4.0` |
+| `MESH_BRANCH` | `devel` | `devel` |
+| `BATTERY` | `OFF` | `OFF` |
+| `BUILD_TYPE` | `devel` | `${YARP_BRANCH}` (i.e. `yarp-4.0`) |
+
+The resulting image tag is:
 
 ```bash
-# Build with default arguments
-docker build -t r1-tourcore:custom .
-
-# Build with custom arguments
-docker build \
-  --build-arg base_img="ubuntu:24.04" \
-  --build-arg ros_distro="jazzy" \
-  --build-arg yarp_branch="yarp-3.12" \
-  --build-arg ros2_dev_remote="robotology" \
-  --build-arg ros2_dev_branch="master" \
-  --build-arg battery="OFF" \
-  -t r1-tourcore:custom .
+${IMAGE_REPO:-ghcr.io/hsp-iit/r1images}:tourCore2_${BASE_IMG_LABEL:-ubuntu24.04}_${ROS_DISTRO:-jazzy}_${BUILD_TYPE:-devel}
 ```
 
-### Build Arguments
+i.e. `ghcr.io/hsp-iit/r1images:tourCore2_ubuntu24.04_jazzy_devel` or `ghcr.io/hsp-iit/r1images:tourCore2_ubuntu24.04_jazzy_yarp-4.0`.
 
-| Argument | Default | Description |
+To move the stable flavour to a newer YARP release, change `YARP_BRANCH` in [stable.env](env_config/stable.env): the tag follows automatically.
+
+### Dockerfile build arguments
+
+| Argument | Default | Compose variable | Description |
+|----------|---------|------------------|-------------|
+| `base_img` | - (compose: `ubuntu:24.04`) | `BASE_IMG` | Base Docker image (ubuntu:24.04 or nvidia/cuda:*) |
+| `ros_distro` | - (compose: `jazzy`) | `ROS_DISTRO` | ROS2 distribution name |
+| `yarp_branch` | `master` | `YARP_BRANCH` | Branch of YARP, `navigation`, `cer` and `yarp-devices-ros2` (all of them must have a branch with this name) |
+| `mesh_branch` | `master` | `MESH_BRANCH` | Branch of `icub-firmware-shared` and `icub-main` |
+| `battery` | `OFF` | `BATTERY` | Enable battery-related iCub modules |
+| `gazebo_pkg` | `ros-${ros_distro}-ros-gz` | - | Gazebo package to install |
+
+### Runtime variables
+
+Besides the ones set by the env files, the compose file reads these variables from the host shell:
+
+| Variable | Default | Description |
 |----------|---------|-------------|
-| `base_img` | - | Base Docker image (ubuntu:24.04 or nvidia/cuda:*) |
-| `ros_distro` | - | ROS2 distribution name |
-| `yarp_branch` | `master` | YARP version/branch to build |
-| `ros2_dev_remote` | `robotology` | Remote repository for YARP-ROS2 devices |
-| `ros2_dev_branch` | `${yarp_branch}` | Branch for YARP-ROS2 devices |
-| `gazebo_pkg` | `ros-${ros_distro}-ros-gz` | Gazebo package to install |
-| `battery` | `OFF` | Enable battery-related iCub modules |
+| `DISPLAY` | - | X11 display |
+| `CYCLONE_DDS_CONF` | `~/.config/cyclone_dds_settings.xml` | Host CycloneDDS file mounted on `/home/user1/.config/cyclone_dds_settings.xml` |
+| `IMAGE_REPO` | `ghcr.io/hsp-iit/r1images` | Repository part of the image name |
+| `BASE_IMG_LABEL` | `ubuntu24.04` | Label of the base image used in the tag |
 
-## Build and Run Options
+Variables exported in the shell take precedence over the values in the `--env-file`.
 
-### Management Script Options
+## Building the image
 
-#### Base Image Selection
+Pass the env file of the flavour you want to build:
+
 ```bash
-# Ubuntu-based image (CPU only)
-./manage-docker.sh --ubuntu [other-options]
+# devel
+docker compose --env-file env_config/devel.env --profile build build r1-tourcore-image
 
-# NVIDIA CUDA-based image (GPU support)
-./manage-docker.sh --cuda [other-options]
+# stable
+docker compose --env-file env_config/stable.env --profile build build r1-tourcore-image
+
+# CUDA-based image (nvidia/cuda base): add cuda.env after the flavour env file
+docker compose --env-file env_config/devel.env --env-file env_config/cuda.env --profile build build r1-tourcore-image
+
+# Custom options: export the variables before running compose
+YARP_BRANCH=<branch> MESH_BRANCH=<branch> docker compose --env-file env_config/devel.env --profile build build r1-tourcore-image
 ```
 
-#### Build Type
-```bash
-# Development build (latest features)
-./manage-docker.sh --devel [other-options]
+With `devel.env` the YARP branch is not part of the image tag: if you build devel images with a different YARP branch, also change `BUILD_TYPE` (or `IMAGE_REPO`) to keep them apart. With `stable.env` the tag follows `YARP_BRANCH` automatically.
 
-# Stable build
-./manage-docker.sh --stable [other-options]
+## Services in the compose file
+
+- `r1-tourcore-image`: build-only service, enabled through the `build` profile
+- `r1-tourcore-container`: GPU-enabled container (opens `terminator`)
+- `r1-tourcore-container-nogpu`: same container without GPU reservation, enabled through the `nogpu` profile (only for Ubuntu-based images; CUDA-based ones require a GPU)
+
+Before starting `terminator`, the containers give `user1` the ownership of `/dev/ttyUSB0` and `/dev/ttyUSB1` (if present), so the lidar devices can be opened by `yarprobotinterface`.
+
+## Launching the container
+
+### Using the start scripts (recommended)
+
+```bash
+./start_tourCore_devel.sh    # devel flavour
+./start_tourCore_stable.sh   # stable flavour
 ```
 
-#### ROS2 Distribution
+Each script selects the CycloneDDS configuration file (see [DDS configuration](#dds-configuration)), enables X11 access (`xhost + local:docker`) and runs:
+
 ```bash
-# Specify ROS2 distro
-./manage-docker.sh --ros_distro humble [other-options]
-./manage-docker.sh --ros_distro jazzy [other-options]
+docker compose --env-file env_config/<flavour>.env up r1-tourcore-container
 ```
 
-#### YARP Version
+If the image is not available locally, compose pulls it (or builds it if pulling fails).
+
+### Manually with Docker Compose
+
 ```bash
-# Specify YARP branch/version
-./manage-docker.sh --yarp_branch yarp-3.12 [other-options]
-./manage-docker.sh --yarp_branch master [other-options]
+xhost + local:docker
+
+# GPU-enabled container
+docker compose --env-file env_config/devel.env up r1-tourcore-container
+
+# Without GPU support (Ubuntu images only)
+docker compose --env-file env_config/devel.env --profile nogpu up r1-tourcore-container-nogpu
+
+# CUDA-based image
+docker compose --env-file env_config/devel.env --env-file env_config/cuda.env up r1-tourcore-container
+
+# Interactive bash shell in the terminal instead of terminator
+docker compose --env-file env_config/devel.env run --rm r1-tourcore-container bash
+
+# Open another shell in a running container
+docker exec -it r1-tourcore-container bash
 ```
 
-#### Repository Configuration
+Replace `devel.env` with `stable.env` to use the stable flavour. Stop and remove the containers with `docker compose down --remove-orphans`.
+
+### DDS configuration
+
+The CycloneDDS file mounted in the container is chosen through `CYCLONE_DDS_CONF`. The start scripts source [env_config/select_dds_conf.sh](env_config/select_dds_conf.sh), which uses, in order:
+
+1. the file pointed by `CYCLONE_DDS_CONF`, if exported and existing
+2. `~/.config/cyclone_dds_settings.xml`, if existing
+3. the fallback in the repository: `app/navigation2/conf/cyclone_dds_settings.xml`
+
 ```bash
-# Use custom repository
-./manage-docker.sh --repo "myrepo/r1images" [other-options]
+# Use the configuration in the repository
+CYCLONE_DDS_CONF=../../app/navigation2/conf/cyclone_dds_settings.xml ./start_tourCore_devel.sh
+
+# Use a custom configuration
+CYCLONE_DDS_CONF=/path/to/cyclone_dds_settings.xml ./start_tourCore_devel.sh
 ```
 
-#### DDS Configuration
-```bash
-# Use internal CycloneDDS config
-./manage-docker.sh --inner_cycl_dds [other-options]
+When running compose directly, make sure `CYCLONE_DDS_CONF` (or `~/.config/cyclone_dds_settings.xml`) points to an existing file: otherwise Docker creates an empty directory in its place.
 
-# Use custom DDS config file
-./manage-docker.sh --dds_conf_path "/path/to/cyclone_dds_settings.xml" [other-options]
-```
-
-#### GPU Support
-```bash
-# Run without GPU (Ubuntu images only)
-./manage-docker.sh --nogpu [other-options]
-```
-
-### Running the Container
-
-#### Using the Management Script
+### Manual Docker Run
 
 ```bash
-# Run with default options (GPU enabled if CUDA image)
-./manage-docker.sh --ubuntu --ros_distro jazzy --devel
-
-# Run without GPU support
-./manage-docker.sh --ubuntu --ros_distro jazzy --devel --nogpu
-
-# Print the command without executing
-./manage-docker.sh --ubuntu --ros_distro jazzy --devel --print
-```
-
-#### Manual Docker Run
-
-```bash
-# With GPU support (CUDA images)
-sudo docker run --rm -it --privileged --network host --pid host \
+# With GPU support
+docker run --rm -it --privileged --network host --pid host \
   -e NVIDIA_DRIVER_CAPABILITIES=all -e DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v ~/.config/cyclone_dds_settings.xml:/home/user1/.config/cyclone_dds_settings.xml \
   -e QT_X11_NO_MITSHM=1 --gpus all \
-  elandini84/r1images:tourCore2_ubuntu24.04_jazzy_devel
-
-# Without GPU support (Ubuntu images)
-sudo docker run --rm -it --privileged --network host --pid host \
-  -e DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v ~/.config/cyclone_dds_settings.xml:/home/user1/.config/cyclone_dds_settings.xml \
-  -e QT_X11_NO_MITSHM=1 \
-  elandini84/r1images:tourCore2_ubuntu24.04_jazzy_devel
+  ghcr.io/hsp-iit/r1images:tourCore2_ubuntu24.04_jazzy_devel
 ```
 
 ## Usage Examples
-
-### Basic Development Session
-```bash
-# Build and run development container
-./manage-docker.sh --build --ubuntu --ros_distro jazzy --devel
-
-# Run the built container
-./manage-docker.sh --ubuntu --ros_distro jazzy --devel
-```
 
 ### Tour Guide Robot Applications
 ```bash
@@ -196,7 +213,7 @@ Key environment variables set in the container:
 ROBOT_CODE=/usr/local/src/robot              # Robot code installation path
 YARP_ROOT=/usr/local/src/robot/yarp          # YARP installation
 ROS_DISTRO=jazzy                             # ROS2 distribution
-RMW_IMPLEMENTATION=rmw_cyclonedx_cpp         # ROS2 middleware
+RMW_IMPLEMENTATION=rmw_cyclonedds_cpp        # ROS2 middleware
 CYCLONEDDS_URI=/home/user1/.config/cyclone_dds_settings.xml  # DDS config
 YARP_COLORED_OUTPUT=1                        # Colored YARP output
 ```
@@ -212,19 +229,20 @@ Important volume mounts for the container:
 ## Troubleshooting
 
 ### Display Issues
-- Ensure `sudo xhost +` is run on the host
+- Ensure `xhost + local:docker` is run on the host (the start scripts do it for you)
 - Check X11 forwarding: `echo $DISPLAY`
 - Verify X11 socket permissions
 
 ### GPU Issues
-- Install NVIDIA Docker runtime: `sudo apt-get install nvidia-docker2`
+- Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 - Test GPU access: `nvidia-smi` on host
-- Use `--cuda` flag for GPU-enabled images
+- Add `--env-file env_config/cuda.env` for CUDA-based images
+- Use the `r1-tourcore-container-nogpu` service on machines without an NVIDIA GPU
 
 ### Network Issues
 - Check ROS_DOMAIN_ID conflicts
 - Verify DDS configuration file exists
-- Use `--inner_cycl_dds` for fallback DDS config
+- Set `CYCLONE_DDS_CONF` to the fallback DDS config in `app/navigation2/conf/`
 
 ### USB Device Access
 - Add user to dialout group on host: `sudo usermod -a -G dialout $USER`
@@ -234,7 +252,6 @@ Important volume mounts for the container:
 ## Ports
 
 - **10000**: YARP port (TCP/UDP)
-- **11311**: ROS Master (if using ROS1 bridge)
 
 ## Default Credentials
 

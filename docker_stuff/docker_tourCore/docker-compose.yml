@@ -1,0 +1,69 @@
+x-r1-tourcore-image: &r1-tourcore-image ${IMAGE_REPO:-ghcr.io/hsp-iit/r1images}:tourCore2_${BASE_IMG_LABEL:-ubuntu24.04}_${ROS_DISTRO:-jazzy}_${BUILD_TYPE:-devel}
+
+x-r1-tourcore-build: &r1-tourcore-build
+  context: .
+  dockerfile: Dockerfile
+  args:
+    base_img: ${BASE_IMG:-ubuntu:24.04}
+    ros_distro: ${ROS_DISTRO:-jazzy}
+    yarp_branch: ${YARP_BRANCH:-master}
+    mesh_branch: ${MESH_BRANCH:-master}
+    battery: ${BATTERY:-OFF}
+
+x-tourcore: &tourcore
+  image: *r1-tourcore-image
+  environment:
+    - DISPLAY=${DISPLAY}
+    - QT_X11_NO_MITSHM=1
+    - YARP_COLORED_OUTPUT=1
+  volumes:
+    - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+    - "${CYCLONE_DDS_CONF:-${HOME}/.config/cyclone_dds_settings.xml}:/home/user1/.config/cyclone_dds_settings.xml"
+  network_mode: host
+  pid: host
+  privileged: true
+  stdin_open: true
+  tty: true
+  # The image entrypoint (/home/user1/.entrypoint.sh) sources ROS2 and then runs the command.
+  # The lidar devices ownership is fixed before starting the actual command.
+  command:
+    - bash
+    - -c
+    - >-
+      if [ -e /dev/ttyUSB0 ]; then sudo chown user1:user1 /dev/ttyUSB0; fi;
+      if [ -e /dev/ttyUSB1 ]; then sudo chown user1:user1 /dev/ttyUSB1; fi;
+      exec terminator
+
+x-gpu: &gpu
+  environment:
+    - DISPLAY=${DISPLAY}
+    - QT_X11_NO_MITSHM=1
+    - YARP_COLORED_OUTPUT=1
+    - NVIDIA_DRIVER_CAPABILITIES=all
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+services:
+
+# Images
+  r1-tourcore-image:
+    profiles: ["build"]
+    image: *r1-tourcore-image
+    build: *r1-tourcore-build
+
+# Containers
+  r1-tourcore-container:
+    <<: [*gpu, *tourcore]
+    build: *r1-tourcore-build
+    container_name: r1-tourcore-container
+
+  r1-tourcore-container-nogpu:
+    <<: *tourcore
+    profiles: ["nogpu"]
+    build: *r1-tourcore-build
+    container_name: r1-tourcore-container-nogpu
