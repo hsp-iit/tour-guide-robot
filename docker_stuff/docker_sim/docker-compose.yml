@@ -1,0 +1,64 @@
+x-r1-toursim-image: &r1-toursim-image ${IMAGE_REPO:-ghcr.io/hsp-iit/r1images}:tourSim2_${BASE_IMG_LABEL:-ubuntu24.04}_${ROS_DISTRO:-jazzy}_${BUILD_TYPE:-devel}
+
+x-r1-toursim-build: &r1-toursim-build
+  context: .
+  dockerfile: Dockerfile
+  args:
+    base_img: ${BASE_IMG:-ubuntu:24.04}
+    ros_distro: ${ROS_DISTRO:-jazzy}
+    yarp_branch: ${YARP_BRANCH:-master}
+    mesh_branch: ${MESH_BRANCH:-master}
+
+x-toursim: &toursim
+  image: *r1-toursim-image
+  environment:
+    - DISPLAY=${DISPLAY}
+    - QT_X11_NO_MITSHM=1
+    - YARP_COLORED_OUTPUT=1
+    # Passed to the container only if exported on the host
+    - ROS_DOMAIN_ID
+  volumes:
+    - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+    - "${CYCLONE_DDS_CONF:-${HOME}/.config/cyclone_dds_settings.xml}:/home/user1/.config/cyclone_dds_settings.xml"
+  network_mode: host
+  pid: host
+  privileged: true
+  stdin_open: true
+  tty: true
+  # The image entrypoint (/home/user1/.entrypoint.sh) sources ROS2 and then runs the command.
+  command: terminator
+
+x-gpu: &gpu
+  environment:
+    - DISPLAY=${DISPLAY}
+    - QT_X11_NO_MITSHM=1
+    - YARP_COLORED_OUTPUT=1
+    - ROS_DOMAIN_ID
+    - NVIDIA_DRIVER_CAPABILITIES=all
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+services:
+
+# Images
+  r1-toursim-image:
+    profiles: ["build"]
+    image: *r1-toursim-image
+    build: *r1-toursim-build
+
+# Containers
+  r1-toursim-container:
+    <<: [*gpu, *toursim]
+    build: *r1-toursim-build
+    container_name: r1-toursim-container
+
+  r1-toursim-container-nogpu:
+    <<: *toursim
+    profiles: ["nogpu"]
+    build: *r1-toursim-build
+    container_name: r1-toursim-container-nogpu
