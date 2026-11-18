@@ -77,7 +77,7 @@ Extension system for adding specific CUDA versions to existing tour guide images
 - Required credential files (for specific environments)
 
 ### General Build Pattern
-`docker_tourCore` and `docker_talk` use Docker Compose: each provides a `docker-compose.yml`, env files for the `devel` and `stable` flavours in `env_config/`, and `start_*_devel.sh` / `start_*_stable.sh` scripts. See their READMEs for details:
+`docker_tourCore`, `docker_sim` and `docker_talk` use Docker Compose: each provides a `docker-compose.yml`, env files for the `devel` and `stable` flavours in `env_config/`, and `start_*_devel.sh` / `start_*_stable.sh` scripts. See their READMEs for details:
 
 ```bash
 cd docker_tourCore/
@@ -85,11 +85,12 @@ docker compose --env-file env_config/devel.env --profile build build r1-tourcore
 ./start_tourCore_devel.sh                                                                # run
 ```
 
-The other environments include a management script for building and running:
+The `devel` images are built from the development branches and tagged `devel`; the `stable` ones are built from a stable YARP release branch, which is also the image tag suffix (e.g. `tourSim2_ubuntu24.04_jazzy_yarp-4.0`).
+
+`docker_tourCore_cuda_custom` still includes a management script for building and running:
 
 ```bash
-# Navigate to the desired environment
-cd docker_<environment_name>/
+cd docker_tourCore_cuda_custom/
 
 # Make the management script executable
 chmod +x manage-docker.sh
@@ -114,7 +115,7 @@ chmod +x manage-docker.sh
 
 ## Common Configuration
 
-The environments using a management script share common configuration through `docker_mng_vars.sh`:
+`docker_tourCore_cuda_custom` (the only environment still using a management script) reads its common configuration through `docker_mng_vars.sh`:
 
 - **Ubuntu Version**: 24.04 (default)
 - **ROS2 Distribution**: Jazzy (default)

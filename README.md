@@ -70,11 +70,9 @@ cd docker_stuff/docker_tourCore
 cd docker_stuff/docker_talk
 ./start_talk_devel.sh
 
-# Simulation and testing (management script)
+# Simulation and testing (Docker Compose)
 cd docker_stuff/docker_sim
-chmod +x manage-docker.sh
-./manage-docker.sh --build --ubuntu --ros_distro jazzy --devel
-./manage-docker.sh --ubuntu --ros_distro jazzy --devel
+./start_tourSim_devel.sh
 ```
 
 ### Native Installation
