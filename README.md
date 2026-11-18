@@ -11,6 +11,12 @@ Only on workflow dispatch
 [![Docker build - Old](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/old.yml/badge.svg)](https://github.com/hsp-iit/tour-guide-robot/actions/workflows/old.yml)
 ---
 
+## ANNOUNCEMENTS 📢
+
+[![latest](https://img.shields.io/badge/dynamic/json?label=latest%20Announcements&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fhsp-iit%2Ftour-guide-robot%2Fissues%3Flabels%3DAnnouncements%26state%3Dall%26per_page%3D1&query=%24%5B0%5D.title)](https://github.com/hsp-iit/tour-guide-robot/issues?q=is%3Aissue+label%3AAnnouncements+sort%3Acreated-desc)
+
+
+
 ## Overview
 
 The Tour Guide Robot is a comprehensive robotics system designed for autonomous guided tours in various environments. Built on the R1 humanoid robot platform, this system combines advanced navigation, natural language processing, computer vision, and human-robot interaction capabilities to create engaging and intelligent touring experiences.
