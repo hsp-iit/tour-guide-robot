@@ -223,7 +223,7 @@ ENV ERGOCUB_SOFTWARE_DIR=${robotology_install_folder}/ergocub-software/build
 # Gz-sim Plugins
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/elandini84/gz-sim-yarp-plugins -b fix/yarp4 && \
+RUN git clone https://github.com/robotology/gz-sim-yarp-plugins -b master && \
     cd gz-sim-yarp-plugins && mkdir build && cd build && \
     /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DBUILD_gz-sim-yarp-worldinterface-system=ON && make -j11"
 
