@@ -1,0 +1,116 @@
+name: Docker build secondary - nightly
+
+# Devel secondary images: built from the development branches and tagged "devel".
+# The tourCore2 CUDA custom image is based on the devel tourCore2 image built by nightly.yml.
+on:
+  schedule:
+  - cron: "0 2 * * 4"
+  workflow_dispatch:
+
+jobs:
+  build-talk-docker:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+         config:
+         - {
+            work_dir: "docker_stuff/docker_talk/",
+            base_image: "ubuntu:24.04",
+            ubuntu_version: "ub24.04",
+            gcpp_version: "v2.43",
+            cuda_version: "13.0",
+            yarp_branch: "master"
+         }
+    steps:
+    - name: Info
+      run: |
+       echo "Event type: ${{github.event_name}}"
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v4
+      with:
+       registry: ghcr.io
+       username: ${{ github.actor }}
+       password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push Docker talk image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ matrix.config.work_dir }}
+        file: ${{ matrix.config.work_dir }}/Dockerfile
+        build-args: |
+          base_img=${{ matrix.config.base_image }}
+          cuda_version=${{ matrix.config.cuda_version }}
+          yarp_version=${{ matrix.config.yarp_branch }}
+        push: true
+        outputs: type=registry
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/r1_talk:${{ matrix.config.ubuntu_version }}_gccpp_${{ matrix.config.gcpp_version }}_cuda_${{ matrix.config.cuda_version }}_devel
+
+  build-cuda-docker:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+         config:
+         - {
+            work_dir: "docker_stuff/docker_tourCore_cuda_custom",
+            base_image: "ghcr.io/hsp-iit/r1images:tourCore2_ubuntu24.04_jazzy_devel",
+            cuda_version: "12.8",
+            base_image_label: "ubuntu24.04_jazzy"
+         }
+    steps:
+    - name: Info
+      run: |
+       echo "Event type: ${{github.event_name}}"
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v4
+      with:
+       registry: ghcr.io
+       username: ${{ github.actor }}
+       password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push tourCore2 Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ matrix.config.work_dir }}
+        file: ${{ matrix.config.work_dir }}/Dockerfile
+        build-args: |
+          base_img=${{ matrix.config.base_image }}
+          cuda_version=${{ matrix.config.cuda_version }}
+        push: true
+        outputs: type=registry
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/r1images:tourCore2_${{ matrix.config.base_image_label }}_cuda_${{ matrix.config.cuda_version }}_devel
+
+  # tourSim2 has not been migrated to the stable/devel logic yet (docker_stuff/docker_sim),
+  # so its devel base image is not built anymore. Uncomment once nightly.yml builds it.
+  # build-cuda-sim-docker:
+  #   runs-on: self-hosted
+  #   strategy:
+  #     matrix:
+  #        config:
+  #        - {
+  #           work_dir: "docker_stuff/docker_tourCore_cuda_custom",
+  #           base_image: "ghcr.io/hsp-iit/r1images:tourSim2_ubuntu24.04_jazzy_devel",
+  #           cuda_version: "12.8",
+  #           base_image_label: "ubuntu24.04_jazzy"
+  #        }
+  #   steps:
+  #   - name: Info
+  #     run: |
+  #      echo "Event type: ${{github.event_name}}"
+  #   - name: Login to GitHub Container Registry
+  #     uses: docker/login-action@v4
+  #     with:
+  #      registry: ghcr.io
+  #      username: ${{ github.actor }}
+  #      password: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Build and push Docker image
+  #     uses: docker/build-push-action@v5
+  #     with:
+  #       context: ${{ matrix.config.work_dir }}
+  #       file: ${{ matrix.config.work_dir }}/Dockerfile
+  #       build-args: |
+  #         base_img=${{ matrix.config.base_image }}
+  #         cuda_version=${{ matrix.config.cuda_version }}
+  #       push: true
+  #       outputs: type=registry
+  #       tags: |
+  #         ghcr.io/${{ github.repository_owner }}/r1images:tourSim2_${{ matrix.config.base_image_label }}_cuda_${{ matrix.config.cuda_version }}_devel

@@ -77,7 +77,15 @@ Extension system for adding specific CUDA versions to existing tour guide images
 - Required credential files (for specific environments)
 
 ### General Build Pattern
-Each environment includes a management script for easy building and running:
+`docker_tourCore` and `docker_talk` use Docker Compose: each provides a `docker-compose.yml`, env files for the `devel` and `stable` flavours in `env_config/`, and `start_*_devel.sh` / `start_*_stable.sh` scripts. See their READMEs for details:
+
+```bash
+cd docker_tourCore/
+docker compose --env-file env_config/devel.env --profile build build r1-tourcore-image   # build
+./start_tourCore_devel.sh                                                                # run
+```
+
+The other environments include a management script for building and running:
 
 ```bash
 # Navigate to the desired environment
@@ -106,7 +114,7 @@ chmod +x manage-docker.sh
 
 ## Common Configuration
 
-All environments share common configuration through `docker_mng_vars.sh`:
+The environments using a management script share common configuration through `docker_mng_vars.sh`:
 
 - **Ubuntu Version**: 24.04 (default)
 - **ROS2 Distribution**: Jazzy (default)
