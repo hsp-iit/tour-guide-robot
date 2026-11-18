@@ -62,12 +62,16 @@ The fastest way to get started is using our pre-built Docker environments:
 git clone https://github.com/hsp-iit/tour-guide-robot.git
 cd tour-guide-robot
 
-# Choose your environment:
-cd docker_stuff/docker_tourCore    # For complete robotics development
-cd docker_stuff/docker_sim         # For simulation and testing
-cd docker_stuff/docker_talk        # For conversational AI development
+# Complete robotics development (Docker Compose)
+cd docker_stuff/docker_tourCore
+./start_tourCore_devel.sh
 
-# Build and run
+# Conversational AI development (Docker Compose)
+cd docker_stuff/docker_talk
+./start_talk_devel.sh
+
+# Simulation and testing (management script)
+cd docker_stuff/docker_sim
 chmod +x manage-docker.sh
 ./manage-docker.sh --build --ubuntu --ros_distro jazzy --devel
 ./manage-docker.sh --ubuntu --ros_distro jazzy --devel
