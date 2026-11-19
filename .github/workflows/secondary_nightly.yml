@@ -25,6 +25,7 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
+    - uses: actions/checkout@v4
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v4
       with:
@@ -60,6 +61,7 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
+    - uses: actions/checkout@v4
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v4
       with:
@@ -94,6 +96,7 @@ jobs:
     - name: Info
       run: |
        echo "Event type: ${{github.event_name}}"
+    - uses: actions/checkout@v4
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v4
       with:
