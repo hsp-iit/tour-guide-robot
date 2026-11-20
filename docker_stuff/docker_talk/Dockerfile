@@ -293,9 +293,19 @@ cd yarp-devices-azure-openai && cmake -B build -S . && cmake --build build
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS}:${robot_code}/yarp-devices-azure-openai/build/share/yarp:${robot_code}/yarp-devices-azure-openai/build/share/
 
 # Set up ONNX Runtime
-RUN wget https://github.com/microsoft/onnxruntime/releases/download/v1.20.1/onnxruntime-linux-x64-1.20.1.tgz
-RUN tar -xvzf onnxruntime-linux-x64-1.20.1.tgz
-ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-1.20.1
+# The GitHub release tarball is no longer available: fetch the official Microsoft
+# NuGet package (same 1.20.1 CPU build) and recreate the tarball layout (include/ + lib/)
+ARG onnx_version=1.20.1
+RUN wget -nv -O ort.nupkg https://api.nuget.org/v3-flatcontainer/microsoft.ml.onnxruntime/${onnx_version}/microsoft.ml.onnxruntime.${onnx_version}.nupkg && \
+    unzip -q ort.nupkg 'build/native/include/*' 'runtimes/linux-x64/native/*' -d ort_pkg && \
+    mkdir -p onnxruntime-linux-x64-${onnx_version}/lib && \
+    mv ort_pkg/build/native/include onnxruntime-linux-x64-${onnx_version}/include && \
+    mv ort_pkg/runtimes/linux-x64/native/*.so onnxruntime-linux-x64-${onnx_version}/lib/ && \
+    cd onnxruntime-linux-x64-${onnx_version}/lib && \
+    ln -s libonnxruntime.so libonnxruntime.so.1 && \
+    ln -s libonnxruntime.so libonnxruntime.so.${onnx_version} && \
+    cd ${robot_code} && rm -rf ort.nupkg ort_pkg
+ENV ONNX_PATH=${robot_code}/onnxruntime-linux-x64-${onnx_version}
 
 #SileroVAD
 WORKDIR ${robot_code}
