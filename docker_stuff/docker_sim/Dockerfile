@@ -184,7 +184,7 @@ RUN git clone https://github.com/CLIUtils/CLI11 && \
 # CER
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
-RUN git clone https://github.com/robotology/cer.git -b ${yarp_branch} && \
+RUN git clone https://github.com/elandini84/cer.git -b ${yarp_branch} && \
     cd cer && mkdir build && cd build && cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_cermod_cerDoubleLidar=ON \
