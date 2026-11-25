@@ -79,7 +79,7 @@ RUN git clone https://github.com/robotology/ycm-cmake-modules.git -b master && \
     cd ycm-cmake-modules && mkdir build && cd build && \
     cmake .. \
     -DCMAKE_BUILD_TYPE=Release && \
-    make -j11
+    make -j2
 ENV YCM_DIR=${robotology_install_folder}/ycm-cmake-modules/build
 
 # Build YARP
@@ -120,7 +120,7 @@ RUN git clone https://github.com/robotology/yarp.git -b ${yarp_branch} && \
     -DENABLE_yarppm_image_compression_ffmpeg=ON \
     -DENABLE_yarppm_depthimage_to_mono=ON \
     -DENABLE_yarppm_depthimage_to_rgb=ON && \
-    make -j11
+    make -j2
 ENV YARP_ROOT=${robotology_install_folder}/yarp \
     YARP_DIR=${robotology_install_folder}/yarp/build
 ENV PATH=$PATH:$YARP_DIR/bin
@@ -129,7 +129,7 @@ ENV PATH=$PATH:$YARP_DIR/bin
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN cd yarp && cd bindings &&  mkdir build && cd build && \
-    cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j11
+    cmake .. -DCREATE_PYTHON=ON -DSWIG_EXECUTABLE=/usr/bin/swig -DSWIG_DIR=/usr/share/swig/4.2.1 && make -j2
 
 # Install YARP completion
 RUN sudo ln -s /usr/local/share/bash-completion/completions/yarp /usr/share/bash-completion/completions
@@ -146,7 +146,7 @@ RUN git clone https://github.com/robotology/icub-main.git -b ${mesh_branch} && \
     -DENABLE_icubmod_cartesiancontrollerclient=ON \
     -DICUBMAIN_COMPILE_SIMULATORS=OFF \
     -DENABLE_icubmod_gazecontrollerclient=ON && \
-    make -j11
+    make -j2
 ENV ICUB_ROOT=${robotology_install_folder}/icub-main \
     ICUB_DIR=${robotology_install_folder}/icub-main/build
 
@@ -159,7 +159,7 @@ RUN git clone https://github.com/robotology/robots-configuration.git
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/navigation.git -b ${yarp_branch} && \
-    cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j11
+    cd navigation && mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DCMAKE_BUILD_TYPE=Release -DNAVIGATION_USE_NWC=ON -DNAVIGATION_USE_ROS2=ON" && make -j2
 ENV navigation_ROOT=${robotology_install_folder}/navigation \
     navigation_DIR=${robotology_install_folder}/navigation/build
 
@@ -189,7 +189,7 @@ RUN git clone https://github.com/elandini84/cer.git -b ${yarp_branch} && \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_cermod_cerDoubleLidar=ON \
     -DENABLE_cermod_cerOdometry=ON \
-    -DENABLE_cermod_tripodMotionControl=ON && make -j11
+    -DENABLE_cermod_tripodMotionControl=ON && make -j2
 ENV CER_ROOT=${robotology_install_folder}/cer \
     CER_DIR=${robotology_install_folder}/cer/build
 
@@ -197,7 +197,7 @@ ENV CER_ROOT=${robotology_install_folder}/cer \
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/yarp-devices-ros2 -b ${yarp_branch} && \
     cd yarp-devices-ros2/ros2_interfaces_ws && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; colcon build" && cd .. && \
-    mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j11"
+    mkdir build && cd build && /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; source ${robotology_install_folder}/yarp-devices-ros2/ros2_interfaces_ws/install/setup.bash; cmake .. -DYARP_ROS2_USE_SYSTEM_map2d_nws_ros2_msgs=ON -DYARP_ROS2_USE_SYSTEM_yarp_control_msgs=ON; make -j2"
 
 # CER-Sim stuff
 USER ${robotology_install_user}
@@ -209,7 +209,7 @@ RUN git clone https://github.com/robotology/cer-sim -b ros2 && \
 USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/icub-contrib-common.git && \
-    cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j11 install
+    cd icub-contrib-common && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=${robotology_install_folder}/iCubContrib && make -j2 install
 ENV ICUBcontrib_DIR=${robotology_install_folder}/iCubContrib/build
 
 # Ergocub software
@@ -225,7 +225,7 @@ USER ${robotology_install_user}
 WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/robotology/gz-sim-yarp-plugins -b main && \
     cd gz-sim-yarp-plugins && mkdir build && cd build && \
-    /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DBUILD_gz-sim-yarp-worldinterface-system=ON && make -j11"
+    /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cmake .. -DBUILD_gz-sim-yarp-worldinterface-system=ON && make -j2"
 
 # r1-models
 USER ${robotology_install_user}
@@ -274,7 +274,7 @@ WORKDIR ${robotology_install_folder}
 RUN git clone https://github.com/elandini84/yarp-web-teleop.git && cd yarp-web-teleop && mkdir build && cd build && cmake .. && \
     git clone https://github.com/elandini84/libfvad && cd libfvad && autoreconf -i && ./configure && sudo make install && \
     cd ${robotology_install_folder} && git clone https://github.com/hsp-iit/tour-guide-robot -b ${ros_distro} && \
-    /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j11"
+    /bin/bash -c "source /opt/ros/${ros_distro}/setup.bash; cd tour-guide-robot; mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release -DBTState=OFF -DENABLE_faceExpressionImage=ON; make -j2"
 
 ENV WEB_TELEOP_DIR=${robotology_install_folder}/yarp-web-teleop/build \
     YARP_DATA_DIRS=$YARP_DIR/share/yarp:$ICUB_DIR/share/iCub:$navigation_DIR/share/navigation:${robotology_install_folder}/tour-guide-robot/build/share/tour-guide-robot:$CER_DIR/share/CER:$ICUBcontrib_DIR/share/ICUBcontrib:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp:${robotology_install_folder}/yarp-devices-ros2/build/share/yarp-devices-ros2:${robotology_install_folder}/yarp-web-teleop/build/share/yarp-web-teleop:${ERGOCUB_SOFTWARE_DIR}/share/yarp
