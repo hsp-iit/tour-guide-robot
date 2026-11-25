@@ -7,9 +7,9 @@ ARG cuda_version
 # # Non-interactive installation mode
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
-RUN rm libtinfo5_6.3-2ubuntu0.1_amd64.deb
+RUN wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.3_amd64.deb
+RUN sudo apt-get install ./libtinfo5_6.3-2ubuntu0.3_amd64.deb
+RUN rm libtinfo5_6.3-2ubuntu0.3_amd64.deb
 
 # Iterate over all the Ubuntu versions to find the latest CUDA version, starting from the most recent
 RUN for ubuntu_v in 2404 2204 2004; do \
